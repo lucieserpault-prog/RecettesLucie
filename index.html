@@ -1,119 +1,879 @@
 <!doctype html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Recettes Premium V2</title>
-<style>
-body{font-family:Arial,Helvetica,sans-serif;background:#f8f6f2;margin:0;padding:20px;color:#222}
-h1{text-align:center}
-.section{background:white;padding:20px;border-radius:12px;margin-bottom:20px;box-shadow:0 5px 20px rgba(0,0,0,0.05)}
-button{padding:8px 12px;border:none;border-radius:8px;background:#7c5cff;color:white;cursor:pointer;margin-top:10px}
-textarea,input{width:100%;padding:8px;margin-top:5px;margin-bottom:10px;border-radius:8px;border:1px solid #ddd}
-.card{border:1px solid #eee;border-radius:12px;padding:15px;margin-bottom:15px}
-pre{white-space:pre-wrap}
-</style>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Recettes • Premium</title>
+  <style>
+    :root{
+      --bg:#070a14; --bg2:#0b1020; --text:#eef1ff; --muted:#aab3de; --line:rgba(255,255,255,.10);
+      --accent:#7c5cff; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --shadow:0 18px 60px rgba(0,0,0,.55); --r:22px; --r2:16px; --max:1200px;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:var(--sans); color:var(--text);
+      background:
+        radial-gradient(1200px 680px at 12% 0%, rgba(124,92,255,.20), transparent 58%),
+        radial-gradient(900px 560px at 90% 12%, rgba(34,197,94,.16), transparent 60%),
+        radial-gradient(900px 560px at 25% 100%, rgba(245,158,11,.10), transparent 62%),
+        linear-gradient(180deg, var(--bg), var(--bg2));
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding:20px 16px 70px;}
+    header{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0 14px;}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:44px; height:44px; border-radius:16px; background:linear-gradient(135deg, rgba(124,92,255,.55), rgba(34,197,94,.35));
+      border:1px solid rgba(255,255,255,.12); box-shadow:0 14px 40px rgba(0,0,0,.45);}
+    h1{margin:0; font-size:20px; letter-spacing:.2px}
+    .sub{margin-top:4px; color:var(--muted); font-size:13px; line-height:1.35}
+    .topActions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .btn{border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+      color:var(--text); padding:10px 12px; border-radius:14px; cursor:pointer; display:inline-flex; gap:8px; align-items:center;
+      box-shadow:0 10px 26px rgba(0,0,0,.24); font-weight:850; font-size:13px; user-select:none;}
+    .btn:hover{border-color:rgba(255,255,255,.16); filter:brightness(1.02)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{border-color:rgba(124,92,255,.35); background:linear-gradient(180deg, rgba(124,92,255,.30), rgba(124,92,255,.12));}
+    .btn.danger{border-color:rgba(239,68,68,.35); background:linear-gradient(180deg, rgba(239,68,68,.22), rgba(239,68,68,.08));}
+    .btn.ghost{background:transparent; box-shadow:none}
+    .tabs{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 14px;}
+    .tab{padding:9px 12px; border-radius:999px; border:1px solid var(--line); background:rgba(0,0,0,.12); color:var(--muted);
+      font-weight:850; font-size:13px; cursor:pointer; user-select:none;}
+    .tab.active{color:var(--text); border-color:rgba(124,92,255,.38); background:rgba(124,92,255,.14);}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid var(--line);
+      border-radius:var(--r); padding:14px; box-shadow:var(--shadow);}
+    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:12px; margin-top:10px;}
+    @media (max-width: 980px){ .hero{grid-template-columns:1fr;} }
+    .bigCard{border-radius:var(--r); border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); box-shadow:var(--shadow); padding:16px; position:relative; overflow:hidden;}
+    .bigCard:before{content:""; position:absolute; inset:-1px;
+      background: radial-gradient(500px 260px at 20% 10%, rgba(124,92,255,.18), transparent 60%),
+                  radial-gradient(500px 260px at 90% 40%, rgba(34,197,94,.12), transparent 60%); pointer-events:none;}
+    .bigCard > *{position:relative}
+    .headline{font-size:26px; margin:0; letter-spacing:.2px}
+    .small{color:var(--muted); margin-top:8px; line-height:1.45; font-size:13px}
+    .statsRow{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+    .chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; border:1px solid var(--line);
+      background:rgba(0,0,0,.12); color:var(--muted); font-size:13px; font-weight:850;}
+    .masonry{margin-top:14px; column-count:3; column-gap:12px;}
+    @media (max-width: 980px){ .masonry{column-count:2;} }
+    @media (max-width: 620px){ .masonry{column-count:1;} }
+    .card{break-inside:avoid; margin:0 0 12px; border-radius:var(--r2); overflow:hidden; border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); box-shadow:0 12px 32px rgba(0,0,0,.32);
+      cursor:pointer; transition:transform .08s ease, border-color .2s ease;}
+    .card:hover{transform:translateY(-2px); border-color:rgba(255,255,255,.14)}
+    .thumb{height:170px; background:linear-gradient(135deg, rgba(124,92,255,.25), rgba(34,197,94,.14));
+      display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.80); font-weight:950;}
+    .thumb img{width:100%; height:100%; object-fit:cover; display:block}
+    .cardBody{padding:12px 12px 14px}
+    .name{margin:0; font-size:16px; font-weight:950}
+    .metaLine{margin-top:8px; color:var(--muted); font-size:12px; line-height:1.35}
+    .smallRow{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+    .pill{font-size:11px; padding:5px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:rgba(0,0,0,.12); font-weight:850;}
+    .pill.accent{border-color:rgba(124,92,255,.35); color:#dcd6ff; background:rgba(124,92,255,.12)}
+    .pill.ok{border-color:rgba(34,197,94,.35); color:#c9f4da; background:rgba(34,197,94,.10)}
+    .pill.warn{border-color:rgba(245,158,11,.35); color:#ffe7c2; background:rgba(245,158,11,.10)}
+    label{font-size:12px; color:var(--muted); display:block; margin:0 0 6px}
+    input[type="text"], input[type="number"], textarea, select{width:100%; padding:11px 12px; border-radius:14px; border:1px solid var(--line);
+      background:rgba(10,16,35,.55); color:var(--text); outline:none;}
+    textarea{min-height:92px; resize:vertical}
+    .controls{display:grid; grid-template-columns:1.4fr .8fr .8fr .8fr .8fr; gap:10px; align-items:end; margin-top:14px;}
+    @media (max-width: 980px){ .controls{grid-template-columns:1fr 1fr;} }
+    @media (max-width: 540px){ .controls{grid-template-columns:1fr;} }
+    .overlay{position:fixed; inset:0; background:rgba(0,0,0,.58); display:none; align-items:center; justify-content:center; padding:18px; z-index:50;}
+    .modal{width:min(1040px, 100%); max-height:88vh; overflow:auto; border-radius:24px; border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(17,26,51,.98), rgba(10,16,35,.98)); box-shadow:0 26px 90px rgba(0,0,0,.60);}
+    .modalHeader{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 14px 10px; border-bottom:1px solid var(--line);
+      position:sticky; top:0; background:linear-gradient(180deg, rgba(17,26,51,.98), rgba(15,23,48,.98)); backdrop-filter: blur(12px); z-index:2;}
+    .modalTitle{font-weight:950; font-size:14px; color:#dfe4ff}
+    .modalBody{padding:14px}
+    .divider{height:1px; background:var(--line); margin:12px 0}
+    .twoCol{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    @media (max-width: 900px){ .twoCol{grid-template-columns:1fr;} }
+    .imgBig{width:100%; height:260px; border-radius:18px; border:1px solid var(--line); overflow:hidden; background:rgba(0,0,0,.14);
+      display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.78); font-weight:950;}
+    .imgBig img{width:100%; height:100%; object-fit:cover; display:block}
+    table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:16px; border:1px solid var(--line);}
+    th,td{padding:10px; font-size:13px; border-bottom:1px solid var(--line); vertical-align:top}
+    th{color:var(--muted); font-weight:950; text-align:left; background:rgba(255,255,255,.04)}
+    tr:last-child td{border-bottom:none}
+    .right{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
+    .mini{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
+    .toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:rgba(17,26,51,.96);
+      border:1px solid var(--line); color:var(--text); padding:10px 12px; border-radius:999px; box-shadow:0 18px 70px rgba(0,0,0,.55);
+      display:none; z-index:80; font-size:13px; font-weight:850;}
+    .kbd{border:1px solid var(--line); background:rgba(0,0,0,.15); border-radius:8px; padding:1px 6px; font-weight:900;}
+  </style>
 </head>
 <body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Recettes • Premium</h1>
+        <div class="sub">Accueil joli + Mode édition (PIN) + Import Word + macros auto.</div>
+      </div>
+    </div>
+    <div class="topActions">
+      <button class="btn ghost" id="btnToggleEdit">🔒 Mode édition</button>
+      <button class="btn primary adminOnly" id="btnNew" style="display:none">＋ Nouvelle</button>
+      <button class="btn adminOnly" id="btnOpenImport" style="display:none">🧾 Import Word</button>
+      <button class="btn adminOnly" id="btnFoods" style="display:none">🥗 Aliments</button>
+      <button class="btn" id="btnGroceries">🧺 Liste</button>
+    </div>
+  </header>
 
-<h1>📖 Mes Recettes Premium</h1>
+  <div class="tabs">
+    <div class="tab active" data-view="home">Accueil</div>
+    <div class="tab" data-view="recipes">Recettes</div>
+  </div>
 
-<div class="section">
-<h2>Importer recette (format texte/Word)</h2>
-<p>Colle ici ton texte au format :</p>
-<pre>
-Nom: ...
+  <div id="viewHome">
+    <div class="hero">
+      <div class="bigCard">
+        <h2 class="headline">Ton carnet (vibe Pinterest chic).</h2>
+        <div class="small">Tes proches consultent. Toi tu actives le <span class="kbd">Mode édition</span> (PIN) pour ajouter / importer / modifier.</div>
+        <div class="statsRow" id="statsHome"></div>
+      </div>
+      <div class="bigCard">
+        <div class="small">Catégories :</div>
+        <div class="statsRow" id="homeCats"></div>
+        <div class="mini">Clique une catégorie pour filtrer.</div>
+      </div>
+    </div>
+    <div class="panel" style="margin-top:14px">
+      <div class="small" style="margin-top:0">Dernières recettes</div>
+      <div id="homeLatest" class="masonry"></div>
+    </div>
+  </div>
+
+  <div id="viewRecipes" style="display:none">
+    <div class="panel">
+      <div class="controls">
+        <div>
+          <label>Recherche intelligente</label>
+          <input id="q" type="text" placeholder="ex: poulet curry, banana bread…" />
+        </div>
+        <div>
+          <label>Catégorie</label>
+          <select id="cat"><option value="">Toutes</option></select>
+        </div>
+        <div>
+          <label>Difficulté</label>
+          <select id="diff"><option value="">Toutes</option><option>Facile</option><option>Moyen</option><option>Difficile</option></select>
+        </div>
+        <div>
+          <label>Trier</label>
+          <select id="sort"><option value="recent">Récent</option><option value="name">Nom</option><option value="kcal">Calories</option><option value="protein">Protéines</option><option value="time">Temps</option></select>
+        </div>
+        <div class="right">
+          <button class="btn" id="btnReset">↺ Reset</button>
+        </div>
+      </div>
+    </div>
+    <div class="statsRow" id="statsRecipes" style="margin-top:12px"></div>
+    <div id="grid" class="masonry"></div>
+  </div>
+</div>
+
+<!-- VIEW -->
+<div class="overlay" id="overlayView">
+  <div class="modal">
+    <div class="modalHeader">
+      <div class="modalTitle" id="viewTitle">Recette</div>
+      <div class="right">
+        <button class="btn adminOnly" id="btnEdit" style="display:none">✏️</button>
+        <button class="btn danger adminOnly" id="btnDelete" style="display:none">🗑</button>
+        <button class="btn" id="btnCloseView">✕</button>
+      </div>
+    </div>
+    <div class="modalBody" id="viewBody"></div>
+  </div>
+</div>
+
+<!-- PIN -->
+<div class="overlay" id="overlayPin">
+  <div class="modal" style="max-width:520px">
+    <div class="modalHeader">
+      <div class="modalTitle">Mode édition</div>
+      <div class="right"><button class="btn" id="btnClosePin">✕</button></div>
+    </div>
+    <div class="modalBody">
+      <div class="mini">PIN par défaut : <span class="kbd">1234</span></div>
+      <div style="margin-top:10px">
+        <input id="pinInput" type="number" inputmode="numeric" placeholder="Code PIN" />
+        <div class="right" style="margin-top:10px">
+          <button class="btn danger" id="btnPinOff">Désactiver</button>
+          <button class="btn primary" id="btnPinOk">Activer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="overlay" id="overlayForm">
+  <div class="modal">
+    <div class="modalHeader">
+      <div class="modalTitle" id="formTitle">Nouvelle recette</div>
+      <div class="right">
+        <button class="btn primary" id="btnSave">💾</button>
+        <button class="btn" id="btnCloseForm">✕</button>
+      </div>
+    </div>
+    <div class="modalBody">
+      <div class="twoCol">
+        <div>
+          <div class="imgBig" id="formImgBox"><span>Photo</span></div>
+          <div class="mini">Photo légère (≈2–2.5MB).</div>
+          <div class="right" style="margin-top:10px">
+            <input type="file" id="photo" accept="image/*"/>
+            <button class="btn" id="btnRemovePhoto" type="button">Retirer</button>
+          </div>
+          <div class="divider"></div>
+          <label class="mini"><input type="checkbox" id="autoMacros" checked /> Calcul auto des macros</label>
+        </div>
+        <div>
+          <label>Titre</label><input id="f_name" type="text" />
+          <div class="twoCol" style="gap:10px">
+            <div><label>Catégorie</label><select id="f_cat"></select></div>
+            <div><label>Difficulté</label><select id="f_diff"><option>Facile</option><option>Moyen</option><option>Difficile</option></select></div>
+          </div>
+          <div class="twoCol" style="gap:10px; margin-top:10px">
+            <div><label>Temps (min)</label><input id="f_time" type="number" min="0" step="1"/></div>
+            <div><label>Portions</label><input id="f_serv" type="number" min="1" step="1" value="1"/></div>
+          </div>
+          <div class="twoCol" style="gap:10px; margin-top:10px">
+            <div><label>kcal</label><input id="f_kcal" type="number"/></div>
+            <div><label>Protéines</label><input id="f_p" type="number" step="0.1"/></div>
+          </div>
+          <div class="twoCol" style="gap:10px; margin-top:10px">
+            <div><label>Glucides</label><input id="f_c" type="number" step="0.1"/></div>
+            <div><label>Lipides</label><input id="f_f" type="number" step="0.1"/></div>
+          </div>
+          <label style="margin-top:10px">Notes</label><textarea id="f_notes"></textarea>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+      <div class="right" style="justify-content:space-between">
+        <div class="mini">Ingrédients (grammes)</div>
+        <button class="btn" id="btnAddIng" type="button">＋</button>
+      </div>
+
+      <div style="margin-top:10px; overflow:auto">
+        <table>
+          <thead><tr><th>Aliment</th><th>g</th><th>Label (option)</th><th>Note</th><th></th></tr></thead>
+          <tbody id="ingBody"></tbody>
+        </table>
+      </div>
+
+      <div class="divider"></div>
+      <label>Instructions</label>
+      <textarea id="f_steps"></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT -->
+<div class="overlay" id="overlayImport">
+  <div class="modal">
+    <div class="modalHeader">
+      <div class="modalTitle">Import Word / Texte</div>
+      <div class="right">
+        <button class="btn primary" id="btnDoImport">Importer</button>
+        <button class="btn" id="btnCloseImport">✕</button>
+      </div>
+    </div>
+    <div class="modalBody">
+      <div class="mini">Format :</div>
+      <pre class="panel" style="white-space:pre-wrap; padding:12px; border-radius:16px; overflow:auto">Nom: ...
 Ingrédients:
-...
+150 g poulet
+70 g riz basmati
 Instructions:
-...
-</pre>
-<textarea id="importText" rows="10" placeholder="Colle ici ta recette..."></textarea>
-<button onclick="importRecipe()">Importer</button>
+1) ...</pre>
+      <label>Colle ton texte</label>
+      <textarea id="importText"></textarea>
+      <div class="divider"></div>
+      <div class="mini"><strong>Non reconnus / à vérifier :</strong></div>
+      <div class="mini" id="importUnknown">—</div>
+    </div>
+  </div>
 </div>
 
-<div class="section">
-<h2>Ajouter recette manuellement</h2>
-<input id="title" placeholder="Nom de la recette"/>
-<textarea id="ingredients" placeholder="Ingrédients (ligne par ligne)"></textarea>
-<textarea id="instructions" placeholder="Instructions"></textarea>
-<button onclick="addRecipe()">Ajouter</button>
+<!-- FOODS -->
+<div class="overlay" id="overlayFoods">
+  <div class="modal">
+    <div class="modalHeader">
+      <div class="modalTitle">Aliments (par 100g)</div>
+      <div class="right">
+        <button class="btn primary" id="btnAddFood">＋</button>
+        <button class="btn" id="btnCloseFoods">✕</button>
+      </div>
+    </div>
+    <div class="modalBody" id="foodsBody"></div>
+  </div>
 </div>
 
-<div id="recipes"></div>
+<!-- GROCERIES -->
+<div class="overlay" id="overlayGroceries">
+  <div class="modal">
+    <div class="modalHeader">
+      <div class="modalTitle">Liste de courses</div>
+      <div class="right">
+        <button class="btn" id="btnCopyGroceries">📋</button>
+        <button class="btn" id="btnCloseGroceries">✕</button>
+      </div>
+    </div>
+    <div class="modalBody" id="groceriesBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
+const EDIT_PIN = "1234";
+const STORAGE_KEY = "recipes_premium_D_v1";
+const FOODS_KEY = "foods_premium_D_v1";
+const GRO_KEY = "groceries_premium_D_v1";
+const DEFAULT_CATS = ["Healthy","Gourmand","Entrée","Plat","Dessert","Bakery"];
+const DEFAULT_FOODS = [{"id": "chicken_breast_raw", "name": "Poulet (blanc, cru)", "kcal": 120, "p": 23.0, "c": 0.0, "f": 2.6}, {"id": "turkey_breast_raw", "name": "Dinde (escalope, crue)", "kcal": 110, "p": 24.0, "c": 0.0, "f": 1.5}, {"id": "beef_steak_5", "name": "Boeuf (steak 5% MG)", "kcal": 137, "p": 21.0, "c": 0.0, "f": 5.0}, {"id": "beef_minced_15", "name": "Boeuf (haché 15% MG)", "kcal": 215, "p": 19.0, "c": 0.0, "f": 15.0}, {"id": "ham", "name": "Jambon blanc", "kcal": 115, "p": 19.0, "c": 1.0, "f": 4.0}, {"id": "bacon", "name": "Bacon", "kcal": 541, "p": 37.0, "c": 1.4, "f": 42.0}, {"id": "salmon", "name": "Saumon", "kcal": 208, "p": 20.0, "c": 0.0, "f": 13.0}, {"id": "tuna_canned", "name": "Thon (au naturel, égoutté)", "kcal": 116, "p": 26.0, "c": 0.0, "f": 1.0}, {"id": "cod", "name": "Cabillaud", "kcal": 82, "p": 18.0, "c": 0.0, "f": 0.7}, {"id": "shrimp", "name": "Crevettes", "kcal": 99, "p": 24.0, "c": 0.2, "f": 0.3}, {"id": "egg", "name": "Oeuf entier", "kcal": 143, "p": 13.0, "c": 0.7, "f": 10.0}, {"id": "egg_white", "name": "Blanc d'oeuf", "kcal": 52, "p": 11.0, "c": 0.7, "f": 0.2}, {"id": "skyr0", "name": "Skyr 0%", "kcal": 60, "p": 11.0, "c": 4.0, "f": 0.2}, {"id": "fromage_blanc0", "name": "Fromage blanc 0%", "kcal": 46, "p": 8.0, "c": 4.0, "f": 0.2}, {"id": "greek_yogurt0", "name": "Yaourt grec 0%", "kcal": 59, "p": 10.0, "c": 3.6, "f": 0.4}, {"id": "milk_semi", "name": "Lait demi-écrémé", "kcal": 47, "p": 3.4, "c": 4.8, "f": 1.6}, {"id": "almond_milk", "name": "Lait d'amande (sans sucre)", "kcal": 13, "p": 0.4, "c": 0.2, "f": 1.1}, {"id": "coconut_milk", "name": "Lait de coco", "kcal": 190, "p": 2.0, "c": 3.0, "f": 19.0}, {"id": "whey", "name": "Whey (standard)", "kcal": 400, "p": 80.0, "c": 8.0, "f": 6.0}, {"id": "tofu", "name": "Tofu nature", "kcal": 120, "p": 13.0, "c": 2.0, "f": 7.0}, {"id": "tempeh", "name": "Tempeh", "kcal": 193, "p": 20.0, "c": 9.0, "f": 11.0}, {"id": "lentils_cooked", "name": "Lentilles cuites", "kcal": 116, "p": 9.0, "c": 20.0, "f": 0.4}, {"id": "chickpeas_cooked", "name": "Pois chiches cuits", "kcal": 164, "p": 9.0, "c": 27.0, "f": 2.6}, {"id": "kidney_beans_cooked", "name": "Haricots rouges cuits", "kcal": 127, "p": 8.7, "c": 22.8, "f": 0.5}, {"id": "rice_raw", "name": "Riz basmati (cru)", "kcal": 360, "p": 7.0, "c": 80.0, "f": 1.0}, {"id": "pasta_raw", "name": "Pâtes (crues)", "kcal": 350, "p": 12.0, "c": 72.0, "f": 1.5}, {"id": "quinoa_raw", "name": "Quinoa (cru)", "kcal": 368, "p": 14.0, "c": 64.0, "f": 6.0}, {"id": "bulgur_raw", "name": "Boulgour (cru)", "kcal": 342, "p": 12.0, "c": 76.0, "f": 1.3}, {"id": "couscous_raw", "name": "Semoule (crue)", "kcal": 376, "p": 12.8, "c": 77.4, "f": 0.6}, {"id": "bread_whole", "name": "Pain complet", "kcal": 247, "p": 9.0, "c": 41.0, "f": 4.2}, {"id": "wrap", "name": "Wrap / tortilla", "kcal": 310, "p": 8.0, "c": 52.0, "f": 7.0}, {"id": "oats", "name": "Flocons d'avoine", "kcal": 389, "p": 16.9, "c": 66.3, "f": 6.9}, {"id": "flour", "name": "Farine de blé", "kcal": 364, "p": 10.0, "c": 76.0, "f": 1.0}, {"id": "sugar", "name": "Sucre", "kcal": 400, "p": 0.0, "c": 100.0, "f": 0.0}, {"id": "honey", "name": "Miel", "kcal": 304, "p": 0.3, "c": 82.0, "f": 0.0}, {"id": "dark_choc", "name": "Chocolat noir", "kcal": 546, "p": 5.0, "c": 61.0, "f": 35.0}, {"id": "butter", "name": "Beurre", "kcal": 717, "p": 0.9, "c": 0.1, "f": 81.0}, {"id": "olive_oil", "name": "Huile d'olive", "kcal": 884, "p": 0.0, "c": 0.0, "f": 100.0}, {"id": "cream_30", "name": "Crème fraîche 30%", "kcal": 300, "p": 2.0, "c": 3.0, "f": 30.0}, {"id": "emmental", "name": "Emmental", "kcal": 380, "p": 28.0, "c": 0.0, "f": 29.0}, {"id": "mozzarella", "name": "Mozzarella", "kcal": 280, "p": 19.0, "c": 2.0, "f": 22.0}, {"id": "banana", "name": "Banane", "kcal": 89, "p": 1.1, "c": 22.8, "f": 0.3}, {"id": "apple", "name": "Pomme", "kcal": 52, "p": 0.3, "c": 13.8, "f": 0.2}, {"id": "strawberry", "name": "Fraise", "kcal": 32, "p": 0.7, "c": 7.7, "f": 0.3}, {"id": "blueberry", "name": "Myrtille", "kcal": 57, "p": 0.7, "c": 14.5, "f": 0.3}, {"id": "mango", "name": "Mangue", "kcal": 60, "p": 0.8, "c": 15.0, "f": 0.4}, {"id": "avocado", "name": "Avocat", "kcal": 160, "p": 2.0, "c": 9.0, "f": 15.0}, {"id": "tomato", "name": "Tomate", "kcal": 18, "p": 0.9, "c": 3.9, "f": 0.2}, {"id": "cucumber", "name": "Concombre", "kcal": 15, "p": 0.7, "c": 3.6, "f": 0.1}, {"id": "zucchini", "name": "Courgette", "kcal": 17, "p": 1.2, "c": 3.1, "f": 0.3}, {"id": "carrot", "name": "Carotte", "kcal": 41, "p": 0.9, "c": 9.6, "f": 0.2}, {"id": "bell_pepper", "name": "Poivron", "kcal": 31, "p": 1.0, "c": 6.0, "f": 0.3}, {"id": "onion", "name": "Oignon", "kcal": 40, "p": 1.1, "c": 9.3, "f": 0.1}, {"id": "garlic", "name": "Ail", "kcal": 149, "p": 6.4, "c": 33.0, "f": 0.5}, {"id": "broccoli", "name": "Brocoli", "kcal": 34, "p": 2.8, "c": 6.6, "f": 0.4}, {"id": "spinach", "name": "Epinards", "kcal": 23, "p": 2.9, "c": 1.4, "f": 0.4}, {"id": "mushroom", "name": "Champignon", "kcal": 22, "p": 3.1, "c": 3.3, "f": 0.3}, {"id": "potato", "name": "Pomme de terre", "kcal": 77, "p": 2.0, "c": 17.0, "f": 0.1}, {"id": "sweet_potato", "name": "Patate douce", "kcal": 86, "p": 1.6, "c": 20.0, "f": 0.1}, {"id": "lettuce", "name": "Salade", "kcal": 15, "p": 1.4, "c": 2.9, "f": 0.2}, {"id": "soy_sauce", "name": "Sauce soja", "kcal": 53, "p": 8.1, "c": 4.9, "f": 0.6}, {"id": "ketchup", "name": "Ketchup", "kcal": 112, "p": 1.3, "c": 26.0, "f": 0.2}, {"id": "mustard", "name": "Moutarde", "kcal": 66, "p": 4.4, "c": 5.8, "f": 3.7}, {"id": "curry_powder", "name": "Curry (poudre)", "kcal": 325, "p": 14.0, "c": 58.0, "f": 14.0}, {"id": "paprika", "name": "Paprika", "kcal": 282, "p": 14.1, "c": 54.0, "f": 13.0}, {"id": "almonds", "name": "Amandes", "kcal": 579, "p": 21.2, "c": 21.6, "f": 49.9}, {"id": "walnuts", "name": "Noix", "kcal": 654, "p": 15.2, "c": 13.7, "f": 65.2}, {"id": "peanut_butter", "name": "Beurre de cacahuète", "kcal": 588, "p": 25.0, "c": 20.0, "f": 50.0}, {"id": "chia", "name": "Graines de chia", "kcal": 486, "p": 17.0, "c": 42.0, "f": 31.0}, {"id": "raisins", "name": "Raisin sec", "kcal": 299, "p": 3.1, "c": 79.0, "f": 0.5}, {"id": "dates", "name": "Datte", "kcal": 282, "p": 2.5, "c": 75.0, "f": 0.4}, {"id": "corn", "name": "Maïs", "kcal": 86, "p": 3.4, "c": 19.0, "f": 1.2}, {"id": "peas", "name": "Petits pois", "kcal": 81, "p": 5.4, "c": 14.5, "f": 0.4}, {"id": "sardines", "name": "Sardines", "kcal": 208, "p": 25.0, "c": 0.0, "f": 11.0}, {"id": "pita", "name": "Pita", "kcal": 275, "p": 9.0, "c": 55.0, "f": 1.2}, {"id": "cottage", "name": "Fromage cottage", "kcal": 98, "p": 11.0, "c": 3.4, "f": 4.3}, {"id": "cocoa", "name": "Cacao non sucré", "kcal": 228, "p": 19.6, "c": 57.9, "f": 13.7}, {"id": "pesto", "name": "Pesto", "kcal": 460, "p": 5.0, "c": 6.0, "f": 46.0}, {"id": "mayo", "name": "Mayonnaise", "kcal": 680, "p": 1.0, "c": 1.0, "f": 75.0}, {"id": "chorizo", "name": "Chorizo", "kcal": 455, "p": 24.0, "c": 2.0, "f": 38.0}, {"id": "seitan", "name": "Seitan", "kcal": 140, "p": 28.0, "c": 5.0, "f": 1.5}, {"id": "edamame", "name": "Edamame", "kcal": 122, "p": 11.9, "c": 9.9, "f": 5.2}, {"id": "balsamic", "name": "Vinaigre balsamique", "kcal": 88, "p": 0.5, "c": 17.0, "f": 0.0}, {"id": "sriracha", "name": "Sriracha", "kcal": 93, "p": 1.3, "c": 20.0, "f": 0.9}, {"id": "ginger", "name": "Gingembre", "kcal": 80, "p": 1.8, "c": 18.0, "f": 0.8}, {"id": "cauliflower", "name": "Chou-fleur", "kcal": 25, "p": 1.9, "c": 5.0, "f": 0.3}, {"id": "beet", "name": "Betterave", "kcal": 43, "p": 1.6, "c": 10.0, "f": 0.2}, {"id": "olives", "name": "Olives", "kcal": 145, "p": 1.0, "c": 3.8, "f": 15.3}, {"id": "smoked_salmon", "name": "Saumon fumé", "kcal": 117, "p": 18.0, "c": 0.0, "f": 4.3}, {"id": "goat_cheese", "name": "Fromage de chèvre", "kcal": 364, "p": 22.0, "c": 2.0, "f": 30.0}, {"id": "noodles", "name": "Nouilles (crues)", "kcal": 360, "p": 11.0, "c": 72.0, "f": 2.0}, {"id": "gnocchi", "name": "Gnocchi", "kcal": 150, "p": 3.0, "c": 33.0, "f": 0.7}, {"id": "tomato_sauce", "name": "Sauce tomate", "kcal": 29, "p": 1.4, "c": 6.2, "f": 0.2}, {"id": "pasta_whole_raw", "name": "Pâtes complètes (crues)", "kcal": 350, "p": 13.0, "c": 67.0, "f": 2.5}, {"id": "brown_rice_raw", "name": "Riz complet (cru)", "kcal": 370, "p": 7.5, "c": 77.0, "f": 2.8}, {"id": "couscous_cooked", "name": "Couscous cuit", "kcal": 112, "p": 3.8, "c": 23.2, "f": 0.2}, {"id": "quinoa_cooked", "name": "Quinoa cuit", "kcal": 120, "p": 4.4, "c": 21.3, "f": 1.9}, {"id": "rice_cooked", "name": "Riz cuit", "kcal": 130, "p": 2.7, "c": 28.0, "f": 0.3}, {"id": "pasta_cooked", "name": "Pâtes cuites", "kcal": 158, "p": 5.8, "c": 30.0, "f": 0.9}, {"id": "potato_cooked", "name": "Pommes de terre cuites", "kcal": 87, "p": 2.0, "c": 20.0, "f": 0.1}];
 
-const defaultFoods = [
-"Poulet","Boeuf","Saumon","Thon","Oeuf","Blanc d'oeuf","Skyr","Yaourt grec",
-"Riz","Riz complet","Pâtes","Quinoa","Semoule","Pain complet","Wrap","Flocons d’avoine",
-"Banane","Pomme","Fraise","Myrtille","Mangue","Avocat","Brocoli","Courgette",
-"Carotte","Poivron","Tomate","Concombre","Épinard","Champignon",
-"Huile d’olive","Beurre","Crème fraîche","Lait","Lait d’amande","Lait de coco",
-"Whey","Chocolat noir","Miel","Sucre","Farine","Levure"
-];
+const $ = (s)=>document.querySelector(s);
+function uid(){ return Math.random().toString(16).slice(2)+Date.now().toString(16); }
+function escapeHtml(s){ return (s||"").toString().replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;"); }
+function normalize(s){ return (s||"").toString().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9\s]/g," ").replace(/\s+/g," ").trim(); }
+function fmt1(n){ n=Number(n||0); return (Math.round(n*10)/10).toString(); }
+function showToast(msg){ const t=$("#toast"); t.textContent=msg; t.style.display="block"; clearTimeout(showToast._t); showToast._t=setTimeout(()=>t.style.display="none",1700); }
 
-let recipes = JSON.parse(localStorage.getItem("recipes_v2")||"[]");
+function loadFoods(){
+  try{
+    const raw=localStorage.getItem(FOODS_KEY);
+    if(!raw){ localStorage.setItem(FOODS_KEY, JSON.stringify(DEFAULT_FOODS)); return DEFAULT_FOODS.slice(); }
+    const arr=JSON.parse(raw); return Array.isArray(arr)?arr:DEFAULT_FOODS.slice();
+  }catch(e){ return DEFAULT_FOODS.slice(); }
+}
+function saveFoods(){ localStorage.setItem(FOODS_KEY, JSON.stringify(foods)); }
+let foods=loadFoods();
+function foodById(id){ return foods.find(f=>f.id===id)||null; }
+function foodName(id){ const f=foodById(id); return f?f.name:""; }
 
-function save(){
-localStorage.setItem("recipes_v2",JSON.stringify(recipes));
+function seedRecipes(){
+  return [{
+    id: uid(), name:"Bowl poulet curry", category:"Healthy", difficulty:"Facile", timeMin:20, servings:1,
+    kcal:0,p:0,c:0,f:0, autoMacros:true, tags:["import"], photo:null,
+    ingredients:[
+      {foodId:"chicken_breast_raw", grams:150, label:"Poulet", note:""},
+      {foodId:"rice_raw", grams:70, label:"Riz basmati (cru)", note:""},
+      {foodId:"spinach", grams:100, label:"Épinards", note:""},
+      {foodId:"curry_powder", grams:5, label:"Curry", note:""},
+      {foodId:"coconut_milk", grams:80, label:"Lait de coco", note:""}
+    ],
+    steps:"1) Cuire le riz.\n2) Saisir le poulet.\n3) Ajouter le curry + lait de coco.\n4) Ajouter les épinards.",
+    notes:"", createdAt:Date.now()-1000*60*60*12, updatedAt:Date.now()-1000*60*60*12
+  }];
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return {categories:DEFAULT_CATS.slice(), recipes:seedRecipes()};
+    const obj=JSON.parse(raw);
+    if(!obj.categories) obj.categories=DEFAULT_CATS.slice();
+    if(!obj.recipes) obj.recipes=[];
+    return obj;
+  }catch(e){ return {categories:DEFAULT_CATS.slice(), recipes:seedRecipes()}; }
+}
+let state=loadState();
+function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+
+function calcTotals(ingredients){
+  let kcal=0,p=0,c=0,f=0;
+  for(const it of (ingredients||[])){
+    const grams=Number(it.grams||0);
+    if(!grams||grams<=0) continue;
+    const food=foodById(it.foodId); if(!food) continue;
+    const m=grams/100.0;
+    kcal += (Number(food.kcal)||0)*m;
+    p += (Number(food.p)||0)*m;
+    c += (Number(food.c)||0)*m;
+    f += (Number(food.f)||0)*m;
+  }
+  return {kcal,p,c,f};
+}
+function ensureAutoComputed(){
+  for(const r of state.recipes){
+    if(r.autoMacros){
+      const t=calcTotals(r.ingredients||[]);
+      r.kcal=Math.round(t.kcal);
+      r.p=Math.round(t.p*10)/10;
+      r.c=Math.round(t.c*10)/10;
+      r.f=Math.round(t.f*10)/10;
+    }
+  }
+  saveState();
+}
+ensureAutoComputed();
+
+function levenshtein(a,b){
+  a=a||""; b=b||"";
+  const m=a.length,n=b.length; if(!m) return n; if(!n) return m;
+  const dp=new Array(n+1); for(let j=0;j<=n;j++) dp[j]=j;
+  for(let i=1;i<=m;i++){
+    let prev=dp[0]; dp[0]=i;
+    for(let j=1;j<=n;j++){
+      const tmp=dp[j];
+      const cost=a[i-1]===b[j-1]?0:1;
+      dp[j]=Math.min(dp[j]+1, dp[j-1]+1, prev+cost);
+      prev=tmp;
+    }
+  }
+  return dp[n];
+}
+function scoreName(query,name){
+  const q=normalize(query), t=normalize(name);
+  if(!q||!t) return -999;
+  let score=0;
+  if(t.includes(q)) score+=80;
+  const qT=q.split(" ").filter(Boolean);
+  const tT=t.split(" ").filter(Boolean);
+  for(const qt of qT){
+    if(tT.includes(qt)){ score+=35; continue; }
+    let best=999;
+    for(const tt of tT){ const d=levenshtein(qt,tt); if(d<best) best=d; if(best===0) break; }
+    if(best===1) score+=18;
+    else if(best===2) score+=10;
+    else if(best===3 && qt.length>=6) score+=6;
+    else score-=4;
+  }
+  return score;
+}
+function bestFoodMatch(ingName){
+  let best=null, bestScore=-999;
+  for(const f of foods){
+    const s=scoreName(ingName,f.name);
+    if(s>bestScore){ bestScore=s; best=f; }
+  }
+  return {food:best, score:bestScore};
+}
+function parseIngredientLine(line){
+  const raw=line.trim();
+  if(!raw) return null;
+  const s=raw.replace(/^[-•*\u2022\s]+/,"").trim();
+  const m=s.match(/^([0-9]+(?:[.,][0-9]+)?)\s*(kg|g|gr|grammes|grams|ml|cl|l)\b\s*(.*)$/i);
+  if(m){
+    const num=parseFloat(m[1].replace(",",".")); const unit=m[2].toLowerCase(); const name=(m[3]||"").trim();
+    let grams=num;
+    if(unit==="kg") grams=num*1000;
+    else if(unit==="l") grams=num*1000;
+    else if(unit==="cl") grams=num*10;
+    else grams=num;
+    return {name, grams: Math.round(grams*10)/10, raw};
+  }
+  const m2=s.match(/^(.*?)([0-9]+(?:[.,][0-9]+)?)\s*(kg|g|gr|grammes|grams|ml|cl|l)\b\s*$/i);
+  if(m2){
+    const name=(m2[1]||"").trim(); const num=parseFloat(m2[2].replace(",",".")); const unit=m2[3].toLowerCase();
+    let grams=num;
+    if(unit==="kg") grams=num*1000;
+    else if(unit==="l") grams=num*1000;
+    else if(unit==="cl") grams=num*10;
+    return {name, grams: Math.round(grams*10)/10, raw};
+  }
+  return {name:s, grams:null, raw};
+}
+function parseImportText(text){
+  const t=(text||"").replace(/\r/g,"").trim();
+  if(!t) return null;
+  const nameMatch=t.match(/(?:^|\n)\s*(?:nom|title)\s*:\s*(.+)\s*(?:\n|$)/i);
+  const name=nameMatch?nameMatch[1].trim():"Recette importée";
+  const ingBlockMatch=t.match(/(?:^|\n)\s*(?:ingredients|ingr[eé]dients)\s*:\s*([\s\S]*?)(?:\n\s*(?:instructions|preparation|préparation|etapes|étapes)\s*:|$)/i);
+  const instrMatch=t.match(/(?:^|\n)\s*(?:instructions|preparation|préparation|etapes|étapes)\s*:\s*([\s\S]*)$/i);
+  const ingBlock=ingBlockMatch?ingBlockMatch[1].trim():"";
+  const instructions=instrMatch?instrMatch[1].trim():"";
+  const lines=ingBlock.split("\n").map(x=>x.trim()).filter(Boolean);
+  const parsed=lines.map(parseIngredientLine).filter(Boolean);
+  const ingredients=[]; const unknown=[];
+  for(const it of parsed){
+    const nm=it.name||"";
+    if(!nm){ unknown.push(it.raw); continue; }
+    const {food, score}=bestFoodMatch(nm);
+    if(!food || score<18){ unknown.push(it.raw); continue; }
+    let grams=it.grams; let note="";
+    if(grams==null){ grams=100; note="Quantité non trouvée → 100g (à ajuster)"; unknown.push(it.raw+" (quantité manquante)"); }
+    ingredients.push({foodId:food.id, grams, label:nm, note});
+  }
+  return {name, ingredients, instructions, unknown};
 }
 
-function render(){
-const container=document.getElementById("recipes");
-container.innerHTML="";
-recipes.forEach((r,i)=>{
-container.innerHTML+=`
-<div class="card">
-<h3>${r.title}</h3>
-<strong>Ingrédients:</strong>
-<pre>${r.ingredients}</pre>
-<strong>Instructions:</strong>
-<pre>${r.instructions}</pre>
-<button onclick="deleteRecipe(${i})">Supprimer</button>
-</div>
-`;
+function pill(text, cls=""){ return `<span class="pill ${cls}">${escapeHtml(text)}</span>`; }
+function recipeSearchText(r){
+  const ing=(r.ingredients||[]).map(i=>`${i.label||""} ${foodName(i.foodId)} ${i.grams||""}`).join(" ");
+  return `${r.name} ${r.category} ${r.difficulty} ${ing} ${r.steps||""} ${r.notes||""}`;
+}
+function recipeCardHTML(r){
+  const top=r.photo?`<div class="thumb"><img src="${r.photo}" alt="${escapeHtml(r.name)}"></div>`:`<div class="thumb">${escapeHtml(r.category||"Recette")}</div>`;
+  const meta=[
+    pill(r.category||"—","accent"),
+    pill(`⏱ ${r.timeMin||0} min`),
+    pill(`⭐ ${r.difficulty||"—"}`,"warn"),
+    pill(`🔥 ${Math.round(r.kcal||0)} kcal`),
+    pill(`💪 ${fmt1(r.p||0)} g P`,"ok"),
+  ].join("");
+  return `<div class="card" data-id="${r.id}">${top}<div class="cardBody">
+    <h3 class="name">${escapeHtml(r.name||"Sans titre")}</h3>
+    <div class="metaLine">${escapeHtml((r.notes||"").slice(0,92))}${(r.notes||"").length>92?"…":""}</div>
+    <div class="smallRow">${meta}</div>
+  </div></div>`;
+}
+
+function renderCategories(){
+  $("#cat").innerHTML = `<option value="">Toutes</option>` + state.categories.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+  $("#f_cat").innerHTML = state.categories.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+}
+function renderStatsHome(){
+  const total=state.recipes.length;
+  const avgK= total ? state.recipes.reduce((s,r)=>s+(Number(r.kcal)||0),0)/total : 0;
+  const avgP= total ? state.recipes.reduce((s,r)=>s+(Number(r.p)||0),0)/total : 0;
+  $("#statsHome").innerHTML = [
+    `<span class="chip">📚 ${total} recette${total>1?"s":""}</span>`,
+    `<span class="chip">🔥 Moy. ${Math.round(avgK)} kcal</span>`,
+    `<span class="chip">💪 Moy. ${Math.round(avgP)} g prot</span>`,
+    `<span class="chip">🥗 ${foods.length} aliments</span>`
+  ].join("");
+}
+function renderHome(){
+  renderStatsHome();
+  const cats=$("#homeCats");
+  cats.innerHTML = state.categories.map(c=>`<span class="chip" style="cursor:pointer" data-cat="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("");
+  cats.querySelectorAll("[data-cat]").forEach(el=>{
+    el.addEventListener("click", ()=>{ setView("recipes"); $("#cat").value=el.dataset.cat; renderRecipes(); });
+  });
+  const latest=state.recipes.slice().sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)).slice(0,8);
+  $("#homeLatest").innerHTML = latest.map(recipeCardHTML).join("") || `<div class="mini">Pas encore de recettes.</div>`;
+  $("#homeLatest").querySelectorAll(".card").forEach(el=>el.addEventListener("click", ()=>openRecipe(el.dataset.id)));
+}
+function applyRecipeFilters(){
+  const q=($("#q").value||"").trim();
+  const cat=$("#cat").value||"";
+  const diff=$("#diff").value||"";
+  const sort=$("#sort").value||"recent";
+  let list=state.recipes.slice();
+  if(cat) list=list.filter(r=>r.category===cat);
+  if(diff) list=list.filter(r=>r.difficulty===diff);
+  if(q){
+    list=list.map(r=>({r,score:scoreName(q,r.name)*1.5 + scoreName(q,recipeSearchText(r))}))
+      .filter(x=>x.score>5).sort((a,b)=>b.score-a.score).map(x=>x.r);
+  }
+  const cmpNum=(a,b)=>(Number(a)||0)-(Number(b)||0);
+  if(sort==="recent") list.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  if(sort==="name") list.sort((a,b)=>(a.name||"").localeCompare(b.name||"","fr"));
+  if(sort==="kcal") list.sort((a,b)=>cmpNum(a.kcal,b.kcal));
+  if(sort==="protein") list.sort((a,b)=>cmpNum(b.p,a.p));
+  if(sort==="time") list.sort((a,b)=>cmpNum(a.timeMin,b.timeMin));
+  return list;
+}
+function renderRecipes(){
+  renderCategories();
+  const list=applyRecipeFilters();
+  const total=list.length;
+  const avgK= total ? list.reduce((s,r)=>s+(Number(r.kcal)||0),0)/total : 0;
+  const avgP= total ? list.reduce((s,r)=>s+(Number(r.p)||0),0)/total : 0;
+  $("#statsRecipes").innerHTML = [
+    `<span class="chip">📚 ${total} résultat${total>1?"s":""}</span>`,
+    `<span class="chip">🔥 Moy. ${Math.round(avgK)} kcal</span>`,
+    `<span class="chip">💪 Moy. ${Math.round(avgP)} g prot</span>`
+  ].join("");
+  $("#grid").innerHTML = list.map(recipeCardHTML).join("") || `<div class="mini">Aucun résultat.</div>`;
+  $("#grid").querySelectorAll(".card").forEach(el=>el.addEventListener("click", ()=>openRecipe(el.dataset.id)));
+}
+
+function setView(view){
+  document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active", t.dataset.view===view));
+  $("#viewHome").style.display = view==="home" ? "block" : "none";
+  $("#viewRecipes").style.display = view==="recipes" ? "block" : "none";
+  if(view==="home") renderHome(); else renderRecipes();
+}
+
+/* View recipe */
+let currentId=null, editId=null, formPhoto=null;
+function openRecipe(id){
+  const r=state.recipes.find(x=>x.id===id); if(!r) return;
+  currentId=id;
+  $("#viewTitle").textContent=r.name||"Recette";
+  const img = r.photo ? `<div class="imgBig"><img src="${r.photo}"></div>` : `<div class="imgBig"><span>Pas de photo</span></div>`;
+  const ingRows=(r.ingredients||[]).map(i=>{
+    const f=foodById(i.foodId);
+    const nm=i.label || (f?f.name:"—");
+    return `<tr><td><strong>${escapeHtml(nm)}</strong><div class="mini">${f?escapeHtml(f.name):"<span class='mini'>Aliment manquant</span>"}</div></td><td>${escapeHtml(i.grams??"")}</td><td>${escapeHtml(i.note||"")}</td></tr>`;
+  }).join("");
+  $("#viewBody").innerHTML = `
+    <div class="twoCol">
+      <div>
+        ${img}
+        <div class="smallRow" style="margin-top:10px">
+          ${pill(r.category||"—","accent")}
+          ${pill(`⭐ ${r.difficulty||"—"}`,"warn")}
+          ${pill(`⏱ ${r.timeMin||0} min`)}
+          ${pill(`🍽 ${r.servings||1}`)}
+        </div>
+        <div class="smallRow" style="margin-top:10px">
+          ${pill(`🔥 ${Math.round(r.kcal||0)} kcal`)}
+          ${pill(`💪 ${fmt1(r.p||0)} g P`,"ok")}
+          ${pill(`🍚 ${fmt1(r.c||0)} g G`)}
+          ${pill(`🥑 ${fmt1(r.f||0)} g L`)}
+        </div>
+        ${r.notes?`<div class="divider"></div><div class="mini"><strong>Notes</strong><br>${escapeHtml(r.notes).replaceAll("\n","<br>")}</div>`:""}
+      </div>
+      <div>
+        <div class="mini"><strong>Ingrédients</strong></div>
+        <div style="margin-top:10px; overflow:auto">
+          <table><thead><tr><th>Ingrédient</th><th>g</th><th>Note</th></tr></thead><tbody>
+            ${ingRows || `<tr><td colspan="3" class="mini">Aucun ingrédient</td></tr>`}
+          </tbody></table>
+        </div>
+        <div class="divider"></div>
+        <div class="mini"><strong>Instructions</strong></div>
+        <div class="mini" style="line-height:1.55; margin-top:8px">${escapeHtml(r.steps||"").replaceAll("\n","<br>") || "—"}</div>
+      </div>
+    </div>`;
+  $("#overlayView").style.display="flex";
+}
+function closeView(){ $("#overlayView").style.display="none"; currentId=null; }
+
+/* Edit mode */
+function isEditOn(){ return localStorage.getItem("edit_mode")==="on"; }
+function setEditOn(on){
+  localStorage.setItem("edit_mode", on?"on":"off");
+  document.querySelectorAll(".adminOnly").forEach(el=>el.style.display = on ? "" : "none");
+  $("#btnToggleEdit").textContent = on ? "🔓 Édition active" : "🔒 Mode édition";
+}
+setEditOn(isEditOn());
+
+/* Form */
+function renderFoodOptions(sel, selectedId){
+  const opts=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"))
+    .map(f=>`<option value="${escapeHtml(f.id)}" ${f.id===selectedId?"selected":""}>${escapeHtml(f.name)}</option>`).join("");
+  sel.innerHTML = `<option value="">— Choisir —</option>` + opts;
+}
+function renderFormPhoto(){ $("#formImgBox").innerHTML = formPhoto ? `<img src="${formPhoto}">` : `<span>Photo</span>`; }
+function updateMacroInputsLock(){
+  const auto=$("#autoMacros").checked;
+  ["f_kcal","f_p","f_c","f_f"].forEach(id=>$("#"+id).disabled = auto);
+}
+function addIngRow(ing={foodId:"", grams:"", label:"", note:""}){
+  const tr=document.createElement("tr");
+  tr.innerHTML = `
+    <td><select class="foodSel"></select></td>
+    <td><input class="grams" type="number" min="0" step="1" value="${escapeHtml(ing.grams)}"></td>
+    <td><input class="label" type="text" value="${escapeHtml(ing.label)}"></td>
+    <td><input class="note" type="text" value="${escapeHtml(ing.note)}"></td>
+    <td><button class="btn danger" type="button">—</button></td>`;
+  const sel=tr.querySelector(".foodSel");
+  renderFoodOptions(sel, ing.foodId||"");
+  sel.addEventListener("change", recalcFormMacros);
+  tr.querySelector(".grams").addEventListener("input", recalcFormMacros);
+  tr.querySelector("button").addEventListener("click", ()=>{ tr.remove(); recalcFormMacros(); });
+  $("#ingBody").appendChild(tr);
+  recalcFormMacros();
+}
+function collectIngredients(){
+  const rows=[...$("#ingBody").querySelectorAll("tr")];
+  return rows.map(tr=>{
+    const foodId=tr.querySelector(".foodSel").value;
+    const grams=Number(tr.querySelector(".grams").value||0);
+    const label=tr.querySelector(".label").value.trim();
+    const note=tr.querySelector(".note").value.trim();
+    return {foodId, grams, label, note};
+  }).filter(i=>i.foodId && i.grams>0);
+}
+function recalcFormMacros(){
+  if(!$("#autoMacros").checked) return;
+  const t=calcTotals(collectIngredients());
+  $("#f_kcal").value=Math.round(t.kcal);
+  $("#f_p").value=fmt1(t.p);
+  $("#f_c").value=fmt1(t.c);
+  $("#f_f").value=fmt1(t.f);
+}
+function resetForm(){
+  editId=null; formPhoto=null; $("#photo").value=""; $("#autoMacros").checked=true;
+  $("#f_name").value=""; $("#f_cat").value=state.categories[0]||"Healthy"; $("#f_diff").value="Facile";
+  $("#f_time").value=""; $("#f_serv").value="1"; $("#f_notes").value=""; $("#f_steps").value="";
+  $("#f_kcal").value=""; $("#f_p").value=""; $("#f_c").value=""; $("#f_f").value="";
+  $("#ingBody").innerHTML=""; addIngRow(); addIngRow();
+  updateMacroInputsLock(); renderFormPhoto(); recalcFormMacros();
+}
+function openFormNew(){ $("#formTitle").textContent="Nouvelle recette"; renderCategories(); resetForm(); $("#overlayForm").style.display="flex"; }
+function openFormEdit(id){
+  const r=state.recipes.find(x=>x.id===id); if(!r) return;
+  if(!confirm("Modifier cette recette ?")) return;
+  editId=id; formPhoto=r.photo||null;
+  $("#formTitle").textContent="Modifier";
+  renderCategories();
+  $("#autoMacros").checked = (r.autoMacros!==false);
+  $("#f_name").value=r.name||""; $("#f_cat").value=r.category||state.categories[0]||"Healthy"; $("#f_diff").value=r.difficulty||"Facile";
+  $("#f_time").value=r.timeMin||0; $("#f_serv").value=r.servings||1;
+  $("#f_kcal").value=r.kcal||0; $("#f_p").value=r.p||0; $("#f_c").value=r.c||0; $("#f_f").value=r.f||0;
+  $("#f_notes").value=r.notes||""; $("#f_steps").value=r.steps||"";
+  $("#ingBody").innerHTML="";
+  (r.ingredients||[]).forEach(i=>addIngRow(i));
+  if(!(r.ingredients||[]).length) addIngRow();
+  updateMacroInputsLock(); renderFormPhoto(); recalcFormMacros();
+  $("#overlayForm").style.display="flex";
+}
+function closeForm(){ $("#overlayForm").style.display="none"; }
+function saveRecipe(){
+  const name=$("#f_name").value.trim(); if(!name){ alert("Titre manquant."); return; }
+  const auto=$("#autoMacros").checked;
+  const ingredients=collectIngredients();
+  let kcal=Number($("#f_kcal").value||0), p=Number($("#f_p").value||0), c=Number($("#f_c").value||0), f=Number($("#f_f").value||0);
+  if(auto){
+    const t=calcTotals(ingredients);
+    kcal=Math.round(t.kcal); p=Math.round(t.p*10)/10; c=Math.round(t.c*10)/10; f=Math.round(t.f*10)/10;
+  }
+  const obj={id:editId||uid(), name, category:$("#f_cat").value, difficulty:$("#f_diff").value,
+    timeMin:Number($("#f_time").value||0), servings:Number($("#f_serv").value||1),
+    kcal,p,c,f, autoMacros:auto, tags:[], photo:formPhoto, ingredients, steps:$("#f_steps").value.trim(), notes:$("#f_notes").value.trim(),
+    updatedAt:Date.now(), createdAt:Date.now()
+  };
+  if(editId){
+    const idx=state.recipes.findIndex(r=>r.id===editId);
+    if(idx>=0){ obj.createdAt=state.recipes[idx].createdAt||obj.createdAt; state.recipes[idx]=obj; }
+    showToast("Modifiée");
+  }else{
+    state.recipes.unshift(obj); showToast("Ajoutée");
+  }
+  saveState(); closeForm(); setView("recipes"); renderRecipes(); openRecipe(obj.id);
+}
+function deleteCurrent(){
+  if(!currentId) return;
+  const r=state.recipes.find(x=>x.id===currentId); if(!r) return;
+  if(!confirm(`Supprimer "${r.name}" ?`)) return;
+  state.recipes=state.recipes.filter(x=>x.id!==currentId);
+  saveState(); closeView(); renderHome(); renderRecipes(); showToast("Supprimée");
+}
+
+/* Import */
+let lastUnknown=[];
+function openImport(){ $("#importText").value=""; $("#importUnknown").textContent="—"; lastUnknown=[]; $("#overlayImport").style.display="flex"; }
+function closeImport(){ $("#overlayImport").style.display="none"; }
+function previewImport(){
+  const res=parseImportText($("#importText").value);
+  if(!res){ $("#importUnknown").textContent="—"; lastUnknown=[]; return; }
+  lastUnknown=res.unknown||[];
+  $("#importUnknown").textContent = lastUnknown.length ? lastUnknown.join(" | ") : "Tout est reconnu ✅";
+}
+function doImport(){
+  const res=parseImportText($("#importText").value);
+  if(!res){ alert("Colle une recette."); return; }
+  const obj={id:uid(), name:res.name||"Recette importée", category:"Plat", difficulty:"Facile", timeMin:0, servings:1,
+    kcal:0,p:0,c:0,f:0, autoMacros:true, tags:["import"], photo:null, ingredients:res.ingredients||[],
+    steps:res.instructions||"", notes:lastUnknown.length?("⚠️ À vérifier : "+lastUnknown.join(" | ")):"", updatedAt:Date.now(), createdAt:Date.now()
+  };
+  const t=calcTotals(obj.ingredients); obj.kcal=Math.round(t.kcal); obj.p=Math.round(t.p*10)/10; obj.c=Math.round(t.c*10)/10; obj.f=Math.round(t.f*10)/10;
+  state.recipes.unshift(obj); saveState(); closeImport(); setView("recipes"); renderRecipes(); openRecipe(obj.id); showToast("Import ✅");
+}
+
+/* Foods modal (simple list + add) */
+function openFoods(){ renderFoods(); $("#overlayFoods").style.display="flex"; }
+function closeFoods(){ $("#overlayFoods").style.display="none"; }
+function renderFoods(){
+  const sorted=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"));
+  const rows=sorted.map(f=>`<tr><td><strong>${escapeHtml(f.name)}</strong></td><td>${f.kcal}</td><td>${f.p}</td><td>${f.c}</td><td>${f.f}</td></tr>`).join("");
+  $("#foodsBody").innerHTML = `<div class="mini">Base: ${foods.length} aliments (par 100g). Pour ajouter un aliment: bouton +.</div>
+    <div style="margin-top:10px; overflow:auto"><table>
+      <thead><tr><th>Aliment</th><th>kcal</th><th>P</th><th>G</th><th>L</th></tr></thead>
+      <tbody>${rows}</tbody></table></div>`;
+}
+function addFood(){
+  const name=prompt("Nom de l’aliment :"); if(!name) return;
+  const kcal=Number(prompt("kcal / 100g :", "0")||0);
+  const p=Number(prompt("P / 100g :", "0")||0);
+  const c=Number(prompt("G / 100g :", "0")||0);
+  const f=Number(prompt("L / 100g :", "0")||0);
+  const id = normalize(name).replaceAll(" ","_").slice(0,28) + "_" + Math.random().toString(16).slice(2,6);
+  foods.push({id,name,kcal,p,c,f}); saveFoods(); renderFoods(); showToast("Aliment ajouté");
+}
+
+/* Groceries */
+let groceries=loadGroceries();
+function loadGroceries(){ try{ const raw=localStorage.getItem(GRO_KEY); const g=raw?JSON.parse(raw):[]; return Array.isArray(g)?g:[]; }catch(e){ return []; } }
+function saveGroceries(){ localStorage.setItem(GRO_KEY, JSON.stringify(groceries)); }
+function openGroceries(){ groceries=loadGroceries(); renderGroceries(); $("#overlayGroceries").style.display="flex"; }
+function closeGroceries(){ $("#overlayGroceries").style.display="none"; }
+function renderGroceries(){
+  if(!groceries.length){ $("#groceriesBody").innerHTML=`<div class="mini">Liste vide.</div>`; return; }
+  const rows=groceries.map(g=>`<div class="mini">- ${escapeHtml(g)}</div>`).join("");
+  $("#groceriesBody").innerHTML = `<div class="mini">Copie la liste avec 📋</div><div style="margin-top:10px">${rows}</div>`;
+}
+function copyGroceries(){
+  navigator.clipboard.writeText(groceries.map(x=>"- "+x).join("\n")).then(()=>showToast("Copié ✅")).catch(()=>alert("Copie impossible."));
+}
+
+/* Add groceries from recipe */
+function addToGroceries(r){
+  const items=(r.ingredients||[]).map(it=> (it.label||foodName(it.foodId)||"").trim()).filter(Boolean);
+  groceries=[...new Set([...groceries, ...items])];
+  saveGroceries();
+}
+
+/* Events */
+document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click", ()=>setView(t.dataset.view)));
+$("#btnCloseView").addEventListener("click", closeView);
+$("#overlayView").addEventListener("click",(e)=>{ if(e.target.id==="overlayView") closeView(); });
+
+$("#btnToggleEdit").addEventListener("click", ()=>{ $("#overlayPin").style.display="flex"; $("#pinInput").value=""; });
+$("#btnClosePin").addEventListener("click", ()=>{ $("#overlayPin").style.display="none"; });
+$("#overlayPin").addEventListener("click",(e)=>{ if(e.target.id==="overlayPin") $("#overlayPin").style.display="none"; });
+$("#btnPinOk").addEventListener("click", ()=>{
+  if(($("#pinInput").value||"").trim()===EDIT_PIN){ setEditOn(true); $("#overlayPin").style.display="none"; showToast("Édition ON"); }
+  else alert("PIN incorrect.");
 });
-}
+$("#btnPinOff").addEventListener("click", ()=>{ setEditOn(false); $("#overlayPin").style.display="none"; showToast("Édition OFF"); });
 
-function addRecipe(){
-const title=document.getElementById("title").value;
-const ingredients=document.getElementById("ingredients").value;
-const instructions=document.getElementById("instructions").value;
-if(!title) return alert("Ajoute un nom");
-recipes.unshift({title,ingredients,instructions});
-save();
-render();
-}
+$("#btnNew").addEventListener("click", openFormNew);
+$("#btnCloseForm").addEventListener("click", closeForm);
+$("#overlayForm").addEventListener("click",(e)=>{ if(e.target.id==="overlayForm") closeForm(); });
+$("#btnAddIng").addEventListener("click", ()=>addIngRow());
+$("#autoMacros").addEventListener("change", ()=>{ updateMacroInputsLock(); recalcFormMacros(); });
+$("#btnSave").addEventListener("click", saveRecipe);
 
-function importRecipe(){
-const text=document.getElementById("importText").value;
-if(!text) return alert("Colle une recette");
-let title = text.match(/Nom:(.*)/i);
-let ingredients = text.match(/Ingrédients:(.*?)(Instructions:)/is);
-let instructions = text.match(/Instructions:(.*)/is);
+$("#photo").addEventListener("change",(e)=>{
+  const file=e.target.files?.[0]; if(!file) return;
+  if(file.size>2.5*1024*1024){ alert("Photo trop lourde."); e.target.value=""; return; }
+  const reader=new FileReader();
+  reader.onload=()=>{ formPhoto=reader.result; renderFormPhoto(); };
+  reader.readAsDataURL(file);
+});
+$("#btnRemovePhoto").addEventListener("click", ()=>{ formPhoto=null; $("#photo").value=""; renderFormPhoto(); });
 
-title = title ? title[1].trim() : "Recette importée";
-ingredients = ingredients ? ingredients[1].trim() : "";
-instructions = instructions ? instructions[1].trim() : "";
+$("#btnOpenImport").addEventListener("click", openImport);
+$("#btnCloseImport").addEventListener("click", closeImport);
+$("#overlayImport").addEventListener("click",(e)=>{ if(e.target.id==="overlayImport") closeImport(); });
+$("#importText").addEventListener("input", previewImport);
+$("#btnDoImport").addEventListener("click", doImport);
 
-recipes.unshift({title,ingredients,instructions});
-save();
-render();
-document.getElementById("importText").value="";
-}
+$("#btnFoods").addEventListener("click", openFoods);
+$("#btnCloseFoods").addEventListener("click", closeFoods);
+$("#overlayFoods").addEventListener("click",(e)=>{ if(e.target.id==="overlayFoods") closeFoods(); });
+$("#btnAddFood").addEventListener("click", addFood);
 
-function deleteRecipe(i){
-if(confirm("Supprimer cette recette ?")){
-recipes.splice(i,1);
-save();
-render();
-}
-}
+$("#btnGroceries").addEventListener("click", openGroceries);
+$("#btnCloseGroceries").addEventListener("click", closeGroceries);
+$("#overlayGroceries").addEventListener("click",(e)=>{ if(e.target.id==="overlayGroceries") closeGroceries(); });
+$("#btnCopyGroceries").addEventListener("click", copyGroceries);
 
-render();
+$("#btnReset").addEventListener("click", ()=>{ $("#q").value=""; $("#cat").value=""; $("#diff").value=""; $("#sort").value="recent"; renderRecipes(); });
+["q","cat","diff","sort"].forEach(id=>{
+  $("#"+id).addEventListener("input", renderRecipes);
+  $("#"+id).addEventListener("change", renderRecipes);
+});
 
+$("#btnEdit").addEventListener("click", ()=>{ if(!currentId) return; closeView(); openFormEdit(currentId); });
+$("#btnDelete").addEventListener("click", deleteCurrent);
+
+/* init */
+renderCategories();
+setView("home");
 </script>
-
 </body>
 </html>
