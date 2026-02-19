@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Gemini - Dashboard Pro</title>
+    <style>
+        :root {
+            --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; --magic: #4834d4;
+        }
+
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--l); color: var(--d); margin: 0; padding: 0; padding-bottom: 80px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+
+        /* --- NAVIGATION BASSE (ONGLETS) --- */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: var(--d); display: flex; justify-content: space-around; 
+            padding: 12px 0; z-index: 9999; box-shadow: 0 -3px 15px rgba(0,0,0,0.2); 
+        }
+        .nav-item { color: white; text-align: center; opacity: 0.5; cursor: pointer; transition: 0.3s; flex: 1; font-size: 11px; text-decoration: none; }
+        .nav-item.active { opacity: 1; color: var(--p); font-weight: bold; }
+        .nav-item span { display: block; font-size: 24px; margin-bottom: 3px; }
+
+        /* --- DASHBOARD MACROS (FIXE EN HAUT) --- */
+        .dash { background: var(--d); color: white; padding: 15px; border-bottom: 4px solid var(--p); display: flex; justify-content: space-around; text-align: center; position: sticky; top: 0; z-index: 2500; }
+        .dash span { display: block; font-size: 1.3em; font-weight: 800; color: var(--p); }
+
+        /* --- SECTIONS (GÉRE L'AFFICHAGE DES ONGLETS) --- */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- ACCUEIL : GRILLE DE PHOTOS (RECTANGLES 3/4) --- */
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .photo-box { 
+            position: relative; aspect-ratio: 3/4; background: #dfe6e9; 
+            border-radius: 30px; overflow: hidden; cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); border: 3px solid var(--w);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-box .plus { position: absolute; font-size: 30px; color: rgba(0,0,0,0.2); font-weight: bold; }
+
+        /* --- STYLES CARTES & FORMULAIRES --- */
+        .card { background: var(--w); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .import-zone { background: #edf2ff; border: 3px dashed var(--magic); border-radius: 20px; padding: 20px; }
+        
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        .btn { padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; transition: 0.2s; font-size: 16px; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-magic { background: var(--magic); color: white; }
+
+        /* --- RECHERCHE --- */
+        .search-wrap { position: relative; }
+        #res-list { position: absolute; width: 100%; background: white; z-index: 5000; max-height: 250px; overflow-y: auto; display: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .res-i { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+
+        /* --- CARNET --- */
+        .recipe-item { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; box-shadow: 0 3px 10px rgba(0,0,0,0.05); border-left: 6px solid var(--p); }
+        .recipe-item img { width: 100%; height: 130px; object-fit: cover; }
+        .recipe-content { padding: 15px; }
+        .badge { display: inline-block; padding: 5px 10px; border-radius: 8px; font-size: 11px; background: #f0f0f0; margin-right: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="dash">
+    <div><span id="lCal">0</span><small>kcal/p</small></div>
+    <div><span id="lProt">0</span><small>Prot(g)</small></div>
+    <div><span id="lGlu">0</span><small>Glu(g)</small></div>
+    <div><span id="lLip">0</span><small>Lip(g)</small></div>
+</div>
+
+<div class="container">
+
+    <div id="sec-home" class="section active">
+        <h1 style="font-weight: 900; margin: 10px 0;">Ma Cuisine ✨</h1>
+        
+        <div class="photo-grid">
+            <div class="photo-box" onclick="pickPhoto(1)">
+                <img id="img-1" src=""><span class="plus" id="plus-1">+</span>
+            </div>
+            <div class="photo-box" onclick="pickPhoto(2)">
+                <img id="img-2" src=""><span class="plus" id="plus-2">+</span>
+            </div>
+            <div class="photo-box" onclick="pickPhoto(3)">
+                <img id="img-3" src=""><span class="plus" id="plus-3">+</span>
+            </div>
+            <div class="photo-box" onclick="pickPhoto(4)">
+                <img id="img-4" src=""><span class="plus" id="plus-4">+</span>
+            </div>
+        </div>
+        <input type="file" id="file-input" style="display:none;" onchange="savePhoto(event)">
+
+        <div class="card" style="margin-top: 20px;">
+            <h3>📊 Stats du Carnet</h3>
+            <p id="stat-text" style="color: #666;">Vous n'avez pas encore de recettes enregistrées.</p>
+        </div>
+    </div>
+
+    <div id="sec-import" class="section">
+        <div class="import-zone">
+            <h2 style="color: var(--magic); border:none;">🪄 Importation Word</h2>
+            <p style="font-size: 13px; margin-bottom: 10px;">Collez votre texte ici (Nom, Ingrédients, Instructions) :</p>
+            <textarea id="wordText" rows="10" placeholder="Nom : ...&#10;Ingredients :&#10;- ...&#10;Instructions :&#10;..."></textarea>
+            <button class="btn btn-magic" onclick="doMagic()">ANALYSER & RÉCUPÉRER</button>
+        </div>
+    </div>
+
+    <div id="sec-add" class="section">
+        <div class="card">
+            <h2>🥘 Nouvelle Recette</h2>
+            <input type="text" id="rName" placeholder="Nom de la recette">
+            <div style="display:flex; gap:10px;">
+                <select id="rT"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+                <select id="rS">
+                    <option value="Plat">🍛 Plat</option><option value="Dessert">🍰 Dessert</option>
+                    <option value="Entree">🥗 Entrée</option><option value="Bakery">🥖 Bakery</option>
+                    <option value="Gouter">🍪 Goûter</option>
+                </select>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <label>Parts :</label><input type="number" id="rP" value="1" min="1" style="width:70px;" oninput="upM()">
+                <input type="file" id="rImg" accept="image/*" style="font-size:11px; flex:1;">
+            </div>
+
+            <hr style="opacity:0.1; margin: 15px 0;">
+
+            <div class="search-wrap">
+                <input type="text" id="search" placeholder="🔍 Chercher un ingrédient..." oninput="searchIng()">
+                <div id="res-list"></div>
+            </div>
+            <div id="selName" style="color:var(--p); font-weight:bold; margin:10px 0; font-size:14px; min-height: 20px;"></div>
+            
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="qty" placeholder="Qté">
+                <button class="btn btn-p" style="width:80px; margin:0;" onclick="addIngToList()">OK</button>
+            </div>
+            
+            <div id="ingList" style="margin:20px 0;"></div>
+            <textarea id="rInst" rows="4" placeholder="Instructions de préparation..."></textarea>
+            <button class="btn" style="background:var(--d); color:white;" onclick="saveRecipe()">💾 SAUVEGARDER LA RECETTE</button>
+        </div>
+    </div>
+
+    <div id="sec-book" class="section">
+        <h2>📖 Mon Carnet</h2>
+        <div style="display:flex; gap:5px; margin-bottom: 15px;">
+            <select id="fCat" onchange="renderCarnet()" style="font-size:12px;"><option value="All">Toutes Catégories</option><option value="Plat">Plats</option><option value="Dessert">Desserts</option><option value="Entree">Entrées</option><option value="Bakery">Bakery</option><option value="Gouter">Goûter</option></select>
+            <select id="fTheme" onchange="renderCarnet()" style="font-size:12px;"><option value="All">Tous les Thèmes</option><option value="Healthy">Healthy</option><option value="Gourmand">Gourmand</option></select>
+        </div>
+        <div id="carnet-list"></div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('sec-home', this)"><span>🏠</span>Accueil</div>
+    <div class="nav-item" onclick="switchTab('sec-import', this)"><span>🪄</span>Import</div>
+    <div class="nav-item" onclick="switchTab('sec-add', this)"><span>➕</span>Ajouter</div>
+    <div class="nav-item" onclick="switchTab('sec-book', this)"><span>📖</span>Carnet</div>
+</nav>
+
+<script>
+    // --- DATABASE ET INITIALISATION ---
+    const BASE_FOODS = [
+        { name: "Pomme (unité)", cal: 52, prot: 0.3, glu: 14, lip: 0.2, base: 1 },
+        { name: "Poulet (filet cuit)", cal: 165, prot: 31, glu: 0, lip: 3.6, base: 100 },
+        { name: "Skyr Nature", cal: 57, prot: 11, glu: 4, lip: 0, base: 100 },
+        { name: "Amandes", cal: 579, prot: 21, glu: 21, lip: 50, base: 100 },
+        { name: "Lait Demi-écrémé", cal: 46, prot: 3.3, glu: 4.8, lip: 1.6, base: 100 },
+        { name: "Oeuf (unité)", cal: 70, prot: 6, glu: 0.5, lip: 5, base: 1 }
+    ];
+
+    if(!localStorage.getItem('foodDB_v9')) {
+        let big = [...BASE_FOODS];
+        for(let i=1; i<950; i++) big.push({name:"Aliment_"+i, cal:50+(i%150), prot:i%20, glu:i%50, lip:i%15, base:100});
+        localStorage.setItem('foodDB_v9', JSON.stringify(big));
+    }
+    let foodDb = JSON.parse(localStorage.getItem('foodDB_v9'));
+    let curIngs = []; let selectedFood = null; let bubbleId = 1;
+
+    // --- NAVIGATION ---
+    function switchTab(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+        if(id === 'sec-home') updateStats();
+        window.scrollTo(0,0);
+    }
+
+    // --- GESTION DES PHOTOS ACCUEIL ---
+    function pickPhoto(id) { bubbleId = id; document.getElementById('file-input').click(); }
+    function savePhoto(e) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            localStorage.setItem('mood-'+bubbleId, event.target.result);
+            loadMood();
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+    function loadMood() {
+        for(let i=1; i<=4; i++) {
+            const data = localStorage.getItem('mood-'+i);
+            if(data) {
+                document.getElementById('img-'+i).src = data;
+                document.getElementById('plus-'+i).style.display = "none";
+            }
+        }
+    }
+
+    // --- LOGIQUE IMPORT ---
+    function doMagic() {
+        const txt = document.getElementById('wordText').value;
+        if(!txt) return;
+        const nMatch = txt.match(/Nom\s*:\s*(.*)/i);
+        if(nMatch) document.getElementById('rName').value = nMatch[1].trim();
+        const iPart = txt.split(/Instructions\s*:/i)[1];
+        if(iPart) document.getElementById('rInst').value = iPart.trim();
+        const ingPart = txt.split(/Ingredients\s*:/i)[1]?.split(/Instructions\s*:/i)[0];
+        if(ingPart) {
+            curIngs = [];
+            ingPart.split('\n').forEach(line => {
+                let clean = line.toLowerCase().trim();
+                if(clean.length < 3) return;
+                const qty = (clean.match(/(\d+)/) || [1,1])[1];
+                let f = foodDb.find(item => clean.includes(item.name.toLowerCase().split(' (')[0]));
+                if(f) {
+                    let fact = qty / f.base;
+                    curIngs.push({ name: f.name, qty: qty, c: f.cal*fact, p: f.prot*fact, g: f.glu*fact, l: f.lip*fact });
+                }
+            });
+            renderIngredients(); upM();
+            alert("🪄 Analyse terminée ! Finalisez dans l'onglet 'Ajouter'.");
+        }
+    }
+
+    // --- LOGIQUE FORMULAIRE ---
+    function searchIng() {
+        let q = document.getElementById('search').value.toLowerCase();
+        let r = document.getElementById('res-list');
+        r.innerHTML = ""; if(q.length < 1) { r.style.display="none"; return; }
+        let found = foodDb.filter(f => f.name.toLowerCase().includes(q)).slice(0, 15);
+        if(found.length > 0) {
+            found.forEach(f => {
+                let d = document.createElement('div'); d.className="res-i";
+                d.innerHTML = `<span>${f.name}</span><small>${f.cal} kcal</small>`;
+                d.onclick = () => { selectedFood = f; document.getElementById('selName').innerText = "✅ " + f.name; r.style.display="none"; document.getElementById('search').value = ""; };
+                r.appendChild(d);
+            });
+            r.style.display="block";
+        }
+    }
+    function addIngToList() {
+        let q = parseFloat(document.getElementById('qty').value);
+        if(!selectedFood || !q) return;
+        let fact = q / selectedFood.base;
+        curIngs.push({ name: selectedFood.name, qty: q, c: selectedFood.cal*fact, p: selectedFood.prot*fact, g: selectedFood.glu*fact, l: selectedFood.lip*fact });
+        renderIngredients(); upM(); selectedFood = null; document.getElementById('selName').innerText = ""; document.getElementById('qty').value = "";
+    }
+    function renderIngredients() {
+        document.getElementById('ingList').innerHTML = curIngs.map((i, idx) => `
+            <div class="ing-pill"><span>${i.name} (x${i.qty})</span><span onclick="curIngs.splice(${idx},1);renderIngredients();upM();" style="color:red;cursor:pointer;">✖</span></div>
+        `).join('');
+    }
+    function upM() {
+        let s = parseFloat(document.getElementById('rP').value) || 1;
+        let sums = curIngs.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, l:a.l+b.l}), {c:0,p:0,g:0,l:0});
+        document.getElementById('lCal').innerText = Math.round(sums.c/s);
+        document.getElementById('lProt').innerText = (sums.p/s).toFixed(1);
+        document.getElementById('lGlu').innerText = (sums.g/s).toFixed(1);
+        document.getElementById('lLip').innerText = (sums.l/s).toFixed(1);
+    }
+    function saveRecipe() {
+        let n = document.getElementById('rName').value; if(!n || curIngs.length == 0) return alert("Vérifiez le nom et les ingrédients !");
+        let file = document.getElementById('rImg').files[0];
+        if(file) { let reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => finish(reader.result); } else finish("");
+    }
+    function finish(img) {
+        let rec = { id: Date.now(), name: document.getElementById('rName').value, theme: document.getElementById('rT').value, sub: document.getElementById('rS').value, serv: document.getElementById('rP').value, ings: [...curIngs], inst: document.getElementById('rInst').value, img: img, res: { c: document.getElementById('lCal').innerText } };
+        let recs = JSON.parse(localStorage.getItem('recipes_v9')) || []; recs.push(rec);
+        localStorage.setItem('recipes_v9', JSON.stringify(recs));
+        alert("Recette enregistrée !"); reset(); renderCarnet(); updateStats();
+    }
+    function renderCarnet() {
+        let recs = JSON.parse(localStorage.getItem('recipes_v9')) || [];
+        let c = document.getElementById('fCat').value; let t = document.getElementById('fTheme').value;
+        let fil = recs.filter(r => (c === 'All' || r.sub === c) && (t === 'All' || r.theme === t));
+        document.getElementById('carnet-list').innerHTML = fil.map(r => `
+            <div class="recipe-item">
+                ${r.img ? `<img src="${r.img}">` : ""}
+                <div class="recipe-content">
+                    <span class="badge">${r.theme}</span><span class="badge">${r.sub}</span><br>
+                    <strong>${r.name}</strong><br><small>${r.res.c} kcal / part</small><br>
+                    <button class="btn" style="background:#e74c3c;color:white;padding:5px;font-size:11px;width:auto;" onclick="del(${r.id})">Suppr</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    function updateStats() {
+        let recs = JSON.parse(localStorage.getItem('recipes_v9')) || [];
+        document.getElementById('stat-text').innerText = `Vous avez ${recs.length} recettes enregistrées.`;
+    }
+    function reset() { curIngs=[]; document.querySelectorAll('#sec-add input, #sec-add textarea').forEach(i=>i.value=""); document.getElementById('rP').value=1; renderIngredients(); upM(); }
+    function del(id) { if(confirm("Supprimer ?")) { let r = JSON.parse(localStorage.getItem('recipes_v9')).filter(x=>x.id != id); localStorage.setItem('recipes_v9', JSON.stringify(r)); renderCarnet(); updateStats(); } }
+
+    loadMood();
+    updateStats();
+    renderCarnet();
+</script>
+</body>
+</html>
