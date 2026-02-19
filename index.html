@@ -162,7 +162,6 @@ tr:last-child td{border-bottom:none}
     <div class="grid2">
       <div class="card">
         <h2 class="h2">Ton carnet</h2>
-        <div class="small">Clique une catégorie. Ensuite, tu peux choisir une sous-catégorie. Pour ajouter / modifier / supprimer : <span class="kbd">Mode édition</span> (PIN).</div>
         <div class="row" id="statsHome"></div>
       </div>
       <div class="card">
@@ -311,7 +310,6 @@ Instructions:
 <div class="toast" id="toast"></div>
 
 <script>
-const EDIT_PIN="1234";
 const STORAGE_KEY="recipes_premium_V5_light_v1";
 const FOODS_KEY="foods_premium_V5_light_v1";
 let gridMode = (localStorage.getItem("grid_mode")||"full")==="full";
@@ -747,21 +745,17 @@ foods.push({id,name,kcal,p,c,f}); saveFoods(); renderFoods(); showToast("Aliment
 
 // Wiring
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setView(t.dataset.view)));
-$("#btnCloseView").addEventListener("click",closeView);
-$("#overlayView").addEventListener("click",(e)=>{if(e.target.id==="overlayView") closeView();});
+safeOn("#btnCloseView","click",closeView);
+safeOn("#overlayView","click",(e)=>{if(e.target.id==="overlayView") closeView();});
 
-$("#pinInput").value="";});
-$("#btnClosePin").addEventListener("click",()=>{});
 });
-$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){showToast("Édition ON");} else alert("PIN incorrect.");});
-showToast("Édition OFF");});
-
-$("#btnNew").addEventListener("click",openFormNew);
-$("#btnCloseForm").addEventListener("click",closeForm);
-$("#overlayForm").addEventListener("click",(e)=>{if(e.target.id==="overlayForm") closeForm();});
+});
+safeOn("#btnNew","click",openFormNew);
+safeOn("#btnCloseForm","click",closeForm);
+safeOn("#overlayForm","click",(e)=>{if(e.target.id==="overlayForm") closeForm();});
 $("#btnAddIng").addEventListener("click",()=>addIngRow());
 $("#autoMacros").addEventListener("change",()=>{updateMacroInputsLock(); recalcFormMacros();});
-$("#btnSave").addEventListener("click",saveRecipe);
+safeOn("#btnSave","click",saveRecipe);
 
 $("#photo").addEventListener("change",(e)=>{const file=e.target.files?.[0]; if(!file) return;
 if(file.size>2.5*1024*1024){alert("Photo trop lourde."); e.target.value=""; return;}
@@ -769,19 +763,19 @@ const reader=new FileReader(); reader.onload=()=>{formPhoto=reader.result; rende
 });
 $("#btnRemovePhoto").addEventListener("click",()=>{formPhoto=null; $("#photo").value=""; renderFormPhoto();});
 
-$("#btnOpenImport").addEventListener("click",openImport);
-$("#btnCloseImport").addEventListener("click",closeImport);
-$("#overlayImport").addEventListener("click",(e)=>{if(e.target.id==="overlayImport") closeImport();});
+safeOn("#btnOpenImport","click",openImport);
+safeOn("#btnCloseImport","click",closeImport);
+safeOn("#overlayImport","click",(e)=>{if(e.target.id==="overlayImport") closeImport();});
 $("#importText").addEventListener("input",previewImport);
-$("#btnDoImport").addEventListener("click",doImport);
+safeOn("#btnDoImport","click",doImport);
 
-$("#btnFoods").addEventListener("click",openFoods);
-$("#btnCloseFoods").addEventListener("click",closeFoods);
-$("#overlayFoods").addEventListener("click",(e)=>{if(e.target.id==="overlayFoods") closeFoods();});
-$("#btnAddFood").addEventListener("click",addFood);
+safeOn("#btnFoods","click",openFoods);
+safeOn("#btnCloseFoods","click",closeFoods);
+safeOn("#overlayFoods","click",(e)=>{if(e.target.id==="overlayFoods") closeFoods();});
+safeOn("#btnAddFood","click",addFood);
 
 $("#btnEdit").addEventListener("click",()=>{if(!currentId) return; closeView(); openFormEdit(currentId);});
-$("#btnDelete").addEventListener("click",deleteCurrent);
+safeOn("#btnDelete","click",deleteCurrent);
 
 $("#btnReset").addEventListener("click",()=>{$("#q").value=""; $("#mainCat").value=""; $("#subCat").value=""; $("#diff").value=""; $("#sort").value="recent"; renderQuickSubs(); renderRecipes();});
 ["q","mainCat","subCat","diff","sort"].forEach(id=>{
