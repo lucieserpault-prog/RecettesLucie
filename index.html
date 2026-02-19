@@ -317,7 +317,36 @@ function ensureAuto(){for(const r of state.recipes){if(r.autoMacros){const t=cal
 function levenshtein(a,b){a=a||"";b=b||"";const m=a.length,n=b.length;if(!m)return n;if(!n)return m;const dp=new Array(n+1);for(let j=0;j<=n;j++)dp[j]=j;for(let i=1;i<=m;i++){let prev=dp[0];dp[0]=i;for(let j=1;j<=n;j++){const tmp=dp[j];const cost=a[i-1]===b[j-1]?0:1;dp[j]=Math.min(dp[j]+1,dp[j-1]+1,prev+cost);prev=tmp;}}return dp[n];}
 function scoreName(query,name){const q=normalize(query),t=normalize(name);if(!q||!t)return-999;let score=0;if(t.includes(q))score+=80;const qT=q.split(" ").filter(Boolean),tT=t.split(" ").filter(Boolean);for(const qt of qT){if(tT.includes(qt)){score+=35;continue;}let best=999;for(const tt of tT){const d=levenshtein(qt,tt);if(d<best)best=d;if(best===0)break;}if(best===1)score+=18;else if(best===2)score+=10;else if(best===3&&qt.length>=6)score+=6;else score-=4;}return score;}
 function bestFoodMatches(name,topN=4){return foods.map(f=>({f,s:scoreName(name,f.name)})).sort((a,b)=>b.s-a.s).filter(x=>x.s>10).slice(0,topN);}
-function chooseAmbiguous(matches,original){const opts=matches.map((x,i)=>`${i+1}) ${x.f.name}`).join("\n");const choice=prompt(`Je ne suis pas sûr pour: "${original}".\nChoisis :\n${opts}\n\nTape 1-${matches.length} (ou annule)`);const idx=parseInt(choice||"",10);if(!idx||idx<1||idx>matches.length)return null;return matches[idx-1].f;}
+
+let ambiguityResolve = null;
+
+function chooseAmbiguous(matches, original){
+  return new Promise((resolve)=>{
+    ambiguityResolve = resolve;
+    document.getElementById("ambiguityText").textContent = 
+      'Plusieurs choix trouvés pour : "' + original + '"';
+    const container = document.getElementById("ambiguityOptions");
+    container.innerHTML = "";
+    matches.forEach(m=>{
+      const btn = document.createElement("button");
+      btn.className = "btn primary";
+      btn.style.marginBottom = "8px";
+      btn.textContent = m.f.name;
+      btn.onclick = ()=>{
+        document.getElementById("overlayAmbiguity").style.display="none";
+        resolve(m.f);
+      };
+      container.appendChild(btn);
+    });
+    document.getElementById("overlayAmbiguity").style.display="flex";
+  });
+}
+
+document.getElementById("btnCloseAmbiguity").addEventListener("click", ()=>{
+  document.getElementById("overlayAmbiguity").style.display="none";
+  if(ambiguityResolve) ambiguityResolve(null);
+});
+
 
 function parseIngredientLine(line){const raw=line.trim();if(!raw)return null;const s=raw.replace(/^[-•*\u2022\s]+/,"").trim();
 let m=s.match(/^([0-9]+)\s*(oeuf|oeufs)\b/i);if(m){const n=parseInt(m[1]||"1",10);return{name:"Oeuf entier",grams:60*n,raw};}
@@ -327,7 +356,7 @@ m=s.match(/^([0-9]+)\s*(c\.\s*a\.\s*c|cac|cuillere\s*a\s*cafe|cuillère\s*à\s*c
 m=s.match(/^([0-9]+(?:[\.,][0-9]+)?)\s*(kg|g|gr|grammes|grams|ml|cl|l)\b\s*(.*)$/i);if(m){const num=parseFloat(m[1].replace(",","."));const unit=m[2].toLowerCase();const name=(m[3]||"").trim();let grams=num;if(unit==="kg")grams=num*1000;else if(unit==="l")grams=num*1000;else if(unit==="cl")grams=num*10;else grams=num;return{name,grams:Math.round(grams*10)/10,raw};}
 return{name:s,grams:null,raw};}
 
-function parseImportText(text){const t=(text||"").replace(/\r/g,"").trim();if(!t)return null;
+async function parseImportText(text){const t=(text||"").replace(/\r/g,"").trim();if(!t)return null;
 const nameMatch=t.match(/(?:^|\n)\s*(?:nom|title)\s*:\s*(.+)\s*(?:\n|$)/i);const name=nameMatch?nameMatch[1].trim():"Recette importée";
 const ingBlockMatch=t.match(/(?:^|\n)\s*(?:ingredients|ingr[eé]dients)\s*:\s*([\s\S]*?)(?:\n\s*(?:instructions|preparation|préparation|etapes|étapes)\s*:|$)/i);
 const instrMatch=t.match(/(?:^|\n)\s*(?:instructions|preparation|préparation|etapes|étapes)\s*:\s*([\s\S]*)$/i);
@@ -337,7 +366,7 @@ const ingredients=[];const unknown=[];
 for(const it of parsed){const nm=(it.name||"").trim();if(!nm){unknown.push(it.raw);continue;}
 const matches=bestFoodMatches(nm,4);if(!matches.length){unknown.push(it.raw);continue;}
 let chosen=matches[0].f;
-if(matches.length>1 && (matches[0].s-matches[1].s)<8){const pick=chooseAmbiguous(matches,it.raw);if(pick)chosen=pick;else{unknown.push(it.raw);continue;}}
+if(matches.length>1 && (matches[0].s-matches[1].s)<8){const pick=await chooseAmbiguous(matches,it.raw);if(pick)chosen=pick;else{unknown.push(it.raw);continue;}}
 let grams=it.grams;let note="";
 if(grams==null){grams=100;note="Quantité non trouvée → 100g (à ajuster)";unknown.push(it.raw+" (quantité manquante)");}
 ingredients.push({foodId:chosen.id,grams,label:nm,note});
@@ -510,10 +539,10 @@ saveState(); closeView(); renderHome(); renderRecipes(); showToast("Supprimée")
 let lastUnknown=[];
 function openImport(){$("#importText").value=""; $("#importUnknown").textContent="—"; lastUnknown=[]; $("#overlayImport").style.display="flex";}
 function closeImport(){$("#overlayImport").style.display="none";}
-function previewImport(){const res=parseImportText($("#importText").value); if(!res){$("#importUnknown").textContent="—"; lastUnknown=[]; return;}
+async function previewImport(){const res=await parseImportText($("#importText").value); if(!res){$("#importUnknown").textContent="—"; lastUnknown=[]; return;}
 lastUnknown=res.unknown||[]; $("#importUnknown").textContent = lastUnknown.length ? lastUnknown.join(" | ") : "Tout est reconnu ✅";
 }
-function doImport(){const res=parseImportText($("#importText").value); if(!res){alert("Colle une recette."); return;}
+async function doImport(){const res=await parseImportText($("#importText").value); if(!res){alert("Colle une recette."); return;}
 const obj={id:uid(),name:res.name||"Recette importée",mainCat:"Healthy",subCat:"Plat",difficulty:"Facile",timeMin:0,servings:1,kcal:0,p:0,c:0,f:0,autoMacros:true,photo:null,
 ingredients:res.ingredients||[],steps:res.instructions||"",notes:lastUnknown.length?("⚠️ À vérifier : "+lastUnknown.join(" | ")):"",updatedAt:Date.now(),createdAt:Date.now()};
 const t=calcTotals(obj.ingredients); obj.kcal=Math.round(t.kcal); obj.p=Math.round(t.p*10)/10; obj.c=Math.round(t.c*10)/10; obj.f=Math.round(t.f*10)/10;
@@ -588,5 +617,21 @@ setEditOn(isEditOn());
 updateMacroInputsLock();
 renderFormPhoto();
 </script>
+
+<div class="overlay" id="overlayAmbiguity">
+  <div class="modal" style="max-width:520px">
+    <div class="mh">
+      <div class="mt">Choisir l’aliment</div>
+      <div class="right">
+        <button class="btn" id="btnCloseAmbiguity">✕</button>
+      </div>
+    </div>
+    <div class="mb">
+      <div class="mini" id="ambiguityText"></div>
+      <div id="ambiguityOptions" class="row" style="margin-top:12px"></div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
