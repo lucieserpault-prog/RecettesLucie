@@ -130,6 +130,8 @@ tr:last-child td{border-bottom:none}
 .rcard.fullImg .pill.ok{ background: rgba(99,230,176,.18); border-color: rgba(99,230,176,.22); }
 .rcard.fullImg .pill.warn{ background: rgba(255,211,107,.18); border-color: rgba(255,211,107,.22); }
 
+
+.adminOnly{display:initial !important;}
 </style>
 </head>
 <body>
@@ -143,10 +145,9 @@ tr:last-child td{border-bottom:none}
       </div>
     </div>
     <div class="actions">
-      <button class="btn ghost" id="btnToggleEdit">🔒 Mode édition</button>
-      <button class="btn primary" id="btnNew" style="display:none">＋ Nouvelle</button>
-      <button class="btn" id="btnOpenImport" style="display:none">🧾 Import Word</button>
-      <button class="btn" id="btnFoods" style="display:none">🥗 Aliments</button>
+      <button class="btn primary" id="btnNew">＋ Nouvelle</button>
+      <button class="btn" id="btnOpenImport">🧾 Import Word</button>
+      <button class="btn" id="btnFoods">🥗 Aliments</button>
       <button class="btn" id="btnTheme" title="Thème">🌙</button>
       <button class="btn" id="btnGridMode" title="Affichage">🖼️</button>
     </div>
@@ -198,8 +199,8 @@ tr:last-child td{border-bottom:none}
   <div class="mh">
     <div class="mt" id="viewTitle">Recette</div>
     <div class="right">
-      <button class="btn" id="btnEdit" style="display:none">✏️</button>
-      <button class="btn danger adminOnly" id="btnDelete" style="display:none">🗑</button>
+      <button class="btn" id="btnEdit">✏️</button>
+      <button class="btn danger adminOnly" id="btnDelete">🗑</button>
       <button class="btn" id="btnCloseView">✕</button>
     </div>
   </div>
@@ -581,13 +582,6 @@ $("#overlayView").style.display="flex";
 }
 function closeView(){$("#overlayView").style.display="none"; currentId=null;}
 
-// Edit mode
-function isEditOn(){return localStorage.getItem("edit_mode")==="on";}
-function setEditOn(on){localStorage.setItem("edit_mode",on?"on":"off");
-document.querySelectorAll(".adminOnly").forEach(el=>el.style.display=on?"":"none");
-$("#btnToggleEdit").textContent=on?"🔓 Édition active":"🔒 Mode édition";}
-setEditOn(isEditOn());
-
 // Form helpers
 function renderFoodOptions(sel,selectedId){const opts=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"))
 .map(f=>`<option value="${escapeHtml(f.id)}" ${f.id===selectedId?"selected":""}>${escapeHtml(f.name)}</option>`).join("");
@@ -771,8 +765,8 @@ $("#overlayView").addEventListener("click",(e)=>{if(e.target.id==="overlayView")
 $("#btnToggleEdit").addEventListener("click",()=>{$("#overlayPin").style.display="flex"; $("#pinInput").value="";});
 $("#btnClosePin").addEventListener("click",()=>{$("#overlayPin").style.display="none";});
 $("#overlayPin").addEventListener("click",(e)=>{if(e.target.id==="overlayPin") $("#overlayPin").style.display="none";});
-$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){setEditOn(true); $("#overlayPin").style.display="none"; showToast("Édition ON");} else alert("PIN incorrect.");});
-$("#btnPinOff").addEventListener("click",()=>{setEditOn(false); $("#overlayPin").style.display="none"; showToast("Édition OFF");});
+$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){$("#overlayPin").style.display="none"; showToast("Édition ON");} else alert("PIN incorrect.");});
+$("#btnPinOff").addEventListener("click",()=>{$("#overlayPin").style.display="none"; showToast("Édition OFF");});
 
 $("#btnNew").addEventListener("click",openFormNew);
 $("#btnCloseForm").addEventListener("click",closeForm);
