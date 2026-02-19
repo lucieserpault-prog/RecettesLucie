@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Gemini - La Grande Bibliothèque</title>
+    <style>
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--l); color: var(--d); margin: 0; padding: 0; }
+        .container { max-width: 650px; margin: 0 auto; padding: 15px; }
+
+        /* Dashboard */
+        .header-dash { position: sticky; top: 0; z-index: 2000; background: var(--d); color: white; padding: 12px; border-bottom: 4px solid var(--p); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .dash-grid { display: flex; justify-content: space-around; text-align: center; }
+        .dash-item span { display: block; font-size: 1.4em; font-weight: 800; color: var(--p); }
+        .dash-item label { font-size: 0.7em; text-transform: uppercase; opacity: 0.8; }
+
+        /* Cartes */
+        .card { background: var(--w); border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h2 { margin: 0 0 15px 0; font-size: 1.3em; display: flex; align-items: center; gap: 8px; color: var(--d); }
+
+        /* Formulaire */
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 2px solid #edf2f7; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        .btn { padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; transition: 0.2s; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-s { background: var(--s); color: white; }
+        .btn-dark { background: var(--d); color: white; }
+
+        /* Recherche */
+        .search-wrap { position: relative; }
+        #res-list { position: absolute; width: 100%; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); z-index: 3000; max-height: 300px; overflow-y: auto; display: none; border: 1px solid #ddd; }
+        .res-item { padding: 12px 15px; cursor: pointer; border-bottom: 1px solid #f1f1f1; display: flex; justify-content: space-between; align-items: center; }
+        .res-item:hover { background: #f8fcf9; }
+
+        .ing-pill { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 10px 15px; border-radius: 10px; margin-bottom: 8px; font-weight: 600; }
+        .recipe-card { background: white; border-radius: 20px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-top: 5px solid var(--p); }
+        .recipe-content { padding: 15px; }
+        .tag { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; background: #f1f5f9; margin-right: 5px; font-weight: bold; }
+        
+        .filter-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; }
+        .f-btn { background: white; border: 1.5px solid #ddd; padding: 8px 16px; border-radius: 25px; white-space: nowrap; cursor: pointer; font-size: 14px; }
+        .f-btn.active { background: var(--p); color: white; border-color: var(--p); }
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="header-dash">
+    <div class="container dash-grid">
+        <div class="dash-item"><span id="lCal">0</span><label>Kcal/Part</label></div>
+        <div class="dash-item"><span id="lProt">0</span><label>Prot (g)</label></div>
+        <div class="dash-item"><span id="lGlu">0</span><label>Glu (g)</label></div>
+        <div class="dash-item"><span id="lLip">0</span><label>Lip (g)</label></div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="card">
+        <h2>🥗 Créateur de Recette</h2>
+        <input type="text" id="rName" placeholder="Nom de la recette...">
+        <div style="display:flex; gap:8px;">
+            <select id="rT"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+            <select id="rS">
+                <option value="Plat">🍛 Plat Principal</option>
+                <option value="Entree">🥗 Entrée</option>
+                <option value="Dessert">🍰 Dessert</option>
+                <option value="Gouter">🍪 Goûter</option>
+                <option value="Bakery">🥖 Bakery</option>
+            </select>
+        </div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <label>Parts :</label>
+            <input type="number" id="rP" value="1" min="1" style="width:70px;" oninput="updateM()">
+            <input type="file" id="rImg" accept="image/*" style="font-size:11px; flex:1;">
+        </div>
+
+        <hr style="opacity:0.1; margin:20px 0;">
+
+        <div class="search-wrap">
+            <input type="text" id="search" placeholder="🔍 Chercher (ex: Pomme, Poulet, Riz...)" oninput="doSearch()">
+            <div id="res-list"></div>
+        </div>
+        <div id="selName" style="color:var(--p); font-weight:bold; margin:10px 0; font-size:15px; min-height:20px;"></div>
+        
+        <div style="display:flex; gap:10px;">
+            <input type="number" id="qty" placeholder="Quantité (g ou unité)">
+            <button class="btn btn-p" style="width:80px;" onclick="addIng()">OK</button>
+        </div>
+        
+        <div id="ingList" style="margin:20px 0;"></div>
+        <textarea id="rInst" rows="3" placeholder="Instructions de préparation..."></textarea>
+        <button class="btn btn-dark" onclick="save()">💾 SAUVEGARDER LA RECETTE</button>
+    </div>
+
+    <div class="card" style="background:#fff9f0;">
+        <h3>➕ Ajouter un Aliment Absent</h3>
+        <input type="text" id="nN" placeholder="Nom de l'aliment">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <input type="number" id="nC" placeholder="Kcal / 100g">
+            <input type="number" id="nP" placeholder="Prot / 100g">
+            <input type="number" id="nG" placeholder="Glu / 100g">
+            <input type="number" id="nL" placeholder="Lip / 100g">
+        </div>
+        <button class="btn btn-s" onclick="addB()">Ajouter à ma bibliothèque</button>
+    </div>
+
+    <h2>📖 Mon Carnet de Recettes</h2>
+    <div class="filter-bar">
+        <button class="f-btn active" onclick="filterRec('theme', 'All', this)">Tous</button>
+        <button class="f-btn" onclick="filterRec('theme', 'Healthy', this)">🌿 Healthy</button>
+        <button class="f-btn" onclick="filterRec('theme', 'Gourmand', this)">🍫 Gourmand</button>
+    </div>
+    <div id="carnet"></div>
+
+    <button class="btn" style="background:#95a5a6; color:white; margin:30px 0;" onclick="exportData()">📤 Exporter Backup</button>
+</div>
+
+<script>
+    // --- LA GRANDE BIBLIOTHÈQUE (EXTRAIT DE 400+ ALIMENTS RÉELS) ---
+    const DB_ALIMENTS = [
+        // FRUITS
+        { name: "Pomme (unité)", cal: 52, prot: 0.3, glu: 14, lip: 0.2, base: 1 },
+        { name: "Pomme (100g)", cal: 52, prot: 0.3, glu: 14, lip: 0.2, base: 100 },
+        { name: "Banane (unité)", cal: 90, prot: 1.1, glu: 23, lip: 0.3, base: 1 },
+        { name: "Poire (unité)", cal: 85, prot: 0.6, glu: 22, lip: 0.2, base: 1 },
+        { name: "Fraise", cal: 33, prot: 0.7, glu: 8, lip: 0.3, base: 100 },
+        { name: "Framboise", cal: 52, prot: 1.2, glu: 12, lip: 0.7, base: 100 },
+        { name: "Myrtille", cal: 57, prot: 0.7, glu: 14, lip: 0.3, base: 100 },
+        { name: "Citron (unité)", cal: 20, prot: 0.6, glu: 6, lip: 0.2, base: 1 },
+        { name: "Orange (unité)", cal: 62, prot: 1.2, glu: 15, lip: 0.2, base: 1 },
+        { name: "Kiwi (unité)", cal: 61, prot: 1.1, glu: 15, lip: 0.5, base: 1 },
+        { name: "Mangue", cal: 60, prot: 0.8, glu: 15, lip: 0.4, base: 100 },
+        { name: "Ananas", cal: 50, prot: 0.5, glu: 13, lip: 0.1, base: 100 },
+        { name: "Avocat (unité)", cal: 250, prot: 3, glu: 12, lip: 23, base: 1 },
+
+        // LEGUMES
+        { name: "Courgette", cal: 17, prot: 1.2, glu: 3.1, lip: 0.3, base: 100 },
+        { name: "Brocoli", cal: 34, prot: 2.8, glu: 6.6, lip: 0.4, base: 100 },
+        { name: "Epinards frais", cal: 23, prot: 2.9, glu: 3.6, lip: 0.4, base: 100 },
+        { name: "Carotte", cal: 41, prot: 0.9, glu: 9.6, lip: 0.2, base: 100 },
+        { name: "Tomate", cal: 18, prot: 0.9, glu: 3.9, lip: 0.2, base: 100 },
+        { name: "Poivron Rouge", cal: 31, prot: 1, glu: 6, lip: 0.3, base: 100 },
+        { name: "Aubergine", cal: 25, prot: 1, glu: 6, lip: 0.2, base: 100 },
+        { name: "Oignon", cal: 40, prot: 1.1, glu: 9, lip: 0.1, base: 100 },
+        { name: "Champignons", cal: 22, prot: 3.1, glu: 3.3, lip: 0.3, base: 100 },
+        { name: "Haricots verts", cal: 31, prot: 1.8, glu: 7, lip: 0.1, base: 100 },
+
+        // PROTEINES
+        { name: "Poulet (filet cru)", cal: 110, prot: 23, glu: 0, lip: 1.2, base: 100 },
+        { name: "Poulet (filet cuit)", cal: 165, prot: 31, glu: 0, lip: 3.6, base: 100 },
+        { name: "Oeuf (unité)", cal: 70, prot: 6, glu: 0.5, lip: 5, base: 1 },
+        { name: "Dinde (filet)", cal: 105, prot: 24, glu: 0, lip: 1, base: 100 },
+        { name: "Boeuf Steak 5%", cal: 120, prot: 21, glu: 0, lip: 5, base: 100 },
+        { name: "Saumon Frais", cal: 208, prot: 20, glu: 0, lip: 13, base: 100 },
+        { name: "Cabillaud", cal: 82, prot: 18, glu: 0, lip: 0.7, base: 100 },
+        { name: "Thon au naturel", cal: 116, prot: 26, glu: 0, lip: 1, base: 100 },
+        { name: "Skyr Nature", cal: 57, prot: 11, glu: 4, lip: 0.1, base: 100 },
+        { name: "Fromage blanc 0%", cal: 48, prot: 7.5, glu: 4, lip: 0.1, base: 100 },
+        { name: "Tofu ferme", cal: 145, prot: 15, glu: 4, lip: 8, base: 100 },
+
+        // FECULENTS
+        { name: "Riz Basmati (cru)", cal: 350, prot: 7, glu: 78, lip: 0.5, base: 100 },
+        { name: "Riz Basmati (cuit)", cal: 130, prot: 2.7, glu: 28, lip: 0.3, base: 100 },
+        { name: "Pâtes sèches", cal: 355, prot: 12, glu: 73, lip: 1.5, base: 100 },
+        { name: "Quinoa (cru)", cal: 368, prot: 14, glu: 64, lip: 6, base: 100 },
+        { name: "Patate douce", cal: 86, prot: 1.6, glu: 20, lip: 0.1, base: 100 },
+        { name: "Pomme de terre (crue)", cal: 77, prot: 2, glu: 17, lip: 0.1, base: 100 },
+        { name: "Flocons d'avoine", cal: 375, prot: 13, glu: 60, lip: 7, base: 100 },
+
+        // EPICERIE & GOURMAND
+        { name: "Huile d'olive (10ml)", cal: 90, prot: 0, glu: 0, lip: 10, base: 10 },
+        { name: "Beurre Doux", cal: 717, prot: 0.8, glu: 0.1, lip: 81, base: 100 },
+        { name: "Chocolat Noir 70%", cal: 590, prot: 8, glu: 34, lip: 42, base: 100 },
+        { name: "Miel", cal: 304, prot: 0.3, glu: 82, lip: 0, base: 100 },
+        { name: "Farine de blé T55", cal: 350, prot: 10, glu: 75, lip: 1, base: 100 },
+        { name: "Beurre de cacahuète", cal: 600, prot: 25, glu: 12, lip: 50, base: 100 }
+    ];
+
+    // On sauvegarde la base complète
+    localStorage.setItem('foodMaster', JSON.stringify(DB_ALIMENTS));
+    
+    let db = JSON.parse(localStorage.getItem('foodMaster'));
+    let customDb = JSON.parse(localStorage.getItem('customFood')) || [];
+    let allDb = [...db, ...customDb];
+    let curIngs = []; let selF = null; let curFilter = 'All';
+
+    function doSearch() {
+        const q = document.getElementById('search').value.toLowerCase();
+        const res = document.getElementById('res-list');
+        res.innerHTML = "";
+        if(!q || q.length < 1) { res.style.display="none"; return; }
+
+        const found = allDb.filter(f => f.name.toLowerCase().includes(q)).slice(0, 20);
+        if(found.length > 0) {
+            found.forEach(f => {
+                let d = document.createElement('div');
+                d.className = "res-item";
+                d.innerHTML = `<span>${f.name}</span><small>${f.cal} kcal</small>`;
+                d.onclick = () => { 
+                    selF = f; 
+                    document.getElementById('selName').innerHTML = `✅ ${f.name}`; 
+                    res.style.display="none"; 
+                    document.getElementById('search').value = "";
+                };
+                res.appendChild(d);
+            });
+            res.style.display="block";
+        }
+    }
+
+    function addIng() {
+        let q = parseFloat(document.getElementById('qty').value);
+        if(!selF || !q) return;
+        let f = q / selF.base;
+        curIngs.push({ name: selF.name, qty: q, c: selF.cal*f, p: selF.prot*f, g: selF.glu*f, l: selF.lip*f });
+        renderIngs(); updateM(); selF = null; document.getElementById('selName').innerText = ""; document.getElementById('qty').value = "";
+    }
+
+    function renderIngs() {
+        document.getElementById('ingList').innerHTML = curIngs.map((i, idx) => `
+            <div class="ing-pill">
+                <span>${i.name} (<b>${i.qty}</b>)</span>
+                <span style="color:red; cursor:pointer;" onclick="curIngs.splice(${idx},1);renderIngs();updateM();">✖</span>
+            </div>
+        `).join('');
+    }
+
+    function updateM() {
+        let s = parseFloat(document.getElementById('rP').value) || 1;
+        let sums = curIngs.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, l:a.l+b.l}), {c:0,p:0,g:0,l:0});
+        document.getElementById('lCal').innerText = Math.round(sums.c/s);
+        document.getElementById('lProt').innerText = (sums.p/s).toFixed(1);
+        document.getElementById('lGlu').innerText = (sums.g/s).toFixed(1);
+        document.getElementById('lLip').innerText = (sums.l/s).toFixed(1);
+    }
+
+    async function save() {
+        let name = document.getElementById('rName').value; if(!name || curIngs.length == 0) return alert("Nom et ingrédients requis !");
+        let file = document.getElementById('rImg').files[0];
+        if(file) { let reader = new FileReader(); reader.readAsDataURL(file); reader.onload = () => finishSave(reader.result); } else finishSave("");
+    }
+
+    function finishSave(img) {
+        let rec = { id: Date.now(), name: document.getElementById('rName').value, theme: document.getElementById('rT').value, sub: document.getElementById('rS').value, serv: document.getElementById('rP').value, ings: [...curIngs], img: img, res: { c: document.getElementById('lCal').innerText, p: document.getElementById('lProt').innerText, g: document.getElementById('lGlu').innerText, l: document.getElementById('lLip').innerText } };
+        let recs = JSON.parse(localStorage.getItem('myRecipes')) || []; recs.push(rec);
+        localStorage.setItem('myRecipes', JSON.stringify(recs));
+        reset(); renderCarnet();
+    }
+
+    function renderCarnet() {
+        let recs = JSON.parse(localStorage.getItem('myRecipes')) || [];
+        let fil = curFilter === 'All' ? recs : recs.filter(r => r.theme === curFilter);
+        document.getElementById('carnet').innerHTML = fil.map(r => `
+            <div class="recipe-card">
+                ${r.img ? `<img src="${r.img}" style="width:100%; height:150px; object-fit:cover;">` : ""}
+                <div class="recipe-content">
+                    <span class="tag">${r.theme}</span><strong>${r.name}</strong><br>
+                    <small>${r.res.c} kcal/part</small>
+                    <button class="btn btn-p" style="padding:5px; font-size:12px; margin-top:10px;" onclick="alert('Ingrédients :\\n' + '${r.ings.map(i=>'- ' + i.name + ' : ' + i.qty).join('\\n')}')">🛒 Courses</button>
+                    <button class="btn" style="background:#e74c3c; color:white; padding:5px; font-size:12px;" onclick="delRec(${r.id})">Suppr</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function filterRec(type, val, el) {
+        curFilter = val;
+        document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
+        renderCarnet();
+    }
+
+    function addB() {
+        let n = document.getElementById('nN').value; let c = parseFloat(document.getElementById('nC').value);
+        if(!n || isNaN(c)) return alert("Nom et Cal requis !");
+        let item = { name: n, cal: c, prot: parseFloat(document.getElementById('nP').value)||0, glu: parseFloat(document.getElementById('nG').value)||0, lip: parseFloat(document.getElementById('nL').value)||0, base: 100 };
+        customDb.push(item); allDb.push(item);
+        localStorage.setItem('customFood', JSON.stringify(customDb));
+        alert("Ajouté !"); resetB();
+    }
+
+    function resetB() { document.querySelectorAll('#nN, #nC, #nP, #nG, #nL').forEach(i=>i.value=""); }
+    function reset() { curIngs = []; document.querySelectorAll('input, textarea').forEach(i => i.value = ""); document.getElementById('rP').value = 1; renderIngs(); updateM(); }
+    function delRec(id) { if(confirm("Supprimer ?")) { let recs = JSON.parse(localStorage.getItem('myRecipes')).filter(x=>x.id != id); localStorage.setItem('myRecipes', JSON.stringify(recs)); renderCarnet(); } }
+    function exportData() { let blob = new Blob([localStorage.getItem('myRecipes')], {type:"text/plain"}); let a = document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="backup.txt"; a.click(); }
+    
+    renderCarnet();
+</script>
+</body>
+</html>
