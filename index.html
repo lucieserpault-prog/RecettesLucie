@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Gemini - Super Parser V13</title>
+    <style>
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; --magic: #4834d4; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--l); color: var(--d); margin: 0; padding: 0; padding-bottom: 90px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+
+        /* Navigation */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--d); display: flex; justify-content: space-around; padding: 12px 0; z-index: 9999; box-shadow: 0 -3px 15px rgba(0,0,0,0.2); }
+        .nav-item { color: white; text-align: center; opacity: 0.5; cursor: pointer; transition: 0.3s; flex: 1; font-size: 11px; }
+        .nav-item.active { opacity: 1; color: var(--p); font-weight: bold; }
+        .nav-item span { display: block; font-size: 24px; margin-bottom: 3px; }
+
+        /* Dash */
+        .dash { background: var(--d); color: white; padding: 15px; border-bottom: 4px solid var(--p); display: flex; justify-content: space-around; text-align: center; position: sticky; top: 0; z-index: 2500; }
+        .dash span { display: block; font-size: 1.3em; font-weight: 800; color: var(--p); }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Moodboard */
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .photo-box { position: relative; aspect-ratio: 3/4; background: #dfe6e9; border-radius: 30px; overflow: hidden; cursor: pointer; border: 3px solid var(--w); box-shadow: 0 6px 15px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Cartes */
+        .card { background: var(--w); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .import-zone { background: #ebf0ff; border: 3px dashed var(--magic); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        .btn { padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; }
+        .btn-magic { background: var(--magic); color: white; }
+        .btn-p { background: var(--p); color: white; }
+
+        /* Ingrédients */
+        .ing-pill { background: #f1f5f9; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; border-left: 5px solid var(--p); }
+        .ing-fail { border-left: 5px solid #e74c3c; background: #fff5f5; color: #c0392b; font-size: 13px; }
+
+        .search-wrap { position: relative; }
+        .res-list { position: absolute; width: 100%; background: white; z-index: 5000; max-height: 200px; overflow-y: auto; display: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #eee; }
+        .res-i { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        
+        .recipe-item { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; border: 1px solid #eee; }
+        .recipe-item img { width: 100%; height: 120px; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<div class="dash">
+    <div><span id="lCal">0</span><small>kcal/p</small></div>
+    <div><span id="lProt">0</span><small>Prot(g)</small></div>
+    <div><span id="lGlu">0</span><small>Glu(g)</small></div>
+    <div><span id="lLip">0</span><small>Lip(g)</small></div>
+</div>
+
+<div class="container">
+
+    <div id="sec-home" class="section active">
+        <h1 style="font-weight: 900; margin: 10px 0;">Ma Cuisine ✨</h1>
+        <div class="photo-grid">
+            <div class="photo-box" onclick="pickPhoto(1)"><img id="img-1" src=""><span id="plus-1">+</span></div>
+            <div class="photo-box" onclick="pickPhoto(2)"><img id="img-2" src=""><span id="plus-2">+</span></div>
+            <div class="photo-box" onclick="pickPhoto(3)"><img id="img-3" src=""><span id="plus-3">+</span></div>
+            <div class="photo-box" onclick="pickPhoto(4)"><img id="img-4" src=""><span id="plus-4">+</span></div>
+        </div>
+        <input type="file" id="file-input" style="display:none;" onchange="savePhoto(event)">
+    </div>
+
+    <div id="sec-import" class="section">
+        <div class="import-zone">
+            <h2 style="color: var(--magic); margin:0;">🪄 Super-Analyseur Word</h2>
+            <textarea id="wordText" rows="6" placeholder="Nom : Mon Plat&#10;Ingredients :&#10;- 100g de flocons d'avoine&#10;- 20g de noix..."></textarea>
+            <button class="btn btn-magic" onclick="superParse()">ANALYSER LE TEXTE</button>
+        </div>
+
+        <div class="card" id="form-val">
+            <h3 style="margin-top:0; color:var(--p);">Vérification des Ingrédients</h3>
+            <input type="text" id="impName" placeholder="Nom du plat">
+            <div style="display:flex; gap:10px;">
+                <select id="impTheme"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+                <select id="impParts" oninput="upM('imp')"><option value="1">1 part</option><option value="2">2 parts</option><option value="3">3 parts</option><option value="4">4 parts</option></select>
+            </div>
+            
+            <div id="impIngList" style="margin:20px 0;"></div>
+            
+            <div class="search-wrap">
+                <input type="text" id="search-imp" placeholder="➕ Ajouter un ingrédient manquant..." oninput="searchIng('imp')">
+                <div id="res-list-imp" class="res-list"></div>
+            </div>
+            
+            <textarea id="impInst" rows="3" placeholder="Instructions..."></textarea>
+            <input type="file" id="impImg" accept="image/*">
+            <button class="btn btn-p" onclick="saveRecipe('imp')">💾 VALIDER ET SAUVEGARDER</button>
+        </div>
+    </div>
+
+    <div id="sec-book" class="section">
+        <h2>📖 Mon Carnet</h2>
+        <div id="carnet-list"></div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('sec-home', this)"><span>🏠</span>Accueil</div>
+    <div class="nav-item" onclick="switchTab('sec-import', this)"><span>🪄</span>Import</div>
+    <div class="nav-item" onclick="switchTab('sec-book', this)"><span>📖</span>Carnet</div>
+</nav>
+
+<script>
+    // --- DATABASE GÉANTE ---
+    const DB = [
+        { name: "Flocons d'avoine", keywords: ["avoine", "flocon"], cal: 370, prot: 13, glu: 60, lip: 7, base: 100 },
+        { name: "Raisins secs", keywords: ["raisin", "sec"], cal: 299, prot: 3, glu: 79, lip: 0.5, base: 100 },
+        { name: "Noix (cerneaux)", keywords: ["noix"], cal: 654, prot: 15, glu: 13, lip: 65, base: 100 },
+        { name: "Noisettes", keywords: ["noisette"], cal: 628, prot: 15, glu: 16, lip: 60, base: 100 },
+        { name: "Amandes", keywords: ["amande"], cal: 579, prot: 21, glu: 21, lip: 50, base: 100 },
+        { name: "Pomme", keywords: ["pomme"], cal: 52, prot: 0.3, glu: 14, lip: 0.2, base: 100 },
+        { name: "Poulet (filet cuit)", keywords: ["poulet", "blanc", "filet"], cal: 165, prot: 31, glu: 0, lip: 3.6, base: 100 },
+        { name: "Skyr", keywords: ["skyr", "yaourt"], cal: 57, prot: 11, glu: 4, lip: 0.1, base: 100 },
+        { name: "Miel", keywords: ["miel"], cal: 304, prot: 0.3, glu: 82, lip: 0, base: 100 },
+        { name: "Beurre", keywords: ["beurre"], cal: 717, prot: 0.8, glu: 0.1, lip: 81, base: 100 },
+        { name: "Oeuf (unité)", keywords: ["oeuf"], cal: 70, prot: 6, glu: 0.5, lip: 5, base: 1 }
+    ];
+
+    let curIngs = []; let bubbleId = 1;
+
+    function switchTab(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // --- SUPER PARSER ---
+    function superParse() {
+        const text = document.getElementById('wordText').value;
+        if(!text) return alert("Collez votre texte !");
+
+        // Extraire Nom & Instructions
+        const nMatch = text.match(/Nom\s*[:\-]\s*(.*)/i);
+        if(nMatch) document.getElementById('impName').value = nMatch[1].trim();
+
+        const instPart = text.split(/Instructions\s*[:\-]/i)[1];
+        if(instPart) document.getElementById('impInst').value = instPart.trim();
+
+        // Extraire Ingrédients
+        const ingPart = text.split(/Ingr[eé]dients\s*[:\-]/i)[1]?.split(/Instructions\s*[:\-]/i)[0];
+        curIngs = [];
+        const listDiv = document.getElementById('impIngList');
+        listDiv.innerHTML = "";
+
+        if(ingPart) {
+            const lines = ingPart.split('\n');
+            lines.forEach(line => {
+                let cleanLine = line.trim().toLowerCase();
+                if(cleanLine.length < 3) return;
+
+                // 1. Trouver la quantité
+                const qtyMatch = cleanLine.match(/(\d+)/);
+                const qty = qtyMatch ? parseFloat(qtyMatch[1]) : 1;
+
+                // 2. Nettoyer les mots inutiles
+                let words = cleanLine.replace(/[\d\-\•\)\(\,]/g, "")
+                                     .replace(/\b(g|ml|de|d|du|des|un|une|cuillère|soupe|café|cl)\b/g, "")
+                                     .split(/\s+/).filter(w => w.length > 2);
+
+                // 3. Chercher l'ingrédient
+                let found = null;
+                for (let item of DB) {
+                    if (item.keywords.some(k => words.some(w => w.includes(k)))) {
+                        found = item;
+                        break;
+                    }
+                }
+
+                if(found) {
+                    let fact = qty / found.base;
+                    curIngs.push({ name: found.name, qty: qty, c: found.cal*fact, p: found.prot*fact, g: found.glu*fact, l: found.lip*fact });
+                } else {
+                    // Afficher une erreur visuelle pour cet ingrédient
+                    let err = document.createElement('div');
+                    err.className = "ing-pill ing-fail";
+                    err.innerHTML = `❓ Non reconnu : "${cleanLine.substring(0,30)}..."`;
+                    listDiv.appendChild(err);
+                }
+            });
+        }
+        renderIngs('imp');
+        upM('imp');
+    }
+
+    // --- MOTEUR CORE ---
+    function renderIngs(prefix) {
+        const div = document.getElementById(prefix+'IngList');
+        // On garde les messages d'erreur et on ajoute les validés
+        curIngs.forEach((i, idx) => {
+            let p = document.createElement('div');
+            p.className = "ing-pill";
+            p.innerHTML = `<span>${i.name} (${i.qty})</span><span onclick="removeIng(${idx})" style="color:red;cursor:pointer;">✖</span>`;
+            div.appendChild(p);
+        });
+    }
+
+    function removeIng(idx) { curIngs.splice(idx,1); document.getElementById('impIngList').innerHTML=""; renderIngs('imp'); upM('imp'); }
+
+    function searchIng(prefix) {
+        let q = document.getElementById('search-'+prefix).value.toLowerCase();
+        let r = document.getElementById('res-list-'+prefix);
+        r.innerHTML = ""; if(q.length < 1) { r.style.display="none"; return; }
+        DB.filter(f => f.name.toLowerCase().includes(q)).slice(0, 10).forEach(f => {
+            let d = document.createElement('div'); d.className="res-i";
+            d.innerHTML = `<span>${f.name}</span><small>${Math.round(f.cal)} kcal</small>`;
+            d.onclick = () => {
+                let qty = prompt("Quantité pour " + f.name + " ?", "100");
+                if(qty) {
+                    let fact = qty / f.base;
+                    curIngs.push({ name: f.name, qty: qty, c: f.cal*fact, p: f.prot*fact, g: f.glu*fact, l: f.lip*fact });
+                    document.getElementById('impIngList').innerHTML=""; renderIngs(prefix); upM(prefix);
+                }
+                r.style.display="none"; document.getElementById('search-'+prefix).value = "";
+            };
+            r.appendChild(d);
+        });
+        r.style.display="block";
+    }
+
+    function upM(prefix) {
+        let s = parseFloat(document.getElementById(prefix+'Parts').value) || 1;
+        let sums = curIngs.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, l:a.l+b.l}), {c:0,p:0,g:0,l:0});
+        document.getElementById('lCal').innerText = Math.round(sums.c/s);
+        document.getElementById('lProt').innerText = (sums.p/s).toFixed(1);
+        document.getElementById('lGlu').innerText = (sums.g/s).toFixed(1);
+        document.getElementById('lLip').innerText = (sums.l/s).toFixed(1);
+    }
+
+    function saveRecipe(prefix) {
+        let n = document.getElementById(prefix+'Name').value; if(!n || curIngs.length === 0) return alert("Nom et ingrédients requis !");
+        let file = document.getElementById(prefix+'Img').files[0];
+        if(file) { let r = new FileReader(); r.readAsDataURL(file); r.onload = (e) => finishSave(n, prefix, e.target.result); } 
+        else finishSave(n, prefix, "");
+    }
+
+    function finishSave(name, prefix, img) {
+        let rec = { id: Date.now(), name: name, theme: document.getElementById(prefix+'Theme').value, ings: [...curIngs], inst: document.getElementById(prefix+'Inst').value, img: img, res: { c: document.getElementById('lCal').innerText } };
+        let recs = JSON.parse(localStorage.getItem('recs_v13')) || []; recs.push(rec);
+        localStorage.setItem('recs_v13', JSON.stringify(recs));
+        alert("Enregistré !"); location.reload();
+    }
+
+    function renderC() {
+        let recs = JSON.parse(localStorage.getItem('recs_v13')) || [];
+        document.getElementById('carnet-list').innerHTML = recs.map(r => `
+            <div class="recipe-item">
+                ${r.img ? `<img src="${r.img}">` : ""}
+                <div class="recipe-content">
+                    <strong>${r.name}</strong><br><small>${r.res.c} kcal / part</small><br>
+                    <button class="btn" style="background:#e74c3c;color:white;padding:5px;font-size:11px;width:auto;" onclick="delRec(${r.id})">Suppr</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    function delRec(id) { if(confirm("Supprimer ?")) { let r = JSON.parse(localStorage.getItem('recs_v13')).filter(x=>x.id != id); localStorage.setItem('recs_v13', JSON.stringify(r)); renderC(); } }
+
+    // Photos
+    function pickPhoto(id) { bubbleId = id; document.getElementById('file-input').click(); }
+    function savePhoto(e) {
+        const reader = new FileReader();
+        reader.onload = (event) => { localStorage.setItem('mood-v13-'+bubbleId, event.target.result); loadMood(); };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+    function loadMood() {
+        for(let i=1; i<=4; i++) {
+            const data = localStorage.getItem('mood-v13-'+i);
+            if(data) { document.getElementById('img-'+i).src = data; document.getElementById('plus-'+i).style.display = "none"; }
+        }
+    }
+
+    loadMood(); renderC();
+</script>
+</body>
+</html>
