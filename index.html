@@ -1262,8 +1262,8 @@ label{ color: color-mix(in srgb, var(--muted) 72%, var(--accent) 28%); }
       const st = inferState(nm) || "";
       const mini = $("#valMini_"+idx);
       if(mini){
-        mini.innerHTML = `${st?`<span class="pill">${escapeHtml(st)}</span>`:""} <span class="pill accent">${escapeHtml(nm||"—")}</span>`;
-      }
+        mini.innerHTML = (st ? '<span class="pill">'+escapeHtml(st)+'</span> ' : '') + '<span class="pill accent">'+escapeHtml(nm||pendingImport.items[idx].label)+'</span>';
+}
     });
 
     $("#validateSummary").innerHTML = `Recette : <strong>${escapeHtml(res.name)}</strong> • Ingrédients : <strong>${res.items.length}</strong> • À vérifier : <strong>${toCheck}</strong>`;
@@ -1292,9 +1292,7 @@ label{ color: color-mix(in srgb, var(--muted) 72%, var(--accent) 28%); }
       if(mini){
         const nm=foodName(sel.value)||"";
         const st=inferState(nm)||"";
-        mini.innerHTML = `${st?`<span class="pill">${escapeHtml(st)}</span>`:""} <span class="pill accent">${escapeHtml(nm||pendingImport.items[idx].label)}</span>`;
-      }
-</span>`:""} <span class="pill accent">${escapeHtml(nm||pendingImport.items[idx].label)}</span>`;
+        mini.innerHTML = (st ? '<span class="pill">'+escapeHtml(st)+'</span> ' : '') + '<span class="pill accent">'+escapeHtml(nm||pendingImport.items[idx].label)+'</span>';
       }
     }
   });
