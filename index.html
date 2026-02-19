@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Gemini - Carnet de Bord Expert</title>
+    <style>
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; --magic: #4834d4; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--l); color: var(--d); margin: 0; padding: 0; padding-bottom: 100px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+
+        /* Navigation Basse */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--d); display: flex; justify-content: space-around; padding: 12px 0; z-index: 9999; box-shadow: 0 -3px 15px rgba(0,0,0,0.2); }
+        .nav-item { color: white; text-align: center; opacity: 0.5; cursor: pointer; transition: 0.3s; flex: 1; font-size: 11px; }
+        .nav-item.active { opacity: 1; color: var(--p); font-weight: bold; }
+        .nav-item span { display: block; font-size: 22px; margin-bottom: 3px; }
+
+        /* Dashboard Macros Fixe */
+        .dash { background: var(--d); color: white; padding: 15px; border-bottom: 4px solid var(--p); display: flex; justify-content: space-around; text-align: center; position: sticky; top: 0; z-index: 2500; }
+        .dash span { display: block; font-size: 1.2em; font-weight: 800; color: var(--p); }
+
+        /* Sections */
+        .section { display: none; animation: fadeIn 0.3s ease-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Accueil Moodboard */
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .photo-box { position: relative; aspect-ratio: 3/4; background: #dfe6e9; border-radius: 25px; overflow: hidden; cursor: pointer; border: 3px solid var(--w); box-shadow: 0 6px 15px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-box .plus { position: absolute; font-size: 30px; color: rgba(0,0,0,0.2); font-weight: bold; }
+
+        /* Cartes */
+        .card { background: var(--w); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .import-zone { background: #edf2ff; border: 3px dashed var(--magic); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        .btn { padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; transition: 0.2s; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-magic { background: var(--magic); color: white; }
+
+        /* Ingrédients */
+        .ing-pill { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 14px; border-left: 4px solid var(--p); }
+        .search-wrap { position: relative; }
+        .res-list { position: absolute; width: 100%; background: white; z-index: 5000; max-height: 200px; overflow-y: auto; display: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #eee; }
+        .res-i { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+        
+        /* Carnet Style */
+        .recipe-item { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; border: 1px solid #eee; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: 0.3s; }
+        .recipe-header { cursor: pointer; position: relative; }
+        .recipe-item img { width: 100%; height: 140px; object-fit: cover; }
+        .recipe-content { padding: 15px; }
+        .macro-row { display: flex; justify-content: space-between; background: #f9f9f9; padding: 8px; border-radius: 10px; margin-top: 10px; font-size: 12px; font-weight: bold; }
+        .macro-row div span { display: block; color: var(--p); font-size: 14px; }
+        
+        .recipe-details { display: none; padding: 15px; background: #fff; border-top: 1px solid #eee; }
+        .recipe-details.active { display: block; }
+        
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: bold; background: #f0f0f0; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="dash">
+    <div><span id="lCal">0</span><small>kcal/p</small></div>
+    <div><span id="lProt">0</span><small>Prot(g)</small></div>
+    <div><span id="lGlu">0</span><small>Glu(g)</small></div>
+    <div><span id="lLip">0</span><small>Lip(g)</small></div>
+</div>
+
+<div class="container">
+
+    <div id="sec-home" class="section active">
+        <h1 style="font-weight: 900; margin: 10px 0;">Ma Cuisine ✨</h1>
+        <div class="photo-grid">
+            <div class="photo-box" onclick="pickPhoto(1)"><img id="img-1" src=""><span class="plus" id="p-1">+</span></div>
+            <div class="photo-box" onclick="pickPhoto(2)"><img id="img-2" src=""><span class="plus" id="p-2">+</span></div>
+            <div class="photo-box" onclick="pickPhoto(3)"><img id="img-3" src=""><span class="plus" id="p-3">+</span></div>
+            <div class="photo-box" onclick="pickPhoto(4)"><img id="img-4" src=""><span class="plus" id="p-4">+</span></div>
+        </div>
+        <input type="file" id="file-input" style="display:none;" onchange="savePhoto(event)">
+        <div class="card" style="margin-top:20px;"><p id="stat-info">Enregistrez vos macros pour atteindre vos objectifs !</p></div>
+    </div>
+
+    <div id="sec-import" class="section">
+        <div class="import-zone">
+            <h2 style="color: var(--magic); margin:0;">🪄 Import Word</h2>
+            <textarea id="wordText" rows="6" placeholder="Collez ici :&#10;Nom : Poulet Curry&#10;Ingredients :&#10;- 200g de poulet...&#10;Instructions :&#10;..."></textarea>
+            <button class="btn btn-magic" onclick="doMagicImport()">ANALYSER LE TEXTE</button>
+        </div>
+
+        <div id="import-validation" class="card" style="display:none; border: 2px solid var(--p);">
+            <h3 style="margin-top:0; color:var(--p);">Vérification de l'Import</h3>
+            <input type="text" id="impName" placeholder="Nom de la recette">
+            <div style="display:flex; gap:10px;">
+                <select id="impTheme"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+                <select id="impParts" oninput="upM('imp')">
+                    <option value="1">1 part</option><option value="2">2 parts</option><option value="3">3 parts</option><option value="4">4 parts</option>
+                </select>
+            </div>
+            <div id="impIngList" style="margin:10px 0;"></div>
+            <div class="search-wrap">
+                <input type="text" id="search-imp" placeholder="➕ Ajouter un ingrédient..." oninput="searchIng('imp')">
+                <div id="res-list-imp" class="res-list"></div>
+            </div>
+            <textarea id="impInst" rows="5" placeholder="Instructions..."></textarea>
+            <input type="file" id="impImg" accept="image/*">
+            <button class="btn btn-p" onclick="saveRecipe('imp')">VALIDER ET ENREGISTRER</button>
+        </div>
+    </div>
+
+    <div id="sec-add" class="section">
+        <div class="card">
+            <h2>🥘 Nouvelle Recette</h2>
+            <input type="text" id="addName" placeholder="Nom du plat">
+            <div style="display:flex; gap:10px;">
+                <select id="addTheme"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+                <select id="addSub"><option value="Plat">🍛 Plat</option><option value="Dessert">🍰 Dessert</option></select>
+            </div>
+            <input type="number" id="addParts" value="1" min="1" oninput="upM('add')" placeholder="Parts">
+            <div class="search-wrap">
+                <input type="text" id="search-add" placeholder="🔍 Chercher un ingrédient..." oninput="searchIng('add')">
+                <div id="res-list-add" class="res-list"></div>
+            </div>
+            <div id="addIngList" style="margin:15px 0;"></div>
+            <textarea id="addInst" rows="5" placeholder="Instructions..."></textarea>
+            <input type="file" id="addImg" accept="image/*">
+            <button class="btn btn-p" onclick="saveRecipe('add')">SAUVEGARDER</button>
+        </div>
+    </div>
+
+    <div id="sec-book" class="section">
+        <h2>📖 Mon Carnet de Recettes</h2>
+        <div id="carnet-list"></div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('sec-home', this)"><span>🏠</span>Accueil</div>
+    <div class="nav-item" onclick="switchTab('sec-import', this)"><span>🪄</span>Import</div>
+    <div class="nav-item" onclick="switchTab('sec-add', this)"><span>➕</span>Ajouter</div>
+    <div class="nav-item" onclick="switchTab('sec-book', this)"><span>📖</span>Carnet</div>
+</nav>
+
+<script>
+    // --- BIBLIOTHÈQUE ---
+    const DB_MASTER = [
+        { name: "Flocons d'avoine", keywords: ["avoine", "flocon"], cal: 370, prot: 13, glu: 60, lip: 7, base: 100 },
+        { name: "Raisins secs", keywords: ["raisin"], cal: 299, prot: 3, glu: 79, lip: 0.5, base: 100 },
+        { name: "Noix (cerneaux)", keywords: ["noix"], cal: 654, prot: 15, glu: 13, lip: 65, base: 100 },
+        { name: "Amandes", keywords: ["amande"], cal: 579, prot: 21, glu: 21, lip: 50, base: 100 },
+        { name: "Poulet (filet cuit)", keywords: ["poulet"], cal: 165, prot: 31, glu: 0, lip: 3.6, base: 100 },
+        { name: "Lait d'amande", keywords: ["lait", "amande"], cal: 13, prot: 0.5, glu: 0.1, lip: 1.1, base: 100 },
+        { name: "Skyr", keywords: ["skyr"], cal: 57, prot: 11, glu: 4, lip: 0.1, base: 100 },
+        { name: "Oeuf (unité)", keywords: ["oeuf"], cal: 70, prot: 6, glu: 0.5, lip: 5, base: 1 },
+        { name: "Pomme", keywords: ["pomme"], cal: 52, prot: 0.3, glu: 14, lip: 0.2, base: 100 }
+    ];
+
+    let curIngs = []; let bubbleId = 1;
+
+    function switchTab(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        el.classList.add('active');
+        if(id === 'sec-book') renderC();
+        curIngs = []; upM('imp'); upM('add');
+    }
+
+    // --- IMPORT MAGIQUE ---
+    function doMagicImport() {
+        const text = document.getElementById('wordText').value;
+        if(!text) return;
+        const nMatch = text.match(/Nom\s*[:\-]\s*(.*)/i);
+        if(nMatch) document.getElementById('impName').value = nMatch[1].trim();
+        const instArray = text.split(/Instructions\s*[:\-]/i);
+        if(instArray.length > 1) document.getElementById('impInst').value = instArray[1].trim();
+        const ingPart = text.split(/Ingr[eé]dients\s*[:\-]/i)[1]?.split(/Instructions\s*[:\-]/i)[0];
+        curIngs = [];
+        if(ingPart) {
+            ingPart.split('\n').forEach(line => {
+                let clean = line.toLowerCase().trim().replace(/s$/, "");
+                if(clean.length < 3) return;
+                const qty = (clean.match(/(\d+)/) || [1,1])[1];
+                let found = DB_MASTER.find(f => f.keywords.some(k => clean.includes(k)));
+                if(found) {
+                    let fact = qty / found.base;
+                    curIngs.push({ name: found.name, qty: qty, c: found.cal*fact, p: found.prot*fact, g: found.glu*fact, l: found.lip*fact });
+                }
+            });
+        }
+        document.getElementById('import-validation').style.display = "block";
+        renderIngs('imp'); upM('imp');
+    }
+
+    // --- MOTEUR CORE ---
+    function searchIng(prefix) {
+        let q = document.getElementById('search-'+prefix).value.toLowerCase();
+        let r = document.getElementById('res-list-'+prefix);
+        r.innerHTML = ""; if(q.length < 1) { r.style.display="none"; return; }
+        DB_MASTER.filter(f => f.name.toLowerCase().includes(q)).slice(0, 8).forEach(f => {
+            let d = document.createElement('div'); d.className="res-i";
+            d.innerHTML = `<span>${f.name}</span><small>${Math.round(f.cal)} kcal</small>`;
+            d.onclick = () => {
+                let qty = prompt("Quantité pour " + f.name + " ?", "100");
+                if(qty) {
+                    let fact = qty / f.base;
+                    curIngs.push({ name: f.name, qty: qty, c: f.cal*fact, p: f.prot*fact, g: f.glu*fact, l: f.lip*fact });
+                    renderIngs(prefix); upM(prefix);
+                }
+                r.style.display="none"; document.getElementById('search-'+prefix).value = "";
+            };
+            r.appendChild(d);
+        });
+        r.style.display="block";
+    }
+
+    function renderIngs(prefix) {
+        document.getElementById(prefix+'IngList').innerHTML = curIngs.map((i, idx) => `
+            <div class="ing-pill"><span>${i.name} (x${i.qty})</span><span onclick="curIngs.splice(${idx},1);renderIngs('${prefix}');upM('${prefix}');" style="color:red;cursor:pointer;">✖</span></div>
+        `).join('');
+    }
+
+    function upM(prefix) {
+        let s = parseFloat(document.getElementById(prefix+'Parts').value) || 1;
+        let sums = curIngs.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, l:a.l+b.l}), {c:0,p:0,g:0,l:0});
+        document.getElementById('lCal').innerText = Math.round(sums.c/s);
+        document.getElementById('lProt').innerText = (sums.p/s).toFixed(1);
+        document.getElementById('lGlu').innerText = (sums.g/s).toFixed(1);
+        document.getElementById('lLip').innerText = (sums.l/s).toFixed(1);
+        return { c: Math.round(sums.c/s), p: (sums.p/s).toFixed(1), g: (sums.g/s).toFixed(1), l: (sums.l/s).toFixed(1) };
+    }
+
+    function saveRecipe(prefix) {
+        let n = document.getElementById(prefix+'Name').value; if(!n || curIngs.length === 0) return alert("Vérifiez le nom et les ingrédients !");
+        let macros = upM(prefix);
+        let file = document.getElementById(prefix+'Img').files[0];
+        if(file) { let r = new FileReader(); r.readAsDataURL(file); r.onload = (e) => finishSave(n, prefix, e.target.result, macros); } 
+        else finishSave(n, prefix, "", macros);
+    }
+
+    function finishSave(name, prefix, img, macros) {
+        let rec = { 
+            id: Date.now(), name: name, theme: document.getElementById(prefix+'Theme').value, 
+            ings: [...curIngs], inst: document.getElementById(prefix+'Inst').value, img: img, 
+            res: macros 
+        };
+        let recs = JSON.parse(localStorage.getItem('recs_v16')) || []; recs.push(rec);
+        localStorage.setItem('recs_v16', JSON.stringify(recs));
+        alert("Recette sauvegardée !"); location.reload();
+    }
+
+    function renderC() {
+        let recs = JSON.parse(localStorage.getItem('recs_v16')) || [];
+        document.getElementById('carnet-list').innerHTML = recs.map(r => `
+            <div class="recipe-item">
+                <div class="recipe-header" onclick="toggleDetails(${r.id})">
+                    ${r.img ? `<img src="${r.img}">` : ""}
+                    <div class="recipe-content">
+                        <span class="badge">${r.theme}</span><strong>${r.name}</strong>
+                        <div class="macro-row">
+                            <div><span>${r.res.c}</span>Kcal</div>
+                            <div><span>${r.res.p}g</span>Prot</div>
+                            <div><span>${r.res.g}g</span>Glu</div>
+                            <div><span>${r.res.l}g</span>Lip</div>
+                        </div>
+                    </div>
+                </div>
+                <div id="details-${r.id}" class="recipe-details">
+                    <h4 style="margin:0 0 10px 0;">Ingrédients :</h4>
+                    <ul style="padding-left:20px; font-size:14px; color:#555;">
+                        ${r.ings.map(i => `<li>${i.name} : ${i.qty}</li>`).join('')}
+                    </ul>
+                    <h4 style="margin:15px 0 10px 0;">Instructions :</h4>
+                    <p style="font-size:14px; color:#555; white-space: pre-wrap;">${r.inst || "Aucune instruction."}</p>
+                    <button class="btn" style="background:#e74c3c;color:white;padding:8px;font-size:12px;width:auto;" onclick="delRec(${r.id})">Supprimer la recette</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function toggleDetails(id) {
+        document.getElementById('details-' + id).classList.toggle('active');
+    }
+
+    function delRec(id) { if(confirm("Supprimer définitivement ?")) { let r = JSON.parse(localStorage.getItem('recs_v16')).filter(x=>x.id != id); localStorage.setItem('recs_v16', JSON.stringify(r)); renderC(); } }
+
+    // PHOTOS ACCUEIL
+    function pickPhoto(id) { bubbleId = id; document.getElementById('file-input').click(); }
+    function savePhoto(e) {
+        const reader = new FileReader();
+        reader.onload = (event) => { localStorage.setItem('mood-v16-'+bubbleId, event.target.result); loadMood(); };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+    function loadMood() {
+        for(let i=1; i<=4; i++) {
+            const data = localStorage.getItem('mood-v16-'+i);
+            if(data) { document.getElementById('img-'+i).src = data; document.getElementById('p-'+i).style.display = "none"; }
+        }
+    }
+
+    loadMood(); renderC();
+</script>
+</body>
+</html>
