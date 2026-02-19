@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Gemini - Version Finale Stable</title>
+    <style>
+        :root { --p: #27ae60; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; --magic: #4834d4; }
+        body { font-family: sans-serif; background: var(--l); margin: 0; padding-bottom: 80px; }
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+
+        /* Navigation Basse */
+        .nav { position: fixed; bottom: 0; width: 100%; max-width: 500px; background: var(--d); display: flex; justify-content: space-around; padding: 10px 0; z-index: 999; }
+        .nav-btn { color: white; cursor: pointer; font-size: 12px; text-align: center; flex: 1; }
+        .nav-btn.active { color: var(--p); font-weight: bold; }
+
+        /* Dashboard */
+        .dash { background: var(--d); color: white; padding: 15px; display: flex; justify-content: space-around; text-align: center; position: sticky; top: 0; z-index: 800; border-bottom: 3px solid var(--p); }
+        .dash b { display: block; font-size: 1.2em; color: var(--p); }
+
+        /* Sections */
+        .section { display: none; padding-top: 10px; }
+        .section.active { display: block; }
+
+        /* Moodboard Accueil */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .box { aspect-ratio: 3/4; background: #ddd; border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; border: 2px solid white; display: flex; align-items: center; justify-content: center; }
+        .box img { width: 100%; height: 100%; object-fit: cover; }
+        .box span { position: absolute; font-size: 30px; color: grey; }
+
+        /* Cartes */
+        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 5px 0; border: 1px solid #ccc; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; margin-top: 5px; font-size: 16px; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-m { background: var(--magic); color: white; }
+
+        /* Recherche & Ingrédients */
+        .res-list { border: 1px solid #ccc; max-height: 150px; overflow-y: auto; background: white; border-radius: 10px; margin-top: -5px; margin-bottom: 10px; }
+        .res-i { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; justify-content: space-between; }
+        .ing-item { background: #f0f0f0; padding: 10px; border-radius: 8px; margin-bottom: 5px; display: flex; justify-content: space-between; font-weight: bold; }
+        .recipe-item { background: white; padding: 10px; border-radius: 10px; margin-bottom: 10px; border-left: 5px solid var(--p); }
+    </style>
+</head>
+<body>
+
+<div class="dash">
+    <div><span id="lCal">0</span><b>kcal/p</b></div>
+    <div><span id="lProt">0</span><b>Prot</b></div>
+    <div><span id="lGlu">0</span><b>Glu</b></div>
+    <div><span id="lLip">0</span><b>Lip</b></div>
+</div>
+
+<div class="container">
+
+    <div id="sec-home" class="section active">
+        <h2 style="margin:0 0 15px 0;">Ma Cuisine ✨</h2>
+        <div class="grid">
+            <div class="box" onclick="pick(1)"><img id="img-1"><span>+</span></div>
+            <div class="box" onclick="pick(2)"><img id="img-2"><span>+</span></div>
+            <div class="box" onclick="pick(3)"><img id="img-3"><span>+</span></div>
+            <div class="box" onclick="pick(4)"><img id="img-4"><span>+</span></div>
+        </div>
+        <input type="file" id="file" style="display:none;" onchange="saveImg(event)">
+        <div class="card" style="margin-top:20px;"><p id="stat">Bievenue dans ton carnet !</p></div>
+    </div>
+
+    <div id="sec-import" class="section">
+        <div class="card" style="border: 2px dashed var(--magic);">
+            <h3 style="margin-top:0; color:var(--magic);">🪄 Import Word</h3>
+            <textarea id="word" rows="5" placeholder="Nom : ...&#10;Ingredients :&#10;- 100g de flocons d'avoine&#10;- 20g de noix..."></textarea>
+            <button class="btn btn-m" onclick="parse()">ANALYSER</button>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0;">Vérification</h3>
+            <input type="text" id="rName" placeholder="Nom de la recette">
+            <input type="number" id="rP" value="1" min="1" oninput="up()">
+            
+            <div id="ingList" style="margin:10px 0;"></div>
+            
+            <div style="background:#eee; padding:10px; border-radius:10px;">
+                <input type="text" id="search" placeholder="🔍 Chercher aliment..." oninput="find()">
+                <div id="results" class="res-list" style="display:none;"></div>
+            </div>
+            
+            <textarea id="rInst" placeholder="Instructions..."></textarea>
+            <button class="btn btn-p" onclick="save()">💾 SAUVEGARDER</button>
+        </div>
+    </div>
+
+    <div id="sec-book" class="section">
+        <h2>📖 Mes Recettes</h2>
+        <div id="book"></div>
+    </div>
+
+</div>
+
+<nav class="nav">
+    <div class="nav-btn active" onclick="tab('sec-home', this)">🏠 Accueil</div>
+    <div class="nav-item" onclick="tab('sec-import', this)" style="color:white; cursor:pointer;">🪄 Import</div>
+    <div class="nav-btn" onclick="tab('sec-book', this)">📖 Carnet</div>
+</nav>
+
+<script>
+    // --- BIBLIOTHÈQUE ---
+    const DB = [
+        { name: "Flocons d'avoine", cal: 370, prot: 13, glu: 60, lip: 7, base: 100 },
+        { name: "Raisins secs", cal: 299, prot: 3, glu: 79, lip: 0.5, base: 100 },
+        { name: "Noix", cal: 654, prot: 15, glu: 13, lip: 65, base: 100 },
+        { name: "Amandes", cal: 579, prot: 21, glu: 21, lip: 50, base: 100 },
+        { name: "Pomme", cal: 52, prot: 0.3, glu: 14, lip: 0.2, base: 100 },
+        { name: "Poulet", cal: 165, prot: 31, glu: 0, lip: 3.6, base: 100 },
+        { name: "Oeuf (unité)", cal: 70, prot: 6, glu: 0.5, lip: 5, base: 1 },
+        { name: "Skyr", cal: 57, prot: 11, glu: 4, lip: 0, base: 100 },
+        { name: "Lait d'Amande", cal: 13, prot: 0.5, glu: 0.1, lip: 1.1, base: 100 },
+        { name: "Miel", cal: 304, prot: 0.3, glu: 82, lip: 0, base: 100 }
+    ];
+
+    let curIngs = []; let bId = 1;
+
+    function tab(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.nav-btn, .nav-item').forEach(n => n.style.color = "white");
+        el.style.color = "#27ae60";
+    }
+
+    // --- IMPORT MAGIQUE ---
+    function parse() {
+        const txt = document.getElementById('word').value.toLowerCase();
+        if(!txt) return;
+
+        // Nom
+        const nMatch = txt.match(/nom\s*:\s*(.*)/);
+        if(nMatch) document.getElementById('rName').value = nMatch[1].trim();
+
+        // Ingrédients (Recherche simple)
+        curIngs = [];
+        DB.forEach(item => {
+            const itemName = item.name.toLowerCase().split(' ')[0];
+            if(txt.includes(itemName)) {
+                // Cherche un chiffre proche du mot
+                const line = txt.split('\n').find(l => l.includes(itemName));
+                const qty = (line.match(/(\d+)/) || [100,100])[1];
+                let f = qty / item.base;
+                curIngs.push({ name: item.name, qty: qty, c: item.cal*f, p: item.prot*f, g: item.glu*f, l: item.lip*f });
+            }
+        });
+        render(); up();
+        alert("Analyse finie ! Vérifie la liste en dessous.");
+    }
+
+    // --- RECHERCHE MANUELLE ---
+    function find() {
+        let q = document.getElementById('search').value.toLowerCase();
+        let r = document.getElementById('results');
+        r.innerHTML = "";
+        if(q.length < 1) { r.style.display="none"; return; }
+        
+        const found = DB.filter(f => f.name.toLowerCase().includes(q));
+        found.forEach(f => {
+            let d = document.createElement('div');
+            d.className = "res-i";
+            d.innerHTML = `<span>${f.name}</span><b>${f.cal} cal</b>`;
+            d.onclick = () => {
+                let qte = prompt("Quantité pour " + f.name + " ?", "100");
+                if(qte) {
+                    let fact = qte / f.base;
+                    curIngs.push({ name: f.name, qty: qte, c: f.cal*fact, p: f.prot*fact, g: f.glu*fact, l: f.lip*fact });
+                    render(); up();
+                }
+                r.style.display="none"; document.getElementById('search').value="";
+            };
+            r.appendChild(d);
+        });
+        r.style.display = found.length ? "block" : "none";
+    }
+
+    function render() {
+        document.getElementById('ingList').innerHTML = curIngs.map((i, idx) => `
+            <div class="ing-item"><span>${i.name} (${i.qty})</span><span onclick="curIngs.splice(${idx},1);render();up();" style="color:red;">✖</span></div>
+        `).join('');
+    }
+
+    function up() {
+        let s = parseFloat(document.getElementById('rP').value) || 1;
+        let sums = curIngs.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, l:a.l+b.l}), {c:0,p:0,g:0,l:0});
+        document.getElementById('lCal').innerText = Math.round(sums.c/s);
+        document.getElementById('lProt').innerText = (sums.p/s).toFixed(1);
+        document.getElementById('lGlu').innerText = (sums.g/s).toFixed(1);
+        document.getElementById('lLip').innerText = (sums.l/s).toFixed(1);
+    }
+
+    function save() {
+        let name = document.getElementById('rName').value;
+        if(!name || curIngs.length == 0) return alert("Nom et ingrédients requis !");
+        let rec = { id: Date.now(), name: name, ings: [...curIngs], res: { c: document.getElementById('lCal').innerText } };
+        let recs = JSON.parse(localStorage.getItem('myRecipes')) || [];
+        recs.push(rec);
+        localStorage.setItem('myRecipes', JSON.stringify(recs));
+        alert("Enregistré !"); location.reload();
+    }
+
+    function renderBook() {
+        let recs = JSON.parse(localStorage.getItem('myRecipes')) || [];
+        document.getElementById('book').innerHTML = recs.map(r => `
+            <div class="recipe-item">
+                <strong>${r.name}</strong><br><small>${r.res.c} kcal / part</small><br>
+                <button onclick="del(${r.id})" style="color:red; background:none; border:none; padding:0; font-size:12px; cursor:pointer;">Supprimer</button>
+            </div>
+        `).join('');
+    }
+
+    function del(id) { if(confirm("Supprimer ?")) { let r = JSON.parse(localStorage.getItem('myRecipes')).filter(x=>x.id != id); localStorage.setItem('myRecipes', JSON.stringify(r)); renderBook(); } }
+
+    // Photos
+    function pick(id) { bId = id; document.getElementById('file').click(); }
+    function saveImg(e) {
+        const r = new FileReader();
+        r.onload = (ev) => { localStorage.setItem('mood-'+bId, ev.target.result); loadImgs(); };
+        r.readAsDataURL(e.target.files[0]);
+    }
+    function loadImgs() {
+        for(let i=1; i<=4; i++) {
+            const d = localStorage.getItem('mood-'+i);
+            if(d) document.getElementById('img-'+i).src = d;
+        }
+    }
+
+    loadImgs(); renderBook();
+</script>
+</body>
+</html>
