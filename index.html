@@ -2,62 +2,112 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Ton carnet</title>
 <style>
-:root{--bg:#070a14;--bg2:#0b1020;--text:#eef1ff;--muted:#aab3de;--line:rgba(255,255,255,.10);--accent:#7c5cff;--ok:#22c55e;--warn:#f59e0b;--danger:#ef4444;--shadow:0 18px 60px rgba(0,0,0,.55);--r:22px;--r2:16px;--max:1200px;--sans:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
-*{box-sizing:border-box} body{margin:0;font-family:var(--sans);color:var(--text);
-background:radial-gradient(1200px 680px at 12% 0%, rgba(124,92,255,.20), transparent 58%),
-radial-gradient(900px 560px at 90% 12%, rgba(34,197,94,.16), transparent 60%),
-radial-gradient(900px 560px at 25% 100%, rgba(245,158,11,.10), transparent 62%),
-linear-gradient(180deg,var(--bg),var(--bg2));}
-.wrap{max-width:var(--max);margin:0 auto;padding:20px 16px 70px;}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 14px;}
-.brand{display:flex;align-items:center;gap:12px} .logo{width:44px;height:44px;border-radius:16px;background:linear-gradient(135deg, rgba(124,92,255,.55), rgba(34,197,94,.35));border:1px solid rgba(255,255,255,.12);box-shadow:0 14px 40px rgba(0,0,0,.45);}
-h1{margin:0;font-size:22px;letter-spacing:.2px} .sub{margin-top:4px;color:var(--muted);font-size:13px;line-height:1.35}
-.topActions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
-.btn{border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.03));color:var(--text);padding:10px 12px;border-radius:14px;cursor:pointer;display:inline-flex;gap:8px;align-items:center;box-shadow:0 10px 26px rgba(0,0,0,.24);font-weight:850;font-size:13px;user-select:none;}
-.btn.primary{border-color:rgba(124,92,255,.35);background:linear-gradient(180deg, rgba(124,92,255,.30), rgba(124,92,255,.12));}
-.btn.danger{border-color:rgba(239,68,68,.35);background:linear-gradient(180deg, rgba(239,68,68,.22), rgba(239,68,68,.08));}
-.btn.ghost{background:transparent;box-shadow:none}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px;} .tab{padding:9px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.12);color:var(--muted);font-weight:850;font-size:13px;cursor:pointer;user-select:none;}
-.tab.active{color:var(--text);border-color:rgba(124,92,255,.38);background:rgba(124,92,255,.14);}
-.bigCard{border-radius:var(--r);border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.02));box-shadow:var(--shadow);padding:16px;position:relative;overflow:hidden;}
-.bigCard:before{content:"";position:absolute;inset:-1px;background:radial-gradient(500px 260px at 20% 10%, rgba(124,92,255,.18), transparent 60%),radial-gradient(500px 260px at 90% 40%, rgba(34,197,94,.12), transparent 60%);pointer-events:none;}
-.bigCard>*{position:relative} .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:10px;} @media(max-width:980px){.hero{grid-template-columns:1fr;}}
-.headline{font-size:28px;margin:0;letter-spacing:.2px} .small{color:var(--muted);margin-top:8px;line-height:1.45;font-size:13px}
-.statsRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px} .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;border:1px solid var(--line);background:rgba(0,0,0,.12);color:var(--muted);font-size:13px;font-weight:850;cursor:pointer;}
-.panel{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));border:1px solid var(--line);border-radius:var(--r);padding:14px;box-shadow:var(--shadow);}
-.controls{display:grid;grid-template-columns:1.3fr .8fr .8fr .8fr .8fr .7fr;gap:10px;align-items:end;margin-top:14px;} @media(max-width:980px){.controls{grid-template-columns:1fr 1fr;}} @media(max-width:540px){.controls{grid-template-columns:1fr;}}
-label{font-size:12px;color:var(--muted);display:block;margin:0 0 6px} input,select,textarea{width:100%;padding:11px 12px;border-radius:14px;border:1px solid var(--line);background:rgba(10,16,35,.55);color:var(--text);outline:none;}
-.masonry{margin-top:14px;column-count:3;column-gap:12px;} @media(max-width:980px){.masonry{column-count:2;}} @media(max-width:620px){.masonry{column-count:1;}}
-.card{break-inside:avoid;margin:0 0 12px;border-radius:var(--r2);overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));box-shadow:0 12px 32px rgba(0,0,0,.32);cursor:pointer;}
-.thumb{height:170px;background:linear-gradient(135deg, rgba(124,92,255,.25), rgba(34,197,94,.14));display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.80);font-weight:950;}
-.thumb img{width:100%;height:100%;object-fit:cover;display:block} .cardBody{padding:12px 12px 14px} .name{margin:0;font-size:16px;font-weight:950}
-.metaLine{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.35} .smallRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.pill{font-size:11px;padding:5px 9px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:rgba(0,0,0,.12);font-weight:850;}
-.pill.accent{border-color:rgba(124,92,255,.35);color:#dcd6ff;background:rgba(124,92,255,.12)} .pill.ok{border-color:rgba(34,197,94,.35);color:#c9f4da;background:rgba(34,197,94,.10)} .pill.warn{border-color:rgba(245,158,11,.35);color:#ffe7c2;background:rgba(245,158,11,.10)}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.58);display:none;align-items:center;justify-content:center;padding:18px;z-index:50;}
-.modal{width:min(1040px,100%);max-height:88vh;overflow:auto;border-radius:24px;border:1px solid var(--line);background:linear-gradient(180deg, rgba(17,26,51,.98), rgba(10,16,35,.98));box-shadow:0 26px 90px rgba(0,0,0,.60);}
-.modalHeader{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 14px 10px;border-bottom:1px solid var(--line);position:sticky;top:0;background:linear-gradient(180deg, rgba(17,26,51,.98), rgba(15,23,48,.98));backdrop-filter: blur(12px);z-index:2;}
-.modalTitle{font-weight:950;font-size:14px;color:#dfe4ff} .modalBody{padding:14px} .divider{height:1px;background:var(--line);margin:12px 0}
-.twoCol{display:grid;grid-template-columns:1fr 1fr;gap:12px;} @media(max-width:900px){.twoCol{grid-template-columns:1fr;}}
-.imgBig{width:100%;height:260px;border-radius:18px;border:1px solid var(--line);overflow:hidden;background:rgba(0,0,0,.14);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.78);font-weight:950;}
-.imgBig img{width:100%;height:100%;object-fit:cover;display:block}
-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px;border:1px solid var(--line);} th,td{padding:10px;font-size:13px;border-bottom:1px solid var(--line);vertical-align:top} th{color:var(--muted);font-weight:950;text-align:left;background:rgba(255,255,255,.04)} tr:last-child td{border-bottom:none}
-.right{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap} .mini{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.35}
-.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:rgba(17,26,51,.96);border:1px solid var(--line);color:var(--text);padding:10px 12px;border-radius:999px;box-shadow:0 18px 70px rgba(0,0,0,.55);display:none;z-index:80;font-size:13px;font-weight:850;}
-.kbd{border:1px solid var(--line);background:rgba(0,0,0,.15);border-radius:8px;padding:1px 6px;font-weight:900;}
+:root{
+  --bg:#f6f7fb; --paper:#ffffff; --ink:#121826; --muted:#5b6477; --line:#e7e9f1;
+  --shadow:0 12px 36px rgba(16,24,40,.10); --shadow2:0 6px 18px rgba(16,24,40,.08);
+  --accent:#6d5efc; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+  --r:18px; --r2:14px; --max:1200px;
+  --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+*{box-sizing:border-box}
+body{margin:0; font-family:var(--sans); color:var(--ink);
+  background:
+    radial-gradient(900px 500px at 15% 0%, rgba(109,94,252,.10), transparent 55%),
+    radial-gradient(800px 460px at 90% 10%, rgba(34,197,94,.08), transparent 55%),
+    linear-gradient(180deg, var(--bg), #ffffff);
+}
+.wrap{max-width:var(--max); margin:0 auto; padding:22px 16px 70px;}
+header{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 0 14px;}
+.brand{display:flex; align-items:center; gap:12px}
+.logo{width:42px; height:42px; border-radius:14px; background:linear-gradient(135deg, rgba(109,94,252,.95), rgba(109,94,252,.20));
+  box-shadow:var(--shadow2);}
+h1{margin:0; font-size:20px; letter-spacing:.2px}
+.sub{margin-top:4px; color:var(--muted); font-size:12.5px; line-height:1.35}
+.actions{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+.btn{border:1px solid var(--line); background:var(--paper); color:var(--ink);
+  padding:10px 12px; border-radius:14px; cursor:pointer; display:inline-flex; gap:8px; align-items:center;
+  box-shadow:var(--shadow2); font-weight:800; font-size:13px; user-select:none;}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn.primary{border-color:rgba(109,94,252,.22); background:rgba(109,94,252,.10);}
+.btn.danger{border-color:rgba(239,68,68,.25); background:rgba(239,68,68,.08);}
+.btn.ghost{background:transparent; box-shadow:none}
+.tabs{display:flex; gap:8px; flex-wrap:wrap; margin:6px 0 14px;}
+.tab{padding:9px 12px; border-radius:999px; border:1px solid var(--line); background:rgba(255,255,255,.7); color:var(--muted);
+  font-weight:850; font-size:13px; cursor:pointer; user-select:none;}
+.tab.active{color:var(--ink); border-color:rgba(109,94,252,.28); background:rgba(109,94,252,.10);}
+.grid2{display:grid; grid-template-columns:1.2fr .8fr; gap:12px;}
+@media (max-width: 980px){ .grid2{grid-template-columns:1fr;} }
+.card{background:var(--paper); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:16px;}
+.h2{font-size:26px; margin:0; letter-spacing:.2px}
+.small{color:var(--muted); margin-top:8px; line-height:1.55; font-size:13px}
+.row{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+.chip{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px;
+  border:1px solid var(--line); background:#fff; color:var(--muted); font-size:13px; font-weight:850; cursor:pointer; user-select:none;}
+.chip:hover{border-color:rgba(109,94,252,.35); color:var(--ink);}
+.chip.active{border-color:rgba(109,94,252,.35); background:rgba(109,94,252,.10); color:var(--ink);}
+.pill{font-size:11px; padding:5px 9px; border-radius:999px; border:1px solid var(--line); color:var(--muted); background:#fff; font-weight:850;}
+.pill.accent{border-color:rgba(109,94,252,.25); background:rgba(109,94,252,.10); color:var(--ink);}
+.pill.ok{border-color:rgba(34,197,94,.25); background:rgba(34,197,94,.10); color:var(--ink);}
+.pill.warn{border-color:rgba(245,158,11,.25); background:rgba(245,158,11,.10); color:var(--ink);}
+.panel{background:var(--paper); border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--shadow); padding:14px;}
+.controls{display:grid; grid-template-columns:1.3fr .8fr .8fr .8fr .8fr .7fr; gap:10px; align-items:end; margin-top:10px;}
+@media (max-width: 980px){ .controls{grid-template-columns:1fr 1fr;} }
+@media (max-width: 540px){ .controls{grid-template-columns:1fr;} }
+label{font-size:12px; color:var(--muted); display:block; margin:0 0 6px}
+input, select, textarea{width:100%; padding:11px 12px; border-radius:14px; border:1px solid var(--line); background:#fff; color:var(--ink); outline:none;}
+textarea{min-height:92px; resize:vertical}
+.masonry{margin-top:14px; column-count:3; column-gap:12px;}
+@media (max-width: 980px){ .masonry{column-count:2;} }
+@media (max-width: 620px){ .masonry{column-count:1;} }
+.rcard{break-inside:avoid; margin:0 0 12px; border-radius:var(--r2); overflow:hidden; border:1px solid var(--line);
+  background:var(--paper); box-shadow:var(--shadow2); cursor:pointer; transition:transform .08s ease, border-color .2s ease;}
+.rcard:hover{transform:translateY(-2px); border-color:rgba(109,94,252,.20);}
+.thumb{height:170px; background:linear-gradient(135deg, rgba(109,94,252,.12), rgba(34,197,94,.08));
+  display:flex; align-items:center; justify-content:center; color:rgba(18,24,38,.55); font-weight:950; letter-spacing:.2px;}
+.thumb img{width:100%; height:100%; object-fit:cover; display:block}
+.body{padding:12px 12px 14px}
+.name{margin:0; font-size:16px; font-weight:950;}
+.meta{margin-top:8px; color:var(--muted); font-size:12px; line-height:1.35}
+.row2{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
+.overlay{position:fixed; inset:0; background:rgba(16,24,40,.35); display:none; align-items:center; justify-content:center; padding:18px; z-index:50;}
+.modal{width:min(1040px, 100%); max-height:88vh; overflow:auto; border-radius:24px; border:1px solid var(--line);
+  background:var(--paper); box-shadow:0 26px 90px rgba(16,24,40,.22);}
+.mh{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:14px 14px 10px; border-bottom:1px solid var(--line);
+  position:sticky; top:0; background:rgba(255,255,255,.92); backdrop-filter: blur(10px); z-index:2;}
+.mt{font-weight:950; font-size:14px; color:var(--ink);}
+.mb{padding:14px}
+.div{height:1px; background:var(--line); margin:12px 0}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width: 900px){ .two{grid-template-columns:1fr;} }
+.img{width:100%; height:260px; border-radius:18px; border:1px solid var(--line); overflow:hidden; background:#fafbff;
+  display:flex; align-items:center; justify-content:center; color:rgba(18,24,38,.55); font-weight:950;}
+.img img{width:100%; height:100%; object-fit:cover; display:block}
+table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:16px; border:1px solid var(--line);}
+th,td{padding:10px; font-size:13px; border-bottom:1px solid var(--line); vertical-align:top}
+th{color:var(--muted); font-weight:950; text-align:left; background:#fbfcff;}
+tr:last-child td{border-bottom:none}
+.right{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
+.mini{font-size:12px; color:var(--muted); margin-top:6px; line-height:1.35}
+.toast{position:fixed; left:50%; bottom:18px; transform:translateX(-50%); background:var(--paper);
+  border:1px solid var(--line); color:var(--ink); padding:10px 12px; border-radius:999px; box-shadow:var(--shadow); display:none; z-index:80; font-size:13px; font-weight:850;}
+.kbd{border:1px solid var(--line); background:#fff; border-radius:8px; padding:1px 6px; font-weight:900;}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><div class="logo"></div><div>
-      <h1>Ton carnet</h1>
-      <div class="sub">2 catégories • 4 sous-catégories • Mode édition (PIN) • Import intelligent • 226 aliments.</div>
-    </div></div>
-    <div class="topActions">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Ton carnet</h1>
+        <div class="sub">500 aliments • Healthy / Gourmand • Entrée / Plat / Dessert / Bakery • Import intelligent • Mode édition (PIN)</div>
+      </div>
+    </div>
+    <div class="actions">
       <button class="btn ghost" id="btnToggleEdit">🔒 Mode édition</button>
       <button class="btn primary adminOnly" id="btnNew" style="display:none">＋ Nouvelle</button>
       <button class="btn adminOnly" id="btnOpenImport" style="display:none">🧾 Import Word</button>
@@ -71,27 +121,30 @@ table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px;bor
   </div>
 
   <div id="viewHome">
-    <div class="hero">
-      <div class="bigCard">
-        <h2 class="headline">Ton carnet</h2>
-        <div class="small">Clique une catégorie pour voir les recettes. Pour ajouter / modifier / supprimer, active le <span class="kbd">Mode édition</span> (PIN).</div>
-        <div class="statsRow" id="statsHome"></div>
+    <div class="grid2">
+      <div class="card">
+        <h2 class="h2">Ton carnet</h2>
+        <div class="small">Clique une catégorie. Ensuite, tu peux choisir une sous-catégorie. Pour ajouter / modifier / supprimer : <span class="kbd">Mode édition</span> (PIN).</div>
+        <div class="row" id="statsHome"></div>
       </div>
-      <div class="bigCard">
+      <div class="card">
         <div class="mini"><strong>Catégories</strong></div>
-        <div class="mini">Healthy / Gourmand</div>
-        <div class="statsRow" id="homeMainCats"></div>
-        <div class="divider"></div>
-        <div class="mini">Entrée / Plat / Dessert / Bakery</div>
-        <div class="statsRow" id="homeSubCats"></div>
+        <div class="row" id="homeMain"></div>
+        <div class="div"></div>
+        <div class="mini"><strong>Sous-catégories</strong> <span id="subHint" class="mini"></span></div>
+        <div class="row" id="homeSub"></div>
       </div>
     </div>
   </div>
 
   <div id="viewRecipes" style="display:none">
     <div class="panel">
+      <div class="row" style="margin-top:0; justify-content:space-between; align-items:center">
+        <div class="mini"><strong>Filtres rapides</strong></div>
+        <div class="row" id="quickSubs" style="margin-top:0"></div>
+      </div>
       <div class="controls">
-        <div><label>Recherche intelligente</label><input id="q" type="text" placeholder="ex: poulet curry, banana bread…"></div>
+        <div><label>Recherche intelligente</label><input id="q" type="text" placeholder="ex: poulet curry, banana bread…"/></div>
         <div><label>Catégorie</label><select id="mainCat"><option value="">Toutes</option></select></div>
         <div><label>Sous-catégorie</label><select id="subCat"><option value="">Toutes</option></select></div>
         <div><label>Difficulté</label><select id="diff"><option value="">Toutes</option><option>Facile</option><option>Moyen</option><option>Difficile</option></select></div>
@@ -99,31 +152,29 @@ table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px;bor
         <div class="right"><button class="btn" id="btnReset">↺ Reset</button></div>
       </div>
     </div>
-    <div class="statsRow" id="statsRecipes" style="margin-top:12px"></div>
+    <div class="row" id="statsRecipes" style="margin-top:12px"></div>
     <div id="grid" class="masonry"></div>
   </div>
 </div>
 
-<!-- VIEW -->
 <div class="overlay" id="overlayView"><div class="modal">
-  <div class="modalHeader">
-    <div class="modalTitle" id="viewTitle">Recette</div>
+  <div class="mh">
+    <div class="mt" id="viewTitle">Recette</div>
     <div class="right">
       <button class="btn adminOnly" id="btnEdit" style="display:none">✏️</button>
       <button class="btn danger adminOnly" id="btnDelete" style="display:none">🗑</button>
       <button class="btn" id="btnCloseView">✕</button>
     </div>
   </div>
-  <div class="modalBody" id="viewBody"></div>
+  <div class="mb" id="viewBody"></div>
 </div></div>
 
-<!-- PIN -->
 <div class="overlay" id="overlayPin"><div class="modal" style="max-width:520px">
-  <div class="modalHeader"><div class="modalTitle">Mode édition</div><div class="right"><button class="btn" id="btnClosePin">✕</button></div></div>
-  <div class="modalBody">
+  <div class="mh"><div class="mt">Mode édition</div><div class="right"><button class="btn" id="btnClosePin">✕</button></div></div>
+  <div class="mb">
     <div class="mini">PIN par défaut : <span class="kbd">1234</span></div>
     <div style="margin-top:10px">
-      <input id="pinInput" type="number" inputmode="numeric" placeholder="Code PIN">
+      <input id="pinInput" type="number" inputmode="numeric" placeholder="Code PIN"/>
       <div class="right" style="margin-top:10px">
         <button class="btn danger" id="btnPinOff">Désactiver</button>
         <button class="btn primary" id="btnPinOk">Activer</button>
@@ -132,53 +183,52 @@ table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px;bor
   </div>
 </div></div>
 
-<!-- FORM -->
 <div class="overlay" id="overlayForm"><div class="modal">
-  <div class="modalHeader">
-    <div class="modalTitle" id="formTitle">Nouvelle recette</div>
+  <div class="mh">
+    <div class="mt" id="formTitle">Nouvelle recette</div>
     <div class="right"><button class="btn primary" id="btnSave">💾</button><button class="btn" id="btnCloseForm">✕</button></div>
   </div>
-  <div class="modalBody">
-    <div class="twoCol">
+  <div class="mb">
+    <div class="two">
       <div>
-        <div class="imgBig" id="formImgBox"><span>Photo</span></div>
+        <div class="img" id="formImgBox"><span>Photo</span></div>
         <div class="mini">Photo légère (≈2–2.5MB).</div>
         <div class="right" style="margin-top:10px">
           <input type="file" id="photo" accept="image/*"/>
           <button class="btn" id="btnRemovePhoto" type="button">Retirer</button>
         </div>
-        <div class="divider"></div>
-        <label class="mini"><input type="checkbox" id="autoMacros" checked> Calcul auto des macros</label>
+        <div class="div"></div>
+        <label class="mini"><input type="checkbox" id="autoMacros" checked/> Calcul auto des macros</label>
       </div>
       <div>
-        <label>Titre</label><input id="f_name" type="text">
-        <div class="twoCol" style="gap:10px">
+        <label>Titre</label><input id="f_name" type="text"/>
+        <div class="two" style="gap:10px">
           <div><label>Catégorie</label><select id="f_mainCat"></select></div>
           <div><label>Sous-catégorie</label><select id="f_subCat"></select></div>
         </div>
-        <div class="twoCol" style="gap:10px; margin-top:10px">
+        <div class="two" style="gap:10px; margin-top:10px">
           <div><label>Difficulté</label><select id="f_diff"><option>Facile</option><option>Moyen</option><option>Difficile</option></select></div>
-          <div><label>Temps (min)</label><input id="f_time" type="number" min="0" step="1"></div>
+          <div><label>Temps (min)</label><input id="f_time" type="number" min="0" step="1"/></div>
         </div>
-        <div class="twoCol" style="gap:10px; margin-top:10px">
-          <div><label>Portions</label><input id="f_serv" type="number" min="1" step="1" value="1"></div>
+        <div class="two" style="gap:10px; margin-top:10px">
+          <div><label>Portions</label><input id="f_serv" type="number" min="1" step="1" value="1"/></div>
           <div></div>
         </div>
-        <div class="twoCol" style="gap:10px; margin-top:10px">
-          <div><label>kcal</label><input id="f_kcal" type="number"></div>
-          <div><label>Protéines</label><input id="f_p" type="number" step="0.1"></div>
+        <div class="two" style="gap:10px; margin-top:10px">
+          <div><label>kcal</label><input id="f_kcal" type="number"/></div>
+          <div><label>Protéines</label><input id="f_p" type="number" step="0.1"/></div>
         </div>
-        <div class="twoCol" style="gap:10px; margin-top:10px">
-          <div><label>Glucides</label><input id="f_c" type="number" step="0.1"></div>
-          <div><label>Lipides</label><input id="f_f" type="number" step="0.1"></div>
+        <div class="two" style="gap:10px; margin-top:10px">
+          <div><label>Glucides</label><input id="f_c" type="number" step="0.1"/></div>
+          <div><label>Lipides</label><input id="f_f" type="number" step="0.1"/></div>
         </div>
         <label style="margin-top:10px">Notes</label><textarea id="f_notes"></textarea>
       </div>
     </div>
 
-    <div class="divider"></div>
+    <div class="div"></div>
     <div class="right" style="justify-content:space-between">
-      <div class="mini">Ingrédients (grammes) • Base aliments: <strong>226</strong></div>
+      <div class="mini">Ingrédients (grammes) • Base aliments: <strong>500</strong></div>
       <button class="btn" id="btnAddIng" type="button">＋</button>
     </div>
 
@@ -189,17 +239,18 @@ table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:16px;bor
       </table>
     </div>
 
-    <div class="divider"></div>
-    <label>Instructions</label><textarea id="f_steps"></textarea>
+    <div class="div"></div>
+    <label>Instructions</label>
+    <textarea id="f_steps"></textarea>
   </div>
 </div></div>
 
-<!-- IMPORT -->
 <div class="overlay" id="overlayImport"><div class="modal">
-  <div class="modalHeader"><div class="modalTitle">Import Word / Texte</div>
+  <div class="mh">
+    <div class="mt">Import Word / Texte</div>
     <div class="right"><button class="btn primary" id="btnDoImport">Importer</button><button class="btn" id="btnCloseImport">✕</button></div>
   </div>
-  <div class="modalBody">
+  <div class="mb">
     <pre class="panel" style="white-space:pre-wrap; padding:12px; border-radius:16px; overflow:auto">Nom: ...
 Ingrédients:
 1 oeuf
@@ -210,30 +261,29 @@ Ingrédients:
 Instructions:
 1) ...</pre>
     <label>Colle ton texte</label><textarea id="importText"></textarea>
-    <div class="divider"></div>
+    <div class="div"></div>
     <div class="mini"><strong>Non reconnus / ambigu :</strong></div>
     <div class="mini" id="importUnknown">—</div>
   </div>
 </div></div>
 
-<!-- FOODS -->
 <div class="overlay" id="overlayFoods"><div class="modal">
-  <div class="modalHeader"><div class="modalTitle">Aliments (par 100g) • 226</div>
+  <div class="mh">
+    <div class="mt">Aliments (par 100g) • 500</div>
     <div class="right"><button class="btn primary" id="btnAddFood">＋</button><button class="btn" id="btnCloseFoods">✕</button></div>
   </div>
-  <div class="modalBody" id="foodsBody"></div>
+  <div class="mb" id="foodsBody"></div>
 </div></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const EDIT_PIN="1234";
-const STORAGE_KEY="recipes_premium_V4_compact_v1";
-const FOODS_KEY="foods_premium_V4_compact_v1";
-
+const STORAGE_KEY="recipes_premium_V5_light_v1";
+const FOODS_KEY="foods_premium_V5_light_v1";
 const MAIN_CATS=["Healthy","Gourmand"];
 const SUB_CATS=["Entrée","Plat","Dessert","Bakery"];
-const DEFAULT_FOODS=[{"id": "poulet_blanc_cru_000", "name": "Poulet (blanc, cru)", "kcal": 120, "p": 23, "c": 0, "f": 2.6}, {"id": "poulet_cuit_001", "name": "Poulet (cuit)", "kcal": 165, "p": 31, "c": 0, "f": 3.6}, {"id": "dinde_002", "name": "Dinde", "kcal": 110, "p": 24, "c": 0, "f": 1.5}, {"id": "boeuf_steak_5_003", "name": "Boeuf (steak 5%)", "kcal": 137, "p": 21, "c": 0, "f": 5}, {"id": "boeuf_haché_15_004", "name": "Boeuf (haché 15%)", "kcal": 215, "p": 19, "c": 0, "f": 15}, {"id": "veau_005", "name": "Veau", "kcal": 172, "p": 20, "c": 0, "f": 8}, {"id": "porc_filet_006", "name": "Porc (filet)", "kcal": 143, "p": 21, "c": 0, "f": 5}, {"id": "jambon_blanc_007", "name": "Jambon blanc", "kcal": 115, "p": 19, "c": 1, "f": 4}, {"id": "jambon_cru_008", "name": "Jambon cru", "kcal": 241, "p": 28, "c": 0, "f": 14}, {"id": "lardons_009", "name": "Lardons", "kcal": 305, "p": 16, "c": 1, "f": 27}, {"id": "bacon_010", "name": "Bacon", "kcal": 541, "p": 37, "c": 1.4, "f": 42}, {"id": "saucisse_011", "name": "Saucisse", "kcal": 301, "p": 14, "c": 2, "f": 27}, {"id": "chorizo_012", "name": "Chorizo", "kcal": 455, "p": 24, "c": 2, "f": 38}, {"id": "dés_de_tofu_fumé_013", "name": "Dés de tofu fumé", "kcal": 150, "p": 16, "c": 2, "f": 9}, {"id": "tofu_nature_014", "name": "Tofu nature", "kcal": 120, "p": 13, "c": 2, "f": 7}, {"id": "tempeh_015", "name": "Tempeh", "kcal": 193, "p": 20, "c": 9, "f": 11}, {"id": "seitan_016", "name": "Seitan", "kcal": 140, "p": 28, "c": 5, "f": 1.5}, {"id": "oeuf_entier_017", "name": "Oeuf entier", "kcal": 143, "p": 13, "c": 1, "f": 10}, {"id": "blanc_d_oeuf_018", "name": "Blanc d'oeuf", "kcal": 52, "p": 11, "c": 0.7, "f": 0.2}, {"id": "jaune_d_oeuf_019", "name": "Jaune d'oeuf", "kcal": 322, "p": 16, "c": 4, "f": 27}, {"id": "saumon_020", "name": "Saumon", "kcal": 208, "p": 20, "c": 0, "f": 13}, {"id": "saumon_fumé_021", "name": "Saumon fumé", "kcal": 117, "p": 18, "c": 0, "f": 4.3}, {"id": "thon_au_naturel_022", "name": "Thon (au naturel)", "kcal": 116, "p": 26, "c": 0, "f": 1}, {"id": "thon_à_l_huile_égoutté_023", "name": "Thon (à l'huile, égoutté)", "kcal": 198, "p": 25, "c": 0, "f": 11}, {"id": "cabillaud_024", "name": "Cabillaud", "kcal": 82, "p": 18, "c": 0, "f": 0.7}, {"id": "colin_025", "name": "Colin", "kcal": 90, "p": 19, "c": 0, "f": 1}, {"id": "sardines_026", "name": "Sardines", "kcal": 208, "p": 25, "c": 0, "f": 11}, {"id": "maquereau_027", "name": "Maquereau", "kcal": 205, "p": 19, "c": 0, "f": 14}, {"id": "crevettes_028", "name": "Crevettes", "kcal": 99, "p": 24, "c": 0.2, "f": 0.3}, {"id": "moules_029", "name": "Moules", "kcal": 86, "p": 12, "c": 4, "f": 2}, {"id": "skyr_0_030", "name": "Skyr 0%", "kcal": 60, "p": 11, "c": 4, "f": 0.2}, {"id": "fromage_blanc_0_031", "name": "Fromage blanc 0%", "kcal": 46, "p": 8, "c": 4, "f": 0.2}, {"id": "fromage_blanc_3_032", "name": "Fromage blanc 3%", "kcal": 74, "p": 7, "c": 4, "f": 3}, {"id": "yaourt_grec_0_033", "name": "Yaourt grec 0%", "kcal": 59, "p": 10, "c": 3.6, "f": 0.4}, {"id": "yaourt_nature_034", "name": "Yaourt nature", "kcal": 61, "p": 3.5, "c": 4.7, "f": 3.3}, {"id": "lait_écrémé_035", "name": "Lait écrémé", "kcal": 34, "p": 3.4, "c": 5, "f": 0.1}, {"id": "lait_demi_écrémé_036", "name": "Lait demi-écrémé", "kcal": 47, "p": 3.4, "c": 4.8, "f": 1.6}, {"id": "lait_entier_037", "name": "Lait entier", "kcal": 64, "p": 3.3, "c": 4.8, "f": 3.6}, {"id": "lait_d_amande_sans_sucre_038", "name": "Lait d'amande (sans sucre)", "kcal": 13, "p": 0.4, "c": 0.2, "f": 1.1}, {"id": "lait_de_soja_039", "name": "Lait de soja", "kcal": 45, "p": 3.6, "c": 2.5, "f": 2}, {"id": "lait_de_coco_040", "name": "Lait de coco", "kcal": 190, "p": 2, "c": 3, "f": 19}, {"id": "cottage_cheese_041", "name": "Cottage cheese", "kcal": 98, "p": 11, "c": 3.4, "f": 4.3}, {"id": "ricotta_042", "name": "Ricotta", "kcal": 174, "p": 11.3, "c": 3, "f": 13}, {"id": "mozzarella_043", "name": "Mozzarella", "kcal": 280, "p": 19, "c": 2, "f": 22}, {"id": "emmental_044", "name": "Emmental", "kcal": 380, "p": 28, "c": 0, "f": 29}, {"id": "parmesan_045", "name": "Parmesan", "kcal": 431, "p": 38, "c": 4, "f": 29}, {"id": "feta_046", "name": "Feta", "kcal": 264, "p": 14, "c": 4, "f": 21}, {"id": "chèvre_047", "name": "Chèvre", "kcal": 364, "p": 22, "c": 2, "f": 30}, {"id": "crème_fraîche_30_048", "name": "Crème fraîche 30%", "kcal": 300, "p": 2, "c": 3, "f": 30}, {"id": "crème_liquide_15_049", "name": "Crème liquide 15%", "kcal": 170, "p": 2.8, "c": 3.3, "f": 15}, {"id": "beurre_050", "name": "Beurre", "kcal": 717, "p": 1, "c": 0, "f": 81}, {"id": "riz_basmati_cru_051", "name": "Riz basmati (cru)", "kcal": 360, "p": 7, "c": 80, "f": 1}, {"id": "riz_basmati_cuit_052", "name": "Riz basmati (cuit)", "kcal": 130, "p": 2.7, "c": 28, "f": 0.3}, {"id": "riz_complet_cru_053", "name": "Riz complet (cru)", "kcal": 370, "p": 7.5, "c": 77, "f": 2.8}, {"id": "riz_complet_cuit_054", "name": "Riz complet (cuit)", "kcal": 111, "p": 2.6, "c": 23, "f": 0.9}, {"id": "pâtes_crues_055", "name": "Pâtes (crues)", "kcal": 350, "p": 12, "c": 72, "f": 1.5}, {"id": "pâtes_cuites_056", "name": "Pâtes (cuites)", "kcal": 158, "p": 5.8, "c": 30, "f": 0.9}, {"id": "pâtes_complètes_crues_057", "name": "Pâtes complètes (crues)", "kcal": 350, "p": 13, "c": 67, "f": 2.5}, {"id": "quinoa_cru_058", "name": "Quinoa (cru)", "kcal": 368, "p": 14, "c": 64, "f": 6}, {"id": "quinoa_cuit_059", "name": "Quinoa (cuit)", "kcal": 120, "p": 4.4, "c": 21, "f": 1.9}, {"id": "boulgour_cru_060", "name": "Boulgour (cru)", "kcal": 342, "p": 12, "c": 76, "f": 1.3}, {"id": "boulgour_cuit_061", "name": "Boulgour (cuit)", "kcal": 83, "p": 3.1, "c": 19, "f": 0.2}, {"id": "semoule_crue_062", "name": "Semoule (crue)", "kcal": 376, "p": 12.8, "c": 77, "f": 0.6}, {"id": "couscous_cuit_063", "name": "Couscous (cuit)", "kcal": 112, "p": 3.8, "c": 23, "f": 0.2}, {"id": "avoine_flocons_064", "name": "Avoine (flocons)", "kcal": 389, "p": 17, "c": 66, "f": 7}, {"id": "farine_de_blé_065", "name": "Farine de blé", "kcal": 364, "p": 10, "c": 76, "f": 1}, {"id": "farine_complète_066", "name": "Farine complète", "kcal": 340, "p": 13, "c": 72, "f": 2.5}, {"id": "maïzena_067", "name": "Maïzena", "kcal": 381, "p": 0.3, "c": 91, "f": 0.1}, {"id": "pain_blanc_068", "name": "Pain blanc", "kcal": 265, "p": 9, "c": 49, "f": 3.2}, {"id": "pain_complet_069", "name": "Pain complet", "kcal": 247, "p": 9, "c": 41, "f": 4.2}, {"id": "pain_de_mie_070", "name": "Pain de mie", "kcal": 265, "p": 9, "c": 49, "f": 3.5}, {"id": "pain_au_levain_071", "name": "Pain au levain", "kcal": 289, "p": 10, "c": 56, "f": 1.5}, {"id": "wrap_tortilla_072", "name": "Wrap / tortilla", "kcal": 310, "p": 8, "c": 52, "f": 7}, {"id": "pita_073", "name": "Pita", "kcal": 275, "p": 9, "c": 55, "f": 1.2}, {"id": "bagel_074", "name": "Bagel", "kcal": 250, "p": 10, "c": 48, "f": 2}, {"id": "brioche_075", "name": "Brioche", "kcal": 330, "p": 8, "c": 51, "f": 11}, {"id": "croissant_076", "name": "Croissant", "kcal": 406, "p": 8, "c": 45, "f": 21}, {"id": "pâte_feuilletée_077", "name": "Pâte feuilletée", "kcal": 558, "p": 7, "c": 45, "f": 38}, {"id": "pâte_brisée_078", "name": "Pâte brisée", "kcal": 440, "p": 7, "c": 45, "f": 28}, {"id": "pâte_à_pizza_079", "name": "Pâte à pizza", "kcal": 270, "p": 8.5, "c": 52, "f": 3.5}, {"id": "gnocchi_080", "name": "Gnocchi", "kcal": 150, "p": 3, "c": 33, "f": 0.7}, {"id": "polenta_cuite_081", "name": "Polenta (cuite)", "kcal": 80, "p": 1.6, "c": 17, "f": 0.3}, {"id": "pommes_de_terre_082", "name": "Pommes de terre", "kcal": 77, "p": 2, "c": 17, "f": 0.1}, {"id": "pommes_de_terre_cuites_083", "name": "Pommes de terre (cuites)", "kcal": 87, "p": 2, "c": 20, "f": 0.1}, {"id": "patate_douce_084", "name": "Patate douce", "kcal": 86, "p": 1.6, "c": 20, "f": 0.1}, {"id": "lentilles_cuites_085", "name": "Lentilles (cuites)", "kcal": 116, "p": 9, "c": 20, "f": 0.4}, {"id": "pois_chiches_cuits_086", "name": "Pois chiches (cuits)", "kcal": 164, "p": 9, "c": 27, "f": 2.6}, {"id": "haricots_rouges_cuits_087", "name": "Haricots rouges (cuits)", "kcal": 127, "p": 9, "c": 23, "f": 0.5}, {"id": "haricots_blancs_cuits_088", "name": "Haricots blancs (cuits)", "kcal": 114, "p": 7.7, "c": 21, "f": 0.5}, {"id": "edamame_089", "name": "Edamame", "kcal": 122, "p": 11.9, "c": 9.9, "f": 5.2}, {"id": "banane_090", "name": "Banane", "kcal": 89, "p": 1.1, "c": 23, "f": 0.3}, {"id": "pomme_091", "name": "Pomme", "kcal": 52, "p": 0.3, "c": 14, "f": 0.2}, {"id": "poire_092", "name": "Poire", "kcal": 57, "p": 0.4, "c": 15, "f": 0.1}, {"id": "fraise_093", "name": "Fraise", "kcal": 32, "p": 0.7, "c": 7.7, "f": 0.3}, {"id": "myrtille_094", "name": "Myrtille", "kcal": 57, "p": 0.7, "c": 14.5, "f": 0.3}, {"id": "framboise_095", "name": "Framboise", "kcal": 52, "p": 1.2, "c": 12, "f": 0.7}, {"id": "mangue_096", "name": "Mangue", "kcal": 60, "p": 0.8, "c": 15, "f": 0.4}, {"id": "ananas_097", "name": "Ananas", "kcal": 50, "p": 0.5, "c": 13, "f": 0.1}, {"id": "orange_098", "name": "Orange", "kcal": 47, "p": 0.9, "c": 12, "f": 0.1}, {"id": "citron_099", "name": "Citron", "kcal": 29, "p": 1.1, "c": 9, "f": 0.3}, {"id": "kiwi_100", "name": "Kiwi", "kcal": 61, "p": 1.1, "c": 15, "f": 0.5}, {"id": "raisin_101", "name": "Raisin", "kcal": 69, "p": 0.7, "c": 18, "f": 0.2}, {"id": "raisin_sec_102", "name": "Raisin sec", "kcal": 299, "p": 3.1, "c": 79, "f": 0.5}, {"id": "dattes_103", "name": "Dattes", "kcal": 282, "p": 2.5, "c": 75, "f": 0.4}, {"id": "abricot_104", "name": "Abricot", "kcal": 48, "p": 1.4, "c": 11, "f": 0.4}, {"id": "pêche_105", "name": "Pêche", "kcal": 39, "p": 0.9, "c": 10, "f": 0.3}, {"id": "pastèque_106", "name": "Pastèque", "kcal": 30, "p": 0.6, "c": 8, "f": 0.2}, {"id": "avocat_107", "name": "Avocat", "kcal": 160, "p": 2, "c": 9, "f": 15}, {"id": "tomate_108", "name": "Tomate", "kcal": 18, "p": 0.9, "c": 3.9, "f": 0.2}, {"id": "sauce_tomate_109", "name": "Sauce tomate", "kcal": 29, "p": 1.4, "c": 6.2, "f": 0.2}, {"id": "concombre_110", "name": "Concombre", "kcal": 15, "p": 0.7, "c": 3.6, "f": 0.1}, {"id": "courgette_111", "name": "Courgette", "kcal": 17, "p": 1.2, "c": 3.1, "f": 0.3}, {"id": "carotte_112", "name": "Carotte", "kcal": 41, "p": 0.9, "c": 9.6, "f": 0.2}, {"id": "poivron_113", "name": "Poivron", "kcal": 31, "p": 1.0, "c": 6.0, "f": 0.3}, {"id": "oignon_114", "name": "Oignon", "kcal": 40, "p": 1.1, "c": 9.3, "f": 0.1}, {"id": "ail_115", "name": "Ail", "kcal": 149, "p": 6.4, "c": 33, "f": 0.5}, {"id": "brocoli_116", "name": "Brocoli", "kcal": 34, "p": 2.8, "c": 6.6, "f": 0.4}, {"id": "epinards_117", "name": "Epinards", "kcal": 23, "p": 2.9, "c": 1.4, "f": 0.4}, {"id": "champignons_118", "name": "Champignons", "kcal": 22, "p": 3.1, "c": 3.3, "f": 0.3}, {"id": "chou_fleur_119", "name": "Chou-fleur", "kcal": 25, "p": 1.9, "c": 5, "f": 0.3}, {"id": "chou_120", "name": "Chou", "kcal": 25, "p": 1.3, "c": 6, "f": 0.1}, {"id": "chou_rouge_121", "name": "Chou rouge", "kcal": 31, "p": 1.4, "c": 7.4, "f": 0.2}, {"id": "aubergine_122", "name": "Aubergine", "kcal": 25, "p": 1, "c": 6, "f": 0.2}, {"id": "haricots_verts_123", "name": "Haricots verts", "kcal": 31, "p": 1.8, "c": 7, "f": 0.1}, {"id": "petits_pois_124", "name": "Petits pois", "kcal": 81, "p": 5.4, "c": 14.5, "f": 0.4}, {"id": "maïs_125", "name": "Maïs", "kcal": 86, "p": 3.4, "c": 19, "f": 1.2}, {"id": "maïs_boîte_126", "name": "Maïs (boîte)", "kcal": 78, "p": 2.5, "c": 15, "f": 1.2}, {"id": "betterave_127", "name": "Betterave", "kcal": 43, "p": 1.6, "c": 10, "f": 0.2}, {"id": "salade_128", "name": "Salade", "kcal": 15, "p": 1.4, "c": 2.9, "f": 0.2}, {"id": "roquette_129", "name": "Roquette", "kcal": 25, "p": 2.6, "c": 3.7, "f": 0.7}, {"id": "céleri_130", "name": "Céleri", "kcal": 16, "p": 0.7, "c": 3, "f": 0.2}, {"id": "poireau_131", "name": "Poireau", "kcal": 61, "p": 1.5, "c": 14, "f": 0.3}, {"id": "asperges_132", "name": "Asperges", "kcal": 20, "p": 2.2, "c": 3.9, "f": 0.1}, {"id": "huile_d_olive_133", "name": "Huile d'olive", "kcal": 884, "p": 0, "c": 0, "f": 100}, {"id": "huile_de_coco_134", "name": "Huile de coco", "kcal": 892, "p": 0, "c": 0, "f": 100}, {"id": "huile_de_colza_135", "name": "Huile de colza", "kcal": 884, "p": 0, "c": 0, "f": 100}, {"id": "amandes_136", "name": "Amandes", "kcal": 579, "p": 21, "c": 22, "f": 50}, {"id": "noix_137", "name": "Noix", "kcal": 654, "p": 15, "c": 14, "f": 65}, {"id": "noisettes_138", "name": "Noisettes", "kcal": 628, "p": 15, "c": 17, "f": 61}, {"id": "cacahuètes_139", "name": "Cacahuètes", "kcal": 567, "p": 26, "c": 16, "f": 49}, {"id": "beurre_de_cacahuète_140", "name": "Beurre de cacahuète", "kcal": 588, "p": 25, "c": 20, "f": 50}, {"id": "graines_de_chia_141", "name": "Graines de chia", "kcal": 486, "p": 17, "c": 42, "f": 31}, {"id": "graines_de_lin_142", "name": "Graines de lin", "kcal": 534, "p": 18, "c": 29, "f": 42}, {"id": "graines_de_tournesol_143", "name": "Graines de tournesol", "kcal": 584, "p": 21, "c": 20, "f": 51}, {"id": "sucre_144", "name": "Sucre", "kcal": 400, "p": 0, "c": 100, "f": 0}, {"id": "cassonade_145", "name": "Cassonade", "kcal": 380, "p": 0, "c": 98, "f": 0}, {"id": "sirop_d_érable_146", "name": "Sirop d'érable", "kcal": 260, "p": 0, "c": 67, "f": 0.1}, {"id": "confiture_147", "name": "Confiture", "kcal": 250, "p": 0.4, "c": 60, "f": 0.2}, {"id": "chocolat_au_lait_148", "name": "Chocolat au lait", "kcal": 535, "p": 7.7, "c": 59, "f": 30}, {"id": "pépites_chocolat_149", "name": "Pépites chocolat", "kcal": 520, "p": 6, "c": 55, "f": 30}, {"id": "cacao_non_sucré_150", "name": "Cacao non sucré", "kcal": 228, "p": 20, "c": 58, "f": 14}, {"id": "levure_chimique_151", "name": "Levure chimique", "kcal": 53, "p": 0, "c": 28, "f": 0}, {"id": "levure_boulangère_152", "name": "Levure boulangère", "kcal": 325, "p": 40, "c": 41, "f": 8}, {"id": "bicarbonate_153", "name": "Bicarbonate", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "gélatine_154", "name": "Gélatine", "kcal": 335, "p": 85, "c": 0, "f": 0}, {"id": "extrait_de_vanille_155", "name": "Extrait de vanille", "kcal": 288, "p": 0, "c": 13, "f": 0}, {"id": "sauce_soja_156", "name": "Sauce soja", "kcal": 53, "p": 8.1, "c": 4.9, "f": 0.6}, {"id": "ketchup_157", "name": "Ketchup", "kcal": 112, "p": 1.3, "c": 26, "f": 0.2}, {"id": "moutarde_158", "name": "Moutarde", "kcal": 66, "p": 4.4, "c": 5.8, "f": 3.7}, {"id": "mayonnaise_159", "name": "Mayonnaise", "kcal": 680, "p": 1, "c": 1, "f": 75}, {"id": "pesto_160", "name": "Pesto", "kcal": 460, "p": 5, "c": 6, "f": 46}, {"id": "sauce_barbecue_161", "name": "Sauce barbecue", "kcal": 180, "p": 0.8, "c": 44, "f": 0.5}, {"id": "sriracha_162", "name": "Sriracha", "kcal": 93, "p": 1.3, "c": 20, "f": 0.9}, {"id": "vinaigre_balsamique_163", "name": "Vinaigre balsamique", "kcal": 88, "p": 0.5, "c": 17, "f": 0.0}, {"id": "vinaigre_164", "name": "Vinaigre", "kcal": 18, "p": 0, "c": 0, "f": 0}, {"id": "olives_165", "name": "Olives", "kcal": 145, "p": 1, "c": 3.8, "f": 15.3}, {"id": "cornichons_166", "name": "Cornichons", "kcal": 12, "p": 0.5, "c": 2.3, "f": 0.2}, {"id": "câpres_167", "name": "Câpres", "kcal": 23, "p": 2.4, "c": 4.9, "f": 0.9}, {"id": "whey_168", "name": "Whey", "kcal": 400, "p": 80, "c": 8, "f": 6}, {"id": "barre_protéinée_169", "name": "Barre protéinée", "kcal": 350, "p": 30, "c": 35, "f": 10}, {"id": "granola_170", "name": "Granola", "kcal": 450, "p": 10, "c": 60, "f": 15}, {"id": "riz_soufflé_171", "name": "Riz soufflé", "kcal": 402, "p": 6, "c": 90, "f": 1}, {"id": "sel_172", "name": "Sel", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "poivre_173", "name": "Poivre", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "paprika_174", "name": "Paprika", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "cumin_175", "name": "Cumin", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "curry_poudre_176", "name": "Curry (poudre)", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "cannelle_177", "name": "Cannelle", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "piment_178", "name": "Piment", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "gingembre_179", "name": "Gingembre", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "curcuma_180", "name": "Curcuma", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "basilic_181", "name": "Basilic", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "persil_182", "name": "Persil", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "coriandre_183", "name": "Coriandre", "kcal": 0, "p": 0, "c": 0, "f": 0}, {"id": "pamplemousse_184", "name": "Pamplemousse", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "grenade_185", "name": "Grenade", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "prune_186", "name": "Prune", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "cerise_187", "name": "Cerise", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "melon_188", "name": "Melon", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "nectarine_189", "name": "Nectarine", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "figue_190", "name": "Figue", "kcal": 55, "p": 0.8, "c": 14, "f": 0.3}, {"id": "chou_kale_191", "name": "Chou kale", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "radis_192", "name": "Radis", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "navet_193", "name": "Navet", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "fenouil_194", "name": "Fenouil", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "artichaut_195", "name": "Artichaut", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "choux_de_bruxelles_196", "name": "Choux de Bruxelles", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "concentré_de_tomate_197", "name": "Concentré de tomate", "kcal": 35, "p": 2, "c": 7, "f": 0.4}, {"id": "kéfir_198", "name": "Kéfir", "kcal": 45, "p": 3.4, "c": 4.8, "f": 1.0}, {"id": "lait_fermenté_199", "name": "Lait fermenté", "kcal": 45, "p": 3.4, "c": 4.8, "f": 1.0}, {"id": "fromage_frais_200", "name": "Fromage frais", "kcal": 342, "p": 6, "c": 4, "f": 34}, {"id": "philadelphia_201", "name": "Philadelphia", "kcal": 342, "p": 6, "c": 4, "f": 34}, {"id": "mascarpone_202", "name": "Mascarpone", "kcal": 420, "p": 6, "c": 4, "f": 42}, {"id": "biscottes_203", "name": "Biscottes", "kcal": 410, "p": 10, "c": 75, "f": 8}, {"id": "crackers_204", "name": "Crackers", "kcal": 410, "p": 10, "c": 75, "f": 8}, {"id": "céréales_205", "name": "Céréales", "kcal": 380, "p": 8, "c": 80, "f": 2}, {"id": "muesli_206", "name": "Muesli", "kcal": 360, "p": 10, "c": 65, "f": 7}, {"id": "tortellini_207", "name": "Tortellini", "kcal": 300, "p": 12, "c": 45, "f": 8}, {"id": "nouilles_crues_208", "name": "Nouilles (crues)", "kcal": 360, "p": 11, "c": 72, "f": 2}, {"id": "nouilles_cuites_209", "name": "Nouilles (cuites)", "kcal": 138, "p": 4.5, "c": 25, "f": 1}, {"id": "ramen_nouilles_210", "name": "Ramen (nouilles)", "kcal": 360, "p": 11, "c": 72, "f": 2}, {"id": "poulet_rôti_211", "name": "Poulet rôti", "kcal": 190, "p": 29, "c": 0, "f": 7}, {"id": "steak_de_soja_212", "name": "Steak de soja", "kcal": 170, "p": 17, "c": 7, "f": 7}, {"id": "protéines_de_soja_texturées_213", "name": "Protéines de soja texturées", "kcal": 330, "p": 50, "c": 30, "f": 1.5}, {"id": "surimi_214", "name": "Surimi", "kcal": 99, "p": 8, "c": 15, "f": 0.9}, {"id": "calamar_215", "name": "Calamar", "kcal": 92, "p": 16, "c": 3, "f": 1.4}, {"id": "compote_sans_sucre_216", "name": "Compote sans sucre", "kcal": 42, "p": 0.2, "c": 10, "f": 0.1}, {"id": "pâte_à_tartiner_217", "name": "Pâte à tartiner", "kcal": 540, "p": 7, "c": 57, "f": 32}, {"id": "biscuit_218", "name": "Biscuit", "kcal": 480, "p": 6, "c": 65, "f": 20}, {"id": "cookie_219", "name": "Cookie", "kcal": 480, "p": 6, "c": 65, "f": 20}, {"id": "gâteau_nature_220", "name": "Gâteau nature", "kcal": 350, "p": 6, "c": 55, "f": 12}, {"id": "sauce_sésame_221", "name": "Sauce sésame", "kcal": 595, "p": 17, "c": 21, "f": 54}, {"id": "tahini_222", "name": "Tahini", "kcal": 595, "p": 17, "c": 21, "f": 54}, {"id": "sauce_au_yaourt_223", "name": "Sauce au yaourt", "kcal": 80, "p": 4, "c": 6, "f": 4}, {"id": "sauce_curry_224", "name": "Sauce curry", "kcal": 120, "p": 2, "c": 12, "f": 6}, {"id": "sauce_pesto_rouge_225", "name": "Sauce pesto rouge", "kcal": 420, "p": 5, "c": 8, "f": 40}];
+const DEFAULT_FOODS=[{"id": "poulet_blanc_cru_000", "name": "Poulet (blanc, cru)", "kcal": 120.0, "p": 23.0, "c": 0.0, "f": 2.6}, {"id": "poulet_rôti_001", "name": "Poulet rôti", "kcal": 190.0, "p": 29.0, "c": 0.0, "f": 7.0}, {"id": "dinde_crue_002", "name": "Dinde (crue)", "kcal": 110.0, "p": 24.0, "c": 0.0, "f": 1.5}, {"id": "boeuf_steak_5_003", "name": "Boeuf (steak 5%)", "kcal": 137.0, "p": 21.0, "c": 0.0, "f": 5.0}, {"id": "boeuf_haché_15_004", "name": "Boeuf (haché 15%)", "kcal": 215.0, "p": 19.0, "c": 0.0, "f": 15.0}, {"id": "jambon_blanc_005", "name": "Jambon blanc", "kcal": 115.0, "p": 19.0, "c": 1.0, "f": 4.0}, {"id": "bacon_006", "name": "Bacon", "kcal": 541.0, "p": 37.0, "c": 1.4, "f": 42.0}, {"id": "lardons_007", "name": "Lardons", "kcal": 305.0, "p": 16.0, "c": 1.0, "f": 27.0}, {"id": "chorizo_008", "name": "Chorizo", "kcal": 455.0, "p": 24.0, "c": 2.0, "f": 38.0}, {"id": "tofu_nature_009", "name": "Tofu nature", "kcal": 120.0, "p": 13.0, "c": 2.0, "f": 7.0}, {"id": "tofu_fumé_010", "name": "Tofu fumé", "kcal": 150.0, "p": 16.0, "c": 2.0, "f": 9.0}, {"id": "tempeh_011", "name": "Tempeh", "kcal": 193.0, "p": 20.0, "c": 9.0, "f": 11.0}, {"id": "seitan_012", "name": "Seitan", "kcal": 140.0, "p": 28.0, "c": 5.0, "f": 1.5}, {"id": "oeuf_entier_013", "name": "Oeuf entier", "kcal": 143.0, "p": 13.0, "c": 1.0, "f": 10.0}, {"id": "blanc_d_oeuf_014", "name": "Blanc d'oeuf", "kcal": 52.0, "p": 11.0, "c": 0.7, "f": 0.2}, {"id": "saumon_015", "name": "Saumon", "kcal": 208.0, "p": 20.0, "c": 0.0, "f": 13.0}, {"id": "thon_au_naturel_016", "name": "Thon (au naturel)", "kcal": 116.0, "p": 26.0, "c": 0.0, "f": 1.0}, {"id": "cabillaud_017", "name": "Cabillaud", "kcal": 82.0, "p": 18.0, "c": 0.0, "f": 0.7}, {"id": "crevettes_018", "name": "Crevettes", "kcal": 99.0, "p": 24.0, "c": 0.2, "f": 0.3}, {"id": "sardines_019", "name": "Sardines", "kcal": 208.0, "p": 25.0, "c": 0.0, "f": 11.0}, {"id": "maquereau_020", "name": "Maquereau", "kcal": 205.0, "p": 19.0, "c": 0.0, "f": 14.0}, {"id": "moules_021", "name": "Moules", "kcal": 86.0, "p": 12.0, "c": 4.0, "f": 2.0}, {"id": "skyr_0_022", "name": "Skyr 0%", "kcal": 60.0, "p": 11.0, "c": 4.0, "f": 0.2}, {"id": "fromage_blanc_0_023", "name": "Fromage blanc 0%", "kcal": 46.0, "p": 8.0, "c": 4.0, "f": 0.2}, {"id": "yaourt_grec_0_024", "name": "Yaourt grec 0%", "kcal": 59.0, "p": 10.0, "c": 3.6, "f": 0.4}, {"id": "lait_demi_écrémé_025", "name": "Lait demi-écrémé", "kcal": 47.0, "p": 3.4, "c": 4.8, "f": 1.6}, {"id": "beurre_026", "name": "Beurre", "kcal": 717.0, "p": 1.0, "c": 0.0, "f": 81.0}, {"id": "mascarpone_027", "name": "Mascarpone", "kcal": 420.0, "p": 6.0, "c": 4.0, "f": 42.0}, {"id": "philadelphia_028", "name": "Philadelphia", "kcal": 342.0, "p": 6.0, "c": 4.0, "f": 34.0}, {"id": "riz_basmati_cru_029", "name": "Riz basmati (cru)", "kcal": 360.0, "p": 7.0, "c": 80.0, "f": 1.0}, {"id": "riz_basmati_cuit_030", "name": "Riz basmati (cuit)", "kcal": 130.0, "p": 2.7, "c": 28.0, "f": 0.3}, {"id": "pâtes_crues_031", "name": "Pâtes (crues)", "kcal": 350.0, "p": 12.0, "c": 72.0, "f": 1.5}, {"id": "avoine_flocons_032", "name": "Avoine (flocons)", "kcal": 389.0, "p": 17.0, "c": 66.0, "f": 7.0}, {"id": "pain_complet_033", "name": "Pain complet", "kcal": 247.0, "p": 9.0, "c": 41.0, "f": 4.2}, {"id": "lentilles_cuites_034", "name": "Lentilles (cuites)", "kcal": 116.0, "p": 9.0, "c": 20.0, "f": 0.4}, {"id": "pois_chiches_cuits_035", "name": "Pois chiches (cuits)", "kcal": 164.0, "p": 9.0, "c": 27.0, "f": 2.6}, {"id": "haricots_rouges_cuits_036", "name": "Haricots rouges (cuits)", "kcal": 127.0, "p": 9.0, "c": 23.0, "f": 0.5}, {"id": "edamame_037", "name": "Edamame", "kcal": 122.0, "p": 11.9, "c": 9.9, "f": 5.2}, {"id": "tomate_038", "name": "Tomate", "kcal": 18.0, "p": 0.9, "c": 3.9, "f": 0.2}, {"id": "courgette_039", "name": "Courgette", "kcal": 17.0, "p": 1.2, "c": 3.1, "f": 0.3}, {"id": "carotte_040", "name": "Carotte", "kcal": 41.0, "p": 0.9, "c": 9.6, "f": 0.2}, {"id": "brocoli_041", "name": "Brocoli", "kcal": 34.0, "p": 2.8, "c": 6.6, "f": 0.4}, {"id": "épinards_042", "name": "Épinards", "kcal": 23.0, "p": 2.9, "c": 1.4, "f": 0.4}, {"id": "champignons_043", "name": "Champignons", "kcal": 22.0, "p": 3.1, "c": 3.3, "f": 0.3}, {"id": "pomme_de_terre_044", "name": "Pomme de terre", "kcal": 77.0, "p": 2.0, "c": 17.0, "f": 0.1}, {"id": "patate_douce_045", "name": "Patate douce", "kcal": 86.0, "p": 1.6, "c": 20.0, "f": 0.1}, {"id": "avocat_046", "name": "Avocat", "kcal": 160.0, "p": 2.0, "c": 9.0, "f": 15.0}, {"id": "banane_047", "name": "Banane", "kcal": 89.0, "p": 1.1, "c": 23.0, "f": 0.3}, {"id": "pomme_048", "name": "Pomme", "kcal": 52.0, "p": 0.3, "c": 14.0, "f": 0.2}, {"id": "fraise_049", "name": "Fraise", "kcal": 32.0, "p": 0.7, "c": 7.7, "f": 0.3}, {"id": "dattes_050", "name": "Dattes", "kcal": 282.0, "p": 2.5, "c": 75.0, "f": 0.4}, {"id": "raisin_sec_051", "name": "Raisin sec", "kcal": 299.0, "p": 3.1, "c": 79.0, "f": 0.5}, {"id": "amandes_052", "name": "Amandes", "kcal": 579.0, "p": 21.0, "c": 22.0, "f": 50.0}, {"id": "noix_053", "name": "Noix", "kcal": 654.0, "p": 15.0, "c": 14.0, "f": 65.0}, {"id": "beurre_de_cacahuète_054", "name": "Beurre de cacahuète", "kcal": 588.0, "p": 25.0, "c": 20.0, "f": 50.0}, {"id": "graines_de_chia_055", "name": "Graines de chia", "kcal": 486.0, "p": 17.0, "c": 42.0, "f": 31.0}, {"id": "tahini_056", "name": "Tahini", "kcal": 595.0, "p": 17.0, "c": 21.0, "f": 54.0}, {"id": "huile_d_olive_057", "name": "Huile d'olive", "kcal": 884.0, "p": 0.0, "c": 0.0, "f": 100.0}, {"id": "sucre_058", "name": "Sucre", "kcal": 400.0, "p": 0.0, "c": 100.0, "f": 0.0}, {"id": "miel_059", "name": "Miel", "kcal": 304.0, "p": 0.3, "c": 82.0, "f": 0.0}, {"id": "sirop_d_érable_060", "name": "Sirop d'érable", "kcal": 260.0, "p": 0.0, "c": 67.0, "f": 0.1}, {"id": "confiture_061", "name": "Confiture", "kcal": 250.0, "p": 0.4, "c": 60.0, "f": 0.2}, {"id": "pâte_à_tartiner_062", "name": "Pâte à tartiner", "kcal": 540.0, "p": 7.0, "c": 57.0, "f": 32.0}, {"id": "whey_063", "name": "Whey", "kcal": 400.0, "p": 80.0, "c": 8.0, "f": 6.0}, {"id": "barre_protéinée_064", "name": "Barre protéinée", "kcal": 350.0, "p": 30.0, "c": 35.0, "f": 10.0}, {"id": "houmous_065", "name": "Houmous", "kcal": 170.0, "p": 8.0, "c": 14.0, "f": 9.0}, {"id": "guacamole_066", "name": "Guacamole", "kcal": 170.0, "p": 2.0, "c": 8.0, "f": 15.0}, {"id": "poulet_cuisse_sans_peau_067", "name": "Poulet (cuisse, sans peau)", "kcal": 165.0, "p": 27.0, "c": 0.0, "f": 7.0}, {"id": "porc_filet_068", "name": "Porc (filet)", "kcal": 165.0, "p": 27.0, "c": 0.0, "f": 7.0}, {"id": "veau_escalope_069", "name": "Veau (escalope)", "kcal": 165.0, "p": 27.0, "c": 0.0, "f": 7.0}, {"id": "agneau_gigot_070", "name": "Agneau (gigot)", "kcal": 165.0, "p": 27.0, "c": 0.0, "f": 7.0}, {"id": "saucisse_071", "name": "Saucisse", "kcal": 165.0, "p": 27.0, "c": 0.0, "f": 7.0}, {"id": "steak_végétal_072", "name": "Steak végétal", "kcal": 165.0, "p": 27.0, "c": 0.0, "f": 7.0}, {"id": "truite_073", "name": "Truite", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "colin_074", "name": "Colin", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "lieu_noir_075", "name": "Lieu noir", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "anchois_076", "name": "Anchois", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "calamar_077", "name": "Calamar", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "poulpe_078", "name": "Poulpe", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "noix_de_saint_jacques_079", "name": "Noix de Saint-Jacques", "kcal": 140.0, "p": 20.0, "c": 0.0, "f": 6.0}, {"id": "fromage_blanc_3_080", "name": "Fromage blanc 3%", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "yaourt_nature_081", "name": "Yaourt nature", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "yaourt_au_soja_082", "name": "Yaourt au soja", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "cottage_cheese_083", "name": "Cottage cheese", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "ricotta_084", "name": "Ricotta", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "mozzarella_085", "name": "Mozzarella", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "feta_086", "name": "Feta", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "chèvre_087", "name": "Chèvre", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "emmental_088", "name": "Emmental", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "parmesan_089", "name": "Parmesan", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "lait_écrémé_090", "name": "Lait écrémé", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "lait_entier_091", "name": "Lait entier", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "lait_d_amande_sans_sucre_092", "name": "Lait d'amande (sans sucre)", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "lait_de_soja_093", "name": "Lait de soja", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "lait_de_coco_094", "name": "Lait de coco", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "kéfir_095", "name": "Kéfir", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "crème_fraîche_30_096", "name": "Crème fraîche 30%", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "crème_liquide_15_097", "name": "Crème liquide 15%", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "margarine_098", "name": "Margarine", "kcal": 110.0, "p": 7.0, "c": 6.0, "f": 6.0}, {"id": "riz_complet_cru_099", "name": "Riz complet (cru)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "riz_complet_cuit_100", "name": "Riz complet (cuit)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "riz_sushi_cru_101", "name": "Riz sushi (cru)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pâtes_cuites_102", "name": "Pâtes (cuites)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pâtes_complètes_crues_103", "name": "Pâtes complètes (crues)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pâtes_complètes_cuites_104", "name": "Pâtes complètes (cuites)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "nouilles_crues_105", "name": "Nouilles (crues)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "nouilles_cuites_106", "name": "Nouilles (cuites)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "quinoa_cru_107", "name": "Quinoa (cru)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "quinoa_cuit_108", "name": "Quinoa (cuit)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "boulgour_cru_109", "name": "Boulgour (cru)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "boulgour_cuit_110", "name": "Boulgour (cuit)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "semoule_crue_111", "name": "Semoule (crue)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "couscous_cuit_112", "name": "Couscous (cuit)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "son_d_avoine_113", "name": "Son d'avoine", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "farine_de_blé_114", "name": "Farine de blé", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "farine_complète_115", "name": "Farine complète", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "maïzena_116", "name": "Maïzena", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pain_blanc_117", "name": "Pain blanc", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pain_de_mie_118", "name": "Pain de mie", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pain_au_levain_119", "name": "Pain au levain", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "bagel_120", "name": "Bagel", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pita_121", "name": "Pita", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "wrap_tortilla_122", "name": "Wrap / tortilla", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "brioche_123", "name": "Brioche", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "croissant_124", "name": "Croissant", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pâte_feuilletée_125", "name": "Pâte feuilletée", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pâte_brisée_126", "name": "Pâte brisée", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "pâte_à_pizza_127", "name": "Pâte à pizza", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "gnocchi_128", "name": "Gnocchi", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "polenta_cuite_129", "name": "Polenta (cuite)", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "muesli_130", "name": "Muesli", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "granola_131", "name": "Granola", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "céréales_nature_132", "name": "Céréales nature", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "riz_soufflé_133", "name": "Riz soufflé", "kcal": 330.0, "p": 10.0, "c": 65.0, "f": 4.0}, {"id": "haricots_blancs_cuits_134", "name": "Haricots blancs (cuits)", "kcal": 120.0, "p": 8.0, "c": 20.0, "f": 1.0}, {"id": "haricots_noirs_cuits_135", "name": "Haricots noirs (cuits)", "kcal": 120.0, "p": 8.0, "c": 20.0, "f": 1.0}, {"id": "petits_pois_136", "name": "Petits pois", "kcal": 120.0, "p": 8.0, "c": 20.0, "f": 1.0}, {"id": "fèves_137", "name": "Fèves", "kcal": 120.0, "p": 8.0, "c": 20.0, "f": 1.0}, {"id": "lentilles_corail_crues_138", "name": "Lentilles corail (crues)", "kcal": 120.0, "p": 8.0, "c": 20.0, "f": 1.0}, {"id": "tomate_cru_139", "name": "Tomate (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cuit_140", "name": "Tomate (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_vapeur_141", "name": "Tomate (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_rôti_142", "name": "Tomate (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_grillé_143", "name": "Tomate (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_sauté_144", "name": "Tomate (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_en_conserve_145", "name": "Tomate (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_surgelé_146", "name": "Tomate (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_cru_147", "name": "Tomate cerise (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_cuit_148", "name": "Tomate cerise (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_vapeur_149", "name": "Tomate cerise (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_rôti_150", "name": "Tomate cerise (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_grillé_151", "name": "Tomate cerise (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_sauté_152", "name": "Tomate cerise (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_en_conserve_153", "name": "Tomate cerise (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "tomate_cerise_surgelé_154", "name": "Tomate cerise (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_cru_155", "name": "Concombre (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_cuit_156", "name": "Concombre (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_vapeur_157", "name": "Concombre (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_rôti_158", "name": "Concombre (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_grillé_159", "name": "Concombre (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_sauté_160", "name": "Concombre (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_en_conserve_161", "name": "Concombre (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "concombre_surgelé_162", "name": "Concombre (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_cru_163", "name": "Courgette (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_cuit_164", "name": "Courgette (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_vapeur_165", "name": "Courgette (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_rôti_166", "name": "Courgette (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_grillé_167", "name": "Courgette (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_sauté_168", "name": "Courgette (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_en_conserve_169", "name": "Courgette (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courgette_surgelé_170", "name": "Courgette (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_cru_171", "name": "Aubergine (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_cuit_172", "name": "Aubergine (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_vapeur_173", "name": "Aubergine (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_rôti_174", "name": "Aubergine (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_grillé_175", "name": "Aubergine (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_sauté_176", "name": "Aubergine (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_en_conserve_177", "name": "Aubergine (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "aubergine_surgelé_178", "name": "Aubergine (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_cru_179", "name": "Poivron rouge (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_cuit_180", "name": "Poivron rouge (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_vapeur_181", "name": "Poivron rouge (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_rôti_182", "name": "Poivron rouge (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_grillé_183", "name": "Poivron rouge (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_sauté_184", "name": "Poivron rouge (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_en_conserve_185", "name": "Poivron rouge (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_rouge_surgelé_186", "name": "Poivron rouge (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_cru_187", "name": "Poivron vert (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_cuit_188", "name": "Poivron vert (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_vapeur_189", "name": "Poivron vert (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_rôti_190", "name": "Poivron vert (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_grillé_191", "name": "Poivron vert (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_sauté_192", "name": "Poivron vert (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_en_conserve_193", "name": "Poivron vert (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_vert_surgelé_194", "name": "Poivron vert (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_cru_195", "name": "Poivron jaune (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_cuit_196", "name": "Poivron jaune (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_vapeur_197", "name": "Poivron jaune (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_rôti_198", "name": "Poivron jaune (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_grillé_199", "name": "Poivron jaune (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_sauté_200", "name": "Poivron jaune (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_en_conserve_201", "name": "Poivron jaune (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poivron_jaune_surgelé_202", "name": "Poivron jaune (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_cru_203", "name": "Carotte (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_cuit_204", "name": "Carotte (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_vapeur_205", "name": "Carotte (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_rôti_206", "name": "Carotte (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_grillé_207", "name": "Carotte (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_sauté_208", "name": "Carotte (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_en_conserve_209", "name": "Carotte (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "carotte_surgelé_210", "name": "Carotte (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_cru_211", "name": "Betterave (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_cuit_212", "name": "Betterave (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_vapeur_213", "name": "Betterave (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_rôti_214", "name": "Betterave (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_grillé_215", "name": "Betterave (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_sauté_216", "name": "Betterave (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_en_conserve_217", "name": "Betterave (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "betterave_surgelé_218", "name": "Betterave (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_cru_219", "name": "Radis (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_cuit_220", "name": "Radis (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_vapeur_221", "name": "Radis (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_rôti_222", "name": "Radis (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_grillé_223", "name": "Radis (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_sauté_224", "name": "Radis (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_en_conserve_225", "name": "Radis (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "radis_surgelé_226", "name": "Radis (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_cru_227", "name": "Navet (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_cuit_228", "name": "Navet (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_vapeur_229", "name": "Navet (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_rôti_230", "name": "Navet (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_grillé_231", "name": "Navet (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_sauté_232", "name": "Navet (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_en_conserve_233", "name": "Navet (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "navet_surgelé_234", "name": "Navet (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_cru_235", "name": "Fenouil (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_cuit_236", "name": "Fenouil (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_vapeur_237", "name": "Fenouil (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_rôti_238", "name": "Fenouil (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_grillé_239", "name": "Fenouil (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_sauté_240", "name": "Fenouil (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_en_conserve_241", "name": "Fenouil (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "fenouil_surgelé_242", "name": "Fenouil (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_cru_243", "name": "Céleri branche (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_cuit_244", "name": "Céleri branche (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_vapeur_245", "name": "Céleri branche (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_rôti_246", "name": "Céleri branche (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_grillé_247", "name": "Céleri branche (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_sauté_248", "name": "Céleri branche (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_en_conserve_249", "name": "Céleri branche (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_branche_surgelé_250", "name": "Céleri branche (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_cru_251", "name": "Céleri rave (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_cuit_252", "name": "Céleri rave (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_vapeur_253", "name": "Céleri rave (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_rôti_254", "name": "Céleri rave (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_grillé_255", "name": "Céleri rave (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_sauté_256", "name": "Céleri rave (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_en_conserve_257", "name": "Céleri rave (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "céleri_rave_surgelé_258", "name": "Céleri rave (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_cru_259", "name": "Oignon (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_cuit_260", "name": "Oignon (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_vapeur_261", "name": "Oignon (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rôti_262", "name": "Oignon (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_grillé_263", "name": "Oignon (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_sauté_264", "name": "Oignon (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_en_conserve_265", "name": "Oignon (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_surgelé_266", "name": "Oignon (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_cru_267", "name": "Oignon rouge (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_cuit_268", "name": "Oignon rouge (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_vapeur_269", "name": "Oignon rouge (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_rôti_270", "name": "Oignon rouge (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_grillé_271", "name": "Oignon rouge (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_sauté_272", "name": "Oignon rouge (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_en_conserve_273", "name": "Oignon rouge (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "oignon_rouge_surgelé_274", "name": "Oignon rouge (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_cru_275", "name": "Échalote (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_cuit_276", "name": "Échalote (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_vapeur_277", "name": "Échalote (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_rôti_278", "name": "Échalote (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_grillé_279", "name": "Échalote (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_sauté_280", "name": "Échalote (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_en_conserve_281", "name": "Échalote (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "échalote_surgelé_282", "name": "Échalote (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_cru_283", "name": "Ail (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_cuit_284", "name": "Ail (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_vapeur_285", "name": "Ail (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_rôti_286", "name": "Ail (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_grillé_287", "name": "Ail (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_sauté_288", "name": "Ail (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_en_conserve_289", "name": "Ail (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "ail_surgelé_290", "name": "Ail (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_cru_291", "name": "Brocoli (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_cuit_292", "name": "Brocoli (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_vapeur_293", "name": "Brocoli (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_rôti_294", "name": "Brocoli (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_grillé_295", "name": "Brocoli (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_sauté_296", "name": "Brocoli (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_en_conserve_297", "name": "Brocoli (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "brocoli_surgelé_298", "name": "Brocoli (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_cru_299", "name": "Chou-fleur (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_cuit_300", "name": "Chou-fleur (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_vapeur_301", "name": "Chou-fleur (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_rôti_302", "name": "Chou-fleur (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_grillé_303", "name": "Chou-fleur (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_sauté_304", "name": "Chou-fleur (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_en_conserve_305", "name": "Chou-fleur (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_fleur_surgelé_306", "name": "Chou-fleur (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_cru_307", "name": "Chou (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_cuit_308", "name": "Chou (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_vapeur_309", "name": "Chou (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rôti_310", "name": "Chou (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_grillé_311", "name": "Chou (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_sauté_312", "name": "Chou (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_en_conserve_313", "name": "Chou (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_surgelé_314", "name": "Chou (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_cru_315", "name": "Chou rouge (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_cuit_316", "name": "Chou rouge (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_vapeur_317", "name": "Chou rouge (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_rôti_318", "name": "Chou rouge (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_grillé_319", "name": "Chou rouge (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_sauté_320", "name": "Chou rouge (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_en_conserve_321", "name": "Chou rouge (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_rouge_surgelé_322", "name": "Chou rouge (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_cru_323", "name": "Chou kale (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_cuit_324", "name": "Chou kale (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_vapeur_325", "name": "Chou kale (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_rôti_326", "name": "Chou kale (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_grillé_327", "name": "Chou kale (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_sauté_328", "name": "Chou kale (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_en_conserve_329", "name": "Chou kale (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_kale_surgelé_330", "name": "Chou kale (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_cru_331", "name": "Chou de Bruxelles (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_cuit_332", "name": "Chou de Bruxelles (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_vapeur_333", "name": "Chou de Bruxelles (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_rôti_334", "name": "Chou de Bruxelles (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_grillé_335", "name": "Chou de Bruxelles (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_sauté_336", "name": "Chou de Bruxelles (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_en_conserve_337", "name": "Chou de Bruxelles (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "chou_de_bruxelles_surgelé_338", "name": "Chou de Bruxelles (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_cru_339", "name": "Épinards (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_cuit_340", "name": "Épinards (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_vapeur_341", "name": "Épinards (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_rôti_342", "name": "Épinards (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_grillé_343", "name": "Épinards (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_sauté_344", "name": "Épinards (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_en_conserve_345", "name": "Épinards (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "épinards_surgelé_346", "name": "Épinards (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_cru_347", "name": "Roquette (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_cuit_348", "name": "Roquette (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_vapeur_349", "name": "Roquette (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_rôti_350", "name": "Roquette (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_grillé_351", "name": "Roquette (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_sauté_352", "name": "Roquette (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_en_conserve_353", "name": "Roquette (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "roquette_surgelé_354", "name": "Roquette (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_cru_355", "name": "Salade (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_cuit_356", "name": "Salade (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_vapeur_357", "name": "Salade (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_rôti_358", "name": "Salade (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_grillé_359", "name": "Salade (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_sauté_360", "name": "Salade (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_en_conserve_361", "name": "Salade (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "salade_surgelé_362", "name": "Salade (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_cru_363", "name": "Mâche (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_cuit_364", "name": "Mâche (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_vapeur_365", "name": "Mâche (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_rôti_366", "name": "Mâche (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_grillé_367", "name": "Mâche (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_sauté_368", "name": "Mâche (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_en_conserve_369", "name": "Mâche (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "mâche_surgelé_370", "name": "Mâche (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_cru_371", "name": "Champignons (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_cuit_372", "name": "Champignons (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_vapeur_373", "name": "Champignons (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_rôti_374", "name": "Champignons (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_grillé_375", "name": "Champignons (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_sauté_376", "name": "Champignons (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_en_conserve_377", "name": "Champignons (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "champignons_surgelé_378", "name": "Champignons (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_cru_379", "name": "Haricots verts (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_cuit_380", "name": "Haricots verts (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_vapeur_381", "name": "Haricots verts (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_rôti_382", "name": "Haricots verts (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_grillé_383", "name": "Haricots verts (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_sauté_384", "name": "Haricots verts (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_en_conserve_385", "name": "Haricots verts (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "haricots_verts_surgelé_386", "name": "Haricots verts (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_cru_387", "name": "Asperges (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_cuit_388", "name": "Asperges (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_vapeur_389", "name": "Asperges (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_rôti_390", "name": "Asperges (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_grillé_391", "name": "Asperges (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_sauté_392", "name": "Asperges (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_en_conserve_393", "name": "Asperges (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "asperges_surgelé_394", "name": "Asperges (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_cru_395", "name": "Poireau (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_cuit_396", "name": "Poireau (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_vapeur_397", "name": "Poireau (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_rôti_398", "name": "Poireau (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_grillé_399", "name": "Poireau (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_sauté_400", "name": "Poireau (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_en_conserve_401", "name": "Poireau (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "poireau_surgelé_402", "name": "Poireau (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_cru_403", "name": "Courge butternut (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_cuit_404", "name": "Courge butternut (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_vapeur_405", "name": "Courge butternut (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_rôti_406", "name": "Courge butternut (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_grillé_407", "name": "Courge butternut (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_sauté_408", "name": "Courge butternut (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_en_conserve_409", "name": "Courge butternut (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "courge_butternut_surgelé_410", "name": "Courge butternut (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_cru_411", "name": "Potiron (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_cuit_412", "name": "Potiron (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_vapeur_413", "name": "Potiron (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_rôti_414", "name": "Potiron (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_grillé_415", "name": "Potiron (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_sauté_416", "name": "Potiron (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_en_conserve_417", "name": "Potiron (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "potiron_surgelé_418", "name": "Potiron (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_cru_419", "name": "Citrouille (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_cuit_420", "name": "Citrouille (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_vapeur_421", "name": "Citrouille (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_rôti_422", "name": "Citrouille (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_grillé_423", "name": "Citrouille (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_sauté_424", "name": "Citrouille (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_en_conserve_425", "name": "Citrouille (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "citrouille_surgelé_426", "name": "Citrouille (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_cru_427", "name": "Maïs (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_cuit_428", "name": "Maïs (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_vapeur_429", "name": "Maïs (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_rôti_430", "name": "Maïs (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_grillé_431", "name": "Maïs (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_sauté_432", "name": "Maïs (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_en_conserve_433", "name": "Maïs (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "maïs_surgelé_434", "name": "Maïs (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_cru_435", "name": "Artichaut (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_cuit_436", "name": "Artichaut (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_vapeur_437", "name": "Artichaut (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_rôti_438", "name": "Artichaut (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_grillé_439", "name": "Artichaut (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_sauté_440", "name": "Artichaut (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_en_conserve_441", "name": "Artichaut (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "artichaut_surgelé_442", "name": "Artichaut (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_cru_443", "name": "Endive (cru)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_cuit_444", "name": "Endive (cuit)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_vapeur_445", "name": "Endive (vapeur)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_rôti_446", "name": "Endive (rôti)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_grillé_447", "name": "Endive (grillé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_sauté_448", "name": "Endive (sauté)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_en_conserve_449", "name": "Endive (en conserve)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "endive_surgelé_450", "name": "Endive (surgelé)", "kcal": 28.0, "p": 1.8, "c": 5.5, "f": 0.3}, {"id": "banane_surgelé_451", "name": "Banane (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "banane_compote_452", "name": "Banane (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pomme_surgelé_453", "name": "Pomme (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pomme_compote_454", "name": "Pomme (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "poire_455", "name": "Poire", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "poire_surgelé_456", "name": "Poire (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "poire_compote_457", "name": "Poire (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "fraise_surgelé_458", "name": "Fraise (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "fraise_compote_459", "name": "Fraise (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "framboise_460", "name": "Framboise", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "framboise_surgelé_461", "name": "Framboise (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "framboise_compote_462", "name": "Framboise (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "myrtille_463", "name": "Myrtille", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "myrtille_surgelé_464", "name": "Myrtille (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "myrtille_compote_465", "name": "Myrtille (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "mangue_466", "name": "Mangue", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "mangue_surgelé_467", "name": "Mangue (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "mangue_compote_468", "name": "Mangue (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "ananas_469", "name": "Ananas", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "ananas_surgelé_470", "name": "Ananas (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "ananas_compote_471", "name": "Ananas (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "orange_472", "name": "Orange", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "orange_surgelé_473", "name": "Orange (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "orange_compote_474", "name": "Orange (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "clémentine_475", "name": "Clémentine", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "clémentine_surgelé_476", "name": "Clémentine (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "clémentine_compote_477", "name": "Clémentine (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "citron_478", "name": "Citron", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "citron_surgelé_479", "name": "Citron (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "citron_compote_480", "name": "Citron (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pamplemousse_481", "name": "Pamplemousse", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pamplemousse_surgelé_482", "name": "Pamplemousse (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pamplemousse_compote_483", "name": "Pamplemousse (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "kiwi_484", "name": "Kiwi", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "kiwi_surgelé_485", "name": "Kiwi (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "kiwi_compote_486", "name": "Kiwi (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "raisin_487", "name": "Raisin", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "raisin_surgelé_488", "name": "Raisin (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "raisin_compote_489", "name": "Raisin (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pastèque_490", "name": "Pastèque", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pastèque_surgelé_491", "name": "Pastèque (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pastèque_compote_492", "name": "Pastèque (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "melon_493", "name": "Melon", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "melon_surgelé_494", "name": "Melon (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "melon_compote_495", "name": "Melon (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pêche_496", "name": "Pêche", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pêche_surgelé_497", "name": "Pêche (surgelé)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "pêche_compote_498", "name": "Pêche (compote)", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}, {"id": "nectarine_499", "name": "Nectarine", "kcal": 60.0, "p": 0.8, "c": 14.5, "f": 0.3}];
 
 const $=(s)=>document.querySelector(s);
 function uid(){return Math.random().toString(16).slice(2)+Date.now().toString(16);}
@@ -248,7 +298,9 @@ function saveFoods(){localStorage.setItem(FOODS_KEY,JSON.stringify(foods));}
 function foodById(id){return foods.find(f=>f.id===id)||null;}
 function foodName(id){const f=foodById(id);return f?f.name:"";}
 
-function seedRecipes(){const chicken=foods.find(x=>x.name.includes("Poulet"))?.id||foods[0].id;const rice=foods.find(x=>x.name.includes("Riz basmati (cru)"))?.id||foods[0].id;const spin=foods.find(x=>x.name.includes("Epinards"))?.id||foods[0].id;
+function seedRecipes(){const chicken=foods.find(x=>normalize(x.name).includes("poulet"))?.id||foods[0].id;
+const rice=foods.find(x=>normalize(x.name).includes("riz basmati (cru)"))?.id||foods[0].id;
+const spin=foods.find(x=>normalize(x.name).includes("epinards"))?.id||foods[0].id;
 return [{id:uid(),name:"Bowl poulet curry",mainCat:"Healthy",subCat:"Plat",difficulty:"Facile",timeMin:20,servings:1,kcal:0,p:0,c:0,f:0,autoMacros:true,photo:null,
 ingredients:[{foodId:chicken,grams:150,label:"Poulet",note:""},{foodId:rice,grams:70,label:"Riz basmati",note:""},{foodId:spin,grams:100,label:"Épinards",note:""}],
 steps:"1) Cuire le riz.\n2) Cuire le poulet.\n3) Mélanger et servir.",notes:"",createdAt:Date.now()-1000*60*60*12,updatedAt:Date.now()-1000*60*60*12}];}
@@ -264,7 +316,7 @@ function ensureAuto(){for(const r of state.recipes){if(r.autoMacros){const t=cal
 
 function levenshtein(a,b){a=a||"";b=b||"";const m=a.length,n=b.length;if(!m)return n;if(!n)return m;const dp=new Array(n+1);for(let j=0;j<=n;j++)dp[j]=j;for(let i=1;i<=m;i++){let prev=dp[0];dp[0]=i;for(let j=1;j<=n;j++){const tmp=dp[j];const cost=a[i-1]===b[j-1]?0:1;dp[j]=Math.min(dp[j]+1,dp[j-1]+1,prev+cost);prev=tmp;}}return dp[n];}
 function scoreName(query,name){const q=normalize(query),t=normalize(name);if(!q||!t)return-999;let score=0;if(t.includes(q))score+=80;const qT=q.split(" ").filter(Boolean),tT=t.split(" ").filter(Boolean);for(const qt of qT){if(tT.includes(qt)){score+=35;continue;}let best=999;for(const tt of tT){const d=levenshtein(qt,tt);if(d<best)best=d;if(best===0)break;}if(best===1)score+=18;else if(best===2)score+=10;else if(best===3&&qt.length>=6)score+=6;else score-=4;}return score;}
-function bestFoodMatches(name,topN=3){return foods.map(f=>({f,s:scoreName(name,f.name)})).sort((a,b)=>b.s-a.s).filter(x=>x.s>10).slice(0,topN);}
+function bestFoodMatches(name,topN=4){return foods.map(f=>({f,s:scoreName(name,f.name)})).sort((a,b)=>b.s-a.s).filter(x=>x.s>10).slice(0,topN);}
 function chooseAmbiguous(matches,original){const opts=matches.map((x,i)=>`${i+1}) ${x.f.name}`).join("\n");const choice=prompt(`Je ne suis pas sûr pour: "${original}".\nChoisis :\n${opts}\n\nTape 1-${matches.length} (ou annule)`);const idx=parseInt(choice||"",10);if(!idx||idx<1||idx>matches.length)return null;return matches[idx-1].f;}
 
 function parseIngredientLine(line){const raw=line.trim();if(!raw)return null;const s=raw.replace(/^[-•*\u2022\s]+/,"").trim();
@@ -283,9 +335,11 @@ const ingBlock=ingBlockMatch?ingBlockMatch[1].trim():"";const instructions=instr
 const lines=ingBlock.split("\n").map(x=>x.trim()).filter(Boolean);const parsed=lines.map(parseIngredientLine).filter(Boolean);
 const ingredients=[];const unknown=[];
 for(const it of parsed){const nm=(it.name||"").trim();if(!nm){unknown.push(it.raw);continue;}
-const matches=bestFoodMatches(nm,3);if(!matches.length){unknown.push(it.raw);continue;}
-let chosen=matches[0].f;if(matches.length>1 && (matches[0].s-matches[1].s)<8){const pick=chooseAmbiguous(matches,it.raw);if(pick)chosen=pick;else{unknown.push(it.raw);continue;}}
-let grams=it.grams;let note="";if(grams==null){grams=100;note="Quantité non trouvée → 100g (à ajuster)";unknown.push(it.raw+" (quantité manquante)");}
+const matches=bestFoodMatches(nm,4);if(!matches.length){unknown.push(it.raw);continue;}
+let chosen=matches[0].f;
+if(matches.length>1 && (matches[0].s-matches[1].s)<8){const pick=chooseAmbiguous(matches,it.raw);if(pick)chosen=pick;else{unknown.push(it.raw);continue;}}
+let grams=it.grams;let note="";
+if(grams==null){grams=100;note="Quantité non trouvée → 100g (à ajuster)";unknown.push(it.raw+" (quantité manquante)");}
 ingredients.push({foodId:chosen.id,grams,label:nm,note});
 }
 return{name,ingredients,instructions,unknown};}
@@ -294,121 +348,245 @@ function pill(text,cls=""){return `<span class="pill ${cls}">${escapeHtml(text)}
 function recipeSearchText(r){const ing=(r.ingredients||[]).map(i=>`${i.label||""} ${foodName(i.foodId)} ${i.grams||""}`).join(" ");return `${r.name} ${r.mainCat} ${r.subCat} ${r.difficulty} ${ing} ${r.steps||""} ${r.notes||""}`; }
 function recipeCardHTML(r){const top=r.photo?`<div class="thumb"><img src="${r.photo}" alt="${escapeHtml(r.name)}"></div>`:`<div class="thumb">${escapeHtml(r.mainCat||"Recette")}</div>`;
 const meta=[pill(r.mainCat||"—","accent"),pill(r.subCat||"—"),pill(`⏱ ${r.timeMin||0} min`),pill(`⭐ ${r.difficulty||"—"}`,"warn"),pill(`🔥 ${Math.round(r.kcal||0)} kcal`),pill(`💪 ${fmt1(r.p||0)} g P`,"ok")].join("");
-return `<div class="card" data-id="${r.id}">${top}<div class="cardBody"><h3 class="name">${escapeHtml(r.name||"Sans titre")}</h3><div class="metaLine">${escapeHtml((r.notes||"").slice(0,92))}${(r.notes||"").length>92?"…":""}</div><div class="smallRow">${meta}</div></div></div>`;}
+return `<div class="rcard" data-id="${r.id}">${top}<div class="body"><h3 class="name">${escapeHtml(r.name||"Sans titre")}</h3><div class="meta">${escapeHtml((r.notes||"").slice(0,92))}${(r.notes||"").length>92?"…":""}</div><div class="row2">${meta}</div></div></div>`;}
 
-function renderSelectors(){$("#mainCat").innerHTML=`<option value="">Toutes</option>`+MAIN_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");$("#subCat").innerHTML=`<option value="">Toutes</option>`+SUB_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
-$("#f_mainCat").innerHTML=MAIN_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");$("#f_subCat").innerHTML=SUB_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");}
+function renderSelectors(){$("#mainCat").innerHTML=`<option value="">Toutes</option>`+MAIN_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+$("#subCat").innerHTML=`<option value="">Toutes</option>`+SUB_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+$("#f_mainCat").innerHTML=MAIN_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+$("#f_subCat").innerHTML=SUB_CATS.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");}
 
 function renderStatsHome(){const total=state.recipes.length;const avgK=total?state.recipes.reduce((s,r)=>s+(Number(r.kcal)||0),0)/total:0;const avgP=total?state.recipes.reduce((s,r)=>s+(Number(r.p)||0),0)/total:0;
-$("#statsHome").innerHTML=[`<span class="chip" style="cursor:default">📚 ${total} recettes</span>`,`<span class="chip" style="cursor:default">🔥 Moy. ${Math.round(avgK)} kcal</span>`,`<span class="chip" style="cursor:default">💪 Moy. ${Math.round(avgP)} g prot</span>`,`<span class="chip" style="cursor:default">🥗 ${foods.length} aliments</span>`].join("");}
+$("#statsHome").innerHTML=[`<span class="chip" style="cursor:default">📚 ${total} recettes</span>`,`<span class="chip" style="cursor:default">🔥 ${Math.round(avgK)} kcal (moy.)</span>`,`<span class="chip" style="cursor:default">💪 ${Math.round(avgP)} g prot (moy.)</span>`,`<span class="chip" style="cursor:default">🥗 ${foods.length} aliments</span>`].join("");}
 
-function renderHome(){renderStatsHome();const main=$("#homeMainCats");main.innerHTML=MAIN_CATS.map(c=>`<span class="chip" data-main="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("");
-main.querySelectorAll("[data-main]").forEach(el=>el.addEventListener("click",()=>{setView("recipes");$("#mainCat").value=el.dataset.main;$("#subCat").value="";renderRecipes();}));
-const sub=$("#homeSubCats");sub.innerHTML=SUB_CATS.map(c=>`<span class="chip" data-sub="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("");
-sub.querySelectorAll("[data-sub]").forEach(el=>el.addEventListener("click",()=>{setView("recipes");$("#subCat").value=el.dataset.sub;renderRecipes();}));}
+let homeMainSelected=null;
+function renderHome(){renderStatsHome();
+const main=$("#homeMain");
+main.innerHTML=MAIN_CATS.map(c=>`<span class="chip ${homeMainSelected===c?"active":""}" data-main="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join("");
+main.querySelectorAll("[data-main]").forEach(el=>el.addEventListener("click",()=>{
+  const c=el.dataset.main;
+  homeMainSelected = (homeMainSelected===c)? null : c;
+  renderHome();
+}));
+$("#subHint").textContent = homeMainSelected ? `• pour ${homeMainSelected}` : "• sélectionne une catégorie";
+const sub=$("#homeSub");
+sub.innerHTML = SUB_CATS.map(sc=>`<span class="chip" data-sub="${escapeHtml(sc)}" style="${homeMainSelected? "":"opacity:.45; pointer-events:none;"}">${escapeHtml(sc)}</span>`).join("");
+sub.querySelectorAll("[data-sub]").forEach(el=>el.addEventListener("click",()=>{
+  if(!homeMainSelected) return;
+  setView("recipes");
+  $("#mainCat").value = homeMainSelected;
+  $("#subCat").value = el.dataset.sub;
+  renderQuickSubs();
+  renderRecipes();
+}));
+}
 
 function applyRecipeFilters(){const q=($("#q").value||"").trim();const mainCat=$("#mainCat").value||"";const subCat=$("#subCat").value||"";const diff=$("#diff").value||"";const sort=$("#sort").value||"recent";
 let list=state.recipes.slice();if(mainCat)list=list.filter(r=>r.mainCat===mainCat);if(subCat)list=list.filter(r=>r.subCat===subCat);if(diff)list=list.filter(r=>r.difficulty===diff);
 if(q){list=list.map(r=>({r,score:scoreName(q,r.name)*1.5+scoreName(q,recipeSearchText(r))})).filter(x=>x.score>5).sort((a,b)=>b.score-a.score).map(x=>x.r);}
-const cmp=(a,b)=>(Number(a)||0)-(Number(b)||0);if(sort==="recent")list.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));if(sort==="name")list.sort((a,b)=>(a.name||"").localeCompare(b.name||"","fr"));if(sort==="kcal")list.sort((a,b)=>cmp(a.kcal,b.kcal));if(sort==="protein")list.sort((a,b)=>cmp(b.p,a.p));if(sort==="time")list.sort((a,b)=>cmp(a.timeMin,b.timeMin));return list;}
+const cmp=(a,b)=>(Number(a)||0)-(Number(b)||0);
+if(sort==="recent")list.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+if(sort==="name")list.sort((a,b)=>(a.name||"").localeCompare(b.name||"","fr"));
+if(sort==="kcal")list.sort((a,b)=>cmp(a.kcal,b.kcal));
+if(sort==="protein")list.sort((a,b)=>cmp(b.p,a.p));
+if(sort==="time")list.sort((a,b)=>cmp(a.timeMin,b.timeMin));
+return list;}
 
 function renderRecipes(){const list=applyRecipeFilters();const total=list.length;const avgK=total?list.reduce((s,r)=>s+(Number(r.kcal)||0),0)/total:0;const avgP=total?list.reduce((s,r)=>s+(Number(r.p)||0),0)/total:0;
-$("#statsRecipes").innerHTML=[`<span class="chip" style="cursor:default">📚 ${total} résultat(s)</span>`,`<span class="chip" style="cursor:default">🔥 Moy. ${Math.round(avgK)} kcal</span>`,`<span class="chip" style="cursor:default">💪 Moy. ${Math.round(avgP)} g prot</span>`].join("");
-$("#grid").innerHTML=list.map(recipeCardHTML).join("")||`<div class="mini">Aucun résultat.</div>`;$("#grid").querySelectorAll(".card").forEach(el=>el.addEventListener("click",()=>openRecipe(el.dataset.id)));}
+$("#statsRecipes").innerHTML=[`<span class="chip" style="cursor:default">📚 ${total} résultat(s)</span>`,`<span class="chip" style="cursor:default">🔥 ${Math.round(avgK)} kcal (moy.)</span>`,`<span class="chip" style="cursor:default">💪 ${Math.round(avgP)} g prot (moy.)</span>`].join("");
+$("#grid").innerHTML=list.map(recipeCardHTML).join("")||`<div class="mini">Aucun résultat.</div>`;
+$("#grid").querySelectorAll(".rcard").forEach(el=>el.addEventListener("click",()=>openRecipe(el.dataset.id)));
+}
 
-function setView(view){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===view));$("#viewHome").style.display=view==="home"?"block":"none";$("#viewRecipes").style.display=view==="recipes"?"block":"none";if(view==="home")renderHome();else renderRecipes();}
+function setView(view){document.querySelectorAll(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===view));
+$("#viewHome").style.display=view==="home"?"block":"none";
+$("#viewRecipes").style.display=view==="recipes"?"block":"none";
+if(view==="home") renderHome(); else { renderQuickSubs(); renderRecipes(); }
+}
+
+function renderQuickSubs(){const container=$("#quickSubs");const active=$("#subCat").value||"";
+container.innerHTML = SUB_CATS.map(sc=>`<span class="chip ${active===sc?"active":""}" data-sub="${escapeHtml(sc)}">${escapeHtml(sc)}</span>`).join("");
+container.querySelectorAll("[data-sub]").forEach(el=>el.addEventListener("click",()=>{
+  $("#subCat").value = ( $("#subCat").value===el.dataset.sub ? "" : el.dataset.sub );
+  renderRecipes(); renderQuickSubs();
+}));
+}
 
 // View recipe
 let currentId=null, editId=null, formPhoto=null;
 function openRecipe(id){const r=state.recipes.find(x=>x.id===id);if(!r)return;currentId=id;$("#viewTitle").textContent=r.name||"Recette";
-const img=r.photo?`<div class="imgBig"><img src="${r.photo}"></div>`:`<div class="imgBig"><span>Pas de photo</span></div>`;
-const ingRows=(r.ingredients||[]).map(i=>{const f=foodById(i.foodId);const nm=i.label||(f?f.name:"—");return `<tr><td><strong>${escapeHtml(nm)}</strong><div class="mini">${f?escapeHtml(f.name):"Aliment manquant"}</div></td><td>${escapeHtml(i.grams??"")}</td><td>${escapeHtml(i.note||"")}</td></tr>`;}).join("");
-$("#viewBody").innerHTML=`<div class="twoCol"><div>${img}<div class="smallRow" style="margin-top:10px">${pill(r.mainCat,"accent")}${pill(r.subCat)}${pill("⭐ "+r.difficulty,"warn")}${pill("⏱ "+(r.timeMin||0)+" min")}${pill("🍽 "+(r.servings||1))}</div>
-<div class="smallRow" style="margin-top:10px">${pill("🔥 "+Math.round(r.kcal||0)+" kcal")}${pill("💪 "+fmt1(r.p||0)+" g P","ok")}${pill("🍚 "+fmt1(r.c||0)+" g G")}${pill("🥑 "+fmt1(r.f||0)+" g L")}</div>
-${r.notes?`<div class="divider"></div><div class="mini"><strong>Notes</strong><br>${escapeHtml(r.notes).replaceAll("\n","<br>")}</div>`:""}</div>
-<div><div class="mini"><strong>Ingrédients</strong></div><div style="margin-top:10px;overflow:auto"><table><thead><tr><th>Ingrédient</th><th>g</th><th>Note</th></tr></thead><tbody>${ingRows||`<tr><td colspan="3" class="mini">Aucun ingrédient</td></tr>`}</tbody></table></div>
-<div class="divider"></div><div class="mini"><strong>Instructions</strong></div><div class="mini" style="line-height:1.55;margin-top:8px">${escapeHtml(r.steps||"").replaceAll("\n","<br>")||"—"}</div></div></div>`;
-$("#overlayView").style.display="flex";}
-function closeView(){$("#overlayView").style.display="none";currentId=null;}
+const img=r.photo?`<div class="img"><img src="${r.photo}"></div>`:`<div class="img"><span>Pas de photo</span></div>`;
+const ingRows=(r.ingredients||[]).map(i=>{const f=foodById(i.foodId);const nm=i.label||(f?f.name:"—");
+return `<tr><td><strong>${escapeHtml(nm)}</strong><div class="mini">${f?escapeHtml(f.name):"Aliment manquant"}</div></td><td>${escapeHtml(i.grams??"")}</td><td>${escapeHtml(i.note||"")}</td></tr>`;}).join("");
+$("#viewBody").innerHTML=`<div class="two">
+  <div>
+    ${img}
+    <div class="row2" style="margin-top:10px">
+      ${pill(r.mainCat,"accent")} ${pill(r.subCat)} ${pill("⭐ "+r.difficulty,"warn")}
+      ${pill("⏱ "+(r.timeMin||0)+" min")} ${pill("🍽 "+(r.servings||1))}
+    </div>
+    <div class="row2" style="margin-top:10px">
+      ${pill("🔥 "+Math.round(r.kcal||0)+" kcal")} ${pill("💪 "+fmt1(r.p||0)+" g P","ok")}
+      ${pill("🍚 "+fmt1(r.c||0)+" g G")} ${pill("🥑 "+fmt1(r.f||0)+" g L")}
+    </div>
+    ${r.notes?`<div class="div"></div><div class="mini"><strong>Notes</strong><br>${escapeHtml(r.notes).replaceAll("\n","<br>")}</div>`:""}
+  </div>
+  <div>
+    <div class="mini"><strong>Ingrédients</strong></div>
+    <div style="margin-top:10px; overflow:auto">
+      <table><thead><tr><th>Ingrédient</th><th>g</th><th>Note</th></tr></thead><tbody>
+        ${ingRows||`<tr><td colspan="3" class="mini">Aucun ingrédient</td></tr>`}
+      </tbody></table>
+    </div>
+    <div class="div"></div>
+    <div class="mini"><strong>Instructions</strong></div>
+    <div class="mini" style="line-height:1.65; margin-top:8px">${escapeHtml(r.steps||"").replaceAll("\n","<br>")||"—"}</div>
+  </div>
+</div>`;
+$("#overlayView").style.display="flex";
+}
+function closeView(){$("#overlayView").style.display="none"; currentId=null;}
 
 // Edit mode
 function isEditOn(){return localStorage.getItem("edit_mode")==="on";}
-function setEditOn(on){localStorage.setItem("edit_mode",on?"on":"off");document.querySelectorAll(".adminOnly").forEach(el=>el.style.display=on?"":"none");$("#btnToggleEdit").textContent=on?"🔓 Édition active":"🔒 Mode édition";}
+function setEditOn(on){localStorage.setItem("edit_mode",on?"on":"off");
+document.querySelectorAll(".adminOnly").forEach(el=>el.style.display=on?"":"none");
+$("#btnToggleEdit").textContent=on?"🔓 Édition active":"🔒 Mode édition";}
 setEditOn(isEditOn());
 
-// Form
-function renderFoodOptions(sel,selectedId){const opts=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr")).map(f=>`<option value="${escapeHtml(f.id)}" ${f.id===selectedId?"selected":""}>${escapeHtml(f.name)}</option>`).join("");sel.innerHTML=`<option value="">— Choisir —</option>`+opts;}
+// Form helpers
+function renderFoodOptions(sel,selectedId){const opts=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"))
+.map(f=>`<option value="${escapeHtml(f.id)}" ${f.id===selectedId?"selected":""}>${escapeHtml(f.name)}</option>`).join("");
+sel.innerHTML=`<option value="">— Choisir —</option>`+opts;}
 function renderFormPhoto(){$("#formImgBox").innerHTML=formPhoto?`<img src="${formPhoto}">`:`<span>Photo</span>`;}
 function updateMacroInputsLock(){const auto=$("#autoMacros").checked;["f_kcal","f_p","f_c","f_f"].forEach(id=>$("#"+id).disabled=auto);}
-function addIngRow(ing={foodId:"",grams:"",label:"",note:""}){const tr=document.createElement("tr");tr.innerHTML=`<td><select class="foodSel"></select></td><td><input class="grams" type="number" min="0" step="1" value="${escapeHtml(ing.grams)}"></td><td><input class="label" type="text" value="${escapeHtml(ing.label)}"></td><td><input class="note" type="text" value="${escapeHtml(ing.note)}"></td><td><button class="btn danger" type="button">—</button></td>`;
-const sel=tr.querySelector(".foodSel");renderFoodOptions(sel,ing.foodId||"");sel.addEventListener("change",recalcFormMacros);tr.querySelector(".grams").addEventListener("input",recalcFormMacros);tr.querySelector("button").addEventListener("click",()=>{tr.remove();recalcFormMacros();});$("#ingBody").appendChild(tr);recalcFormMacros();}
-function collectIngredients(){return [...$("#ingBody").querySelectorAll("tr")].map(tr=>{const foodId=tr.querySelector(".foodSel").value;const grams=Number(tr.querySelector(".grams").value||0);const label=tr.querySelector(".label").value.trim();const note=tr.querySelector(".note").value.trim();return{foodId,grams,label,note};}).filter(i=>i.foodId&&i.grams>0);}
-function recalcFormMacros(){if(!$("#autoMacros").checked)return;const t=calcTotals(collectIngredients());$("#f_kcal").value=Math.round(t.kcal);$("#f_p").value=fmt1(t.p);$("#f_c").value=fmt1(t.c);$("#f_f").value=fmt1(t.f);}
-function resetForm(){editId=null;formPhoto=null;$("#photo").value="";$("#autoMacros").checked=true;$("#f_name").value="";$("#f_mainCat").value=MAIN_CATS[0];$("#f_subCat").value="Plat";$("#f_diff").value="Facile";$("#f_time").value="";$("#f_serv").value="1";$("#f_notes").value="";$("#f_steps").value="";["f_kcal","f_p","f_c","f_f"].forEach(id=>$("#"+id).value="");$("#ingBody").innerHTML="";addIngRow();addIngRow();updateMacroInputsLock();renderFormPhoto();recalcFormMacros();}
-function openFormNew(){$("#formTitle").textContent="Nouvelle recette";resetForm();$("#overlayForm").style.display="flex";}
-function openFormEdit(id){const r=state.recipes.find(x=>x.id===id);if(!r)return;if(!confirm("Modifier cette recette ?"))return;editId=id;formPhoto=r.photo||null;$("#formTitle").textContent="Modifier";$("#autoMacros").checked=(r.autoMacros!==false);$("#f_name").value=r.name||"";$("#f_mainCat").value=r.mainCat||MAIN_CATS[0];$("#f_subCat").value=r.subCat||"Plat";$("#f_diff").value=r.difficulty||"Facile";$("#f_time").value=r.timeMin||0;$("#f_serv").value=r.servings||1;$("#f_kcal").value=r.kcal||0;$("#f_p").value=r.p||0;$("#f_c").value=r.c||0;$("#f_f").value=r.f||0;$("#f_notes").value=r.notes||"";$("#f_steps").value=r.steps||"";$("#ingBody").innerHTML="";(r.ingredients||[]).forEach(i=>addIngRow(i));if(!(r.ingredients||[]).length)addIngRow();updateMacroInputsLock();renderFormPhoto();recalcFormMacros();$("#overlayForm").style.display="flex";}
+function addIngRow(ing={foodId:"",grams:"",label:"",note:""}){const tr=document.createElement("tr");
+tr.innerHTML=`<td><select class="foodSel"></select></td><td><input class="grams" type="number" min="0" step="1" value="${escapeHtml(ing.grams)}"></td>
+<td><input class="label" type="text" value="${escapeHtml(ing.label)}"></td><td><input class="note" type="text" value="${escapeHtml(ing.note)}"></td>
+<td><button class="btn danger" type="button">—</button></td>`;
+const sel=tr.querySelector(".foodSel");renderFoodOptions(sel,ing.foodId||"");sel.addEventListener("change",recalcFormMacros);
+tr.querySelector(".grams").addEventListener("input",recalcFormMacros);
+tr.querySelector("button").addEventListener("click",()=>{tr.remove(); recalcFormMacros();});
+$("#ingBody").appendChild(tr); recalcFormMacros();
+}
+function collectIngredients(){return [...$("#ingBody").querySelectorAll("tr")].map(tr=>{const foodId=tr.querySelector(".foodSel").value;
+const grams=Number(tr.querySelector(".grams").value||0); const label=tr.querySelector(".label").value.trim(); const note=tr.querySelector(".note").value.trim();
+return{foodId,grams,label,note};}).filter(i=>i.foodId&&i.grams>0);}
+function recalcFormMacros(){if(!$("#autoMacros").checked)return;const t=calcTotals(collectIngredients());
+$("#f_kcal").value=Math.round(t.kcal);$("#f_p").value=fmt1(t.p);$("#f_c").value=fmt1(t.c);$("#f_f").value=fmt1(t.f);}
+function resetForm(){editId=null;formPhoto=null;$("#photo").value="";$("#autoMacros").checked=true;
+$("#f_name").value="";$("#f_mainCat").value=MAIN_CATS[0];$("#f_subCat").value="Plat";$("#f_diff").value="Facile";$("#f_time").value="";$("#f_serv").value="1";
+$("#f_notes").value="";$("#f_steps").value="";["f_kcal","f_p","f_c","f_f"].forEach(id=>$("#"+id).value="");
+$("#ingBody").innerHTML="";addIngRow();addIngRow();updateMacroInputsLock();renderFormPhoto();recalcFormMacros();}
+function openFormNew(){$("#formTitle").textContent="Nouvelle recette"; resetForm(); $("#overlayForm").style.display="flex";}
+function openFormEdit(id){const r=state.recipes.find(x=>x.id===id); if(!r) return; if(!confirm("Modifier cette recette ?")) return;
+editId=id; formPhoto=r.photo||null; $("#formTitle").textContent="Modifier";
+$("#autoMacros").checked=(r.autoMacros!==false);
+$("#f_name").value=r.name||""; $("#f_mainCat").value=r.mainCat||MAIN_CATS[0]; $("#f_subCat").value=r.subCat||"Plat";
+$("#f_diff").value=r.difficulty||"Facile"; $("#f_time").value=r.timeMin||0; $("#f_serv").value=r.servings||1;
+$("#f_kcal").value=r.kcal||0; $("#f_p").value=r.p||0; $("#f_c").value=r.c||0; $("#f_f").value=r.f||0;
+$("#f_notes").value=r.notes||""; $("#f_steps").value=r.steps||"";
+$("#ingBody").innerHTML=""; (r.ingredients||[]).forEach(i=>addIngRow(i)); if(!(r.ingredients||[]).length) addIngRow();
+updateMacroInputsLock(); renderFormPhoto(); recalcFormMacros(); $("#overlayForm").style.display="flex";
+}
 function closeForm(){$("#overlayForm").style.display="none";}
-function saveRecipe(){const name=$("#f_name").value.trim();if(!name){alert("Titre manquant.");return;}const auto=$("#autoMacros").checked;const ingredients=collectIngredients();let kcal=Number($("#f_kcal").value||0),p=Number($("#f_p").value||0),c=Number($("#f_c").value||0),f=Number($("#f_f").value||0);if(auto){const t=calcTotals(ingredients);kcal=Math.round(t.kcal);p=Math.round(t.p*10)/10;c=Math.round(t.c*10)/10;f=Math.round(t.f*10)/10;}
-const obj={id:editId||uid(),name,mainCat:$("#f_mainCat").value,subCat:$("#f_subCat").value,difficulty:$("#f_diff").value,timeMin:Number($("#f_time").value||0),servings:Number($("#f_serv").value||1),kcal,p,c,f,autoMacros:auto,photo:formPhoto,ingredients,steps:$("#f_steps").value.trim(),notes:$("#f_notes").value.trim(),updatedAt:Date.now(),createdAt:Date.now()};
-if(editId){const idx=state.recipes.findIndex(r=>r.id===editId);if(idx>=0){obj.createdAt=state.recipes[idx].createdAt||obj.createdAt;state.recipes[idx]=obj;}showToast("Modifiée");}else{state.recipes.unshift(obj);showToast("Ajoutée");}saveState();closeForm();setView("recipes");renderRecipes();openRecipe(obj.id);}
-function deleteCurrent(){if(!currentId)return;const r=state.recipes.find(x=>x.id===currentId);if(!r)return;if(!confirm(`Supprimer "${r.name}" ?`))return;state.recipes=state.recipes.filter(x=>x.id!==currentId);saveState();closeView();renderHome();renderRecipes();showToast("Supprimée");}
+function saveRecipe(){const name=$("#f_name").value.trim(); if(!name){alert("Titre manquant."); return;}
+const auto=$("#autoMacros").checked; const ingredients=collectIngredients();
+let kcal=Number($("#f_kcal").value||0),p=Number($("#f_p").value||0),c=Number($("#f_c").value||0),f=Number($("#f_f").value||0);
+if(auto){const t=calcTotals(ingredients);kcal=Math.round(t.kcal);p=Math.round(t.p*10)/10;c=Math.round(t.c*10)/10;f=Math.round(t.f*10)/10;}
+const obj={id:editId||uid(),name,mainCat:$("#f_mainCat").value,subCat:$("#f_subCat").value,difficulty:$("#f_diff").value,
+timeMin:Number($("#f_time").value||0),servings:Number($("#f_serv").value||1),kcal,p,c,f,autoMacros:auto,photo:formPhoto,
+ingredients,steps:$("#f_steps").value.trim(),notes:$("#f_notes").value.trim(),updatedAt:Date.now(),createdAt:Date.now()};
+if(editId){const idx=state.recipes.findIndex(r=>r.id===editId); if(idx>=0){obj.createdAt=state.recipes[idx].createdAt||obj.createdAt; state.recipes[idx]=obj;}
+showToast("Modifiée");} else {state.recipes.unshift(obj); showToast("Ajoutée");}
+saveState(); closeForm(); setView("recipes"); renderRecipes(); openRecipe(obj.id);
+}
+function deleteCurrent(){if(!currentId) return; const r=state.recipes.find(x=>x.id===currentId); if(!r) return;
+if(!confirm(`Supprimer "${r.name}" ?`)) return;
+state.recipes=state.recipes.filter(x=>x.id!==currentId);
+saveState(); closeView(); renderHome(); renderRecipes(); showToast("Supprimée");
+}
 
-// Import UI
+// Import
 let lastUnknown=[];
-function openImport(){$("#importText").value="";$("#importUnknown").textContent="—";lastUnknown=[];$("#overlayImport").style.display="flex";}
+function openImport(){$("#importText").value=""; $("#importUnknown").textContent="—"; lastUnknown=[]; $("#overlayImport").style.display="flex";}
 function closeImport(){$("#overlayImport").style.display="none";}
-function previewImport(){const res=parseImportText($("#importText").value);if(!res){$("#importUnknown").textContent="—";lastUnknown=[];return;}lastUnknown=res.unknown||[];$("#importUnknown").textContent=lastUnknown.length?lastUnknown.join(" | "):"Tout est reconnu ✅";}
-function doImport(){const res=parseImportText($("#importText").value);if(!res){alert("Colle une recette.");return;}const obj={id:uid(),name:res.name||"Recette importée",mainCat:"Healthy",subCat:"Plat",difficulty:"Facile",timeMin:0,servings:1,kcal:0,p:0,c:0,f:0,autoMacros:true,photo:null,ingredients:res.ingredients||[],steps:res.instructions||"",notes:lastUnknown.length?("⚠️ À vérifier : "+lastUnknown.join(" | ")):"",updatedAt:Date.now(),createdAt:Date.now()};
-const t=calcTotals(obj.ingredients);obj.kcal=Math.round(t.kcal);obj.p=Math.round(t.p*10)/10;obj.c=Math.round(t.c*10)/10;obj.f=Math.round(t.f*10)/10;state.recipes.unshift(obj);saveState();closeImport();setView("recipes");renderRecipes();openRecipe(obj.id);showToast("Import ✅");}
+function previewImport(){const res=parseImportText($("#importText").value); if(!res){$("#importUnknown").textContent="—"; lastUnknown=[]; return;}
+lastUnknown=res.unknown||[]; $("#importUnknown").textContent = lastUnknown.length ? lastUnknown.join(" | ") : "Tout est reconnu ✅";
+}
+function doImport(){const res=parseImportText($("#importText").value); if(!res){alert("Colle une recette."); return;}
+const obj={id:uid(),name:res.name||"Recette importée",mainCat:"Healthy",subCat:"Plat",difficulty:"Facile",timeMin:0,servings:1,kcal:0,p:0,c:0,f:0,autoMacros:true,photo:null,
+ingredients:res.ingredients||[],steps:res.instructions||"",notes:lastUnknown.length?("⚠️ À vérifier : "+lastUnknown.join(" | ")):"",updatedAt:Date.now(),createdAt:Date.now()};
+const t=calcTotals(obj.ingredients); obj.kcal=Math.round(t.kcal); obj.p=Math.round(t.p*10)/10; obj.c=Math.round(t.c*10)/10; obj.f=Math.round(t.f*10)/10;
+state.recipes.unshift(obj); saveState(); closeImport(); setView("recipes"); renderRecipes(); openRecipe(obj.id); showToast("Import ✅");
+}
 
 // Foods modal
-function openFoods(){renderFoods();$("#overlayFoods").style.display="flex";}
+function openFoods(){renderFoods(); $("#overlayFoods").style.display="flex";}
 function closeFoods(){$("#overlayFoods").style.display="none";}
-function renderFoods(){const sorted=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"));const rows=sorted.map(f=>`<tr><td><strong>${escapeHtml(f.name)}</strong></td><td>${f.kcal}</td><td>${f.p}</td><td>${f.c}</td><td>${f.f}</td></tr>`).join("");
-$("#foodsBody").innerHTML=`<div class="mini">Base: <strong>${foods.length}</strong> aliments (par 100g). Ajouter: bouton +.</div><div style="margin-top:10px;overflow:auto"><table><thead><tr><th>Aliment</th><th>kcal</th><th>P</th><th>G</th><th>L</th></tr></thead><tbody>${rows}</tbody></table></div>`;}
-function addFood(){const name=prompt("Nom de l’aliment :");if(!name)return;const kcal=Number(prompt("kcal / 100g :","0")||0);const p=Number(prompt("P / 100g :","0")||0);const c=Number(prompt("G / 100g :","0")||0);const f=Number(prompt("L / 100g :","0")||0);
-const id=normalize(name).replaceAll(" ","_").slice(0,28)+"_"+Math.random().toString(16).slice(2,6);foods.push({id,name,kcal,p,c,f});saveFoods();renderFoods();showToast("Aliment ajouté");}
+function renderFoods(){const sorted=foods.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"));
+const rows=sorted.map(f=>`<tr><td><strong>${escapeHtml(f.name)}</strong></td><td>${f.kcal}</td><td>${f.p}</td><td>${f.c}</td><td>${f.f}</td></tr>`).join("");
+$("#foodsBody").innerHTML = `<div class="mini">Base: <strong>${foods.length}</strong> aliments (par 100g). Ajouter: bouton +.</div>
+<div style="margin-top:10px; overflow:auto"><table><thead><tr><th>Aliment</th><th>kcal</th><th>P</th><th>G</th><th>L</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+function addFood(){const name=prompt("Nom de l’aliment :"); if(!name) return;
+const kcal=Number(prompt("kcal / 100g :", "0")||0);
+const p=Number(prompt("P / 100g :", "0")||0);
+const c=Number(prompt("G / 100g :", "0")||0);
+const f=Number(prompt("L / 100g :", "0")||0);
+const id=normalize(name).replaceAll(" ","_").slice(0,30)+"_"+Math.random().toString(16).slice(2,6);
+foods.push({id,name,kcal,p,c,f}); saveFoods(); renderFoods(); showToast("Aliment ajouté");
+}
 
-// Edit mode PIN
-$("#btnToggleEdit").addEventListener("click",()=>{$("#overlayPin").style.display="flex";$("#pinInput").value="";});
-$("#btnClosePin").addEventListener("click",()=>{$("#overlayPin").style.display="none";});
-$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){setEditOn(true);$("#overlayPin").style.display="none";showToast("Édition ON");}else alert("PIN incorrect.");});
-$("#btnPinOff").addEventListener("click",()=>{setEditOn(false);$("#overlayPin").style.display="none";showToast("Édition OFF");});
-$("#overlayPin").addEventListener("click",(e)=>{if(e.target.id==="overlayPin")$("#overlayPin").style.display="none";});
-
-// Main events
+// Wiring
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setView(t.dataset.view)));
+$("#btnCloseView").addEventListener("click",closeView);
+$("#overlayView").addEventListener("click",(e)=>{if(e.target.id==="overlayView") closeView();});
+
+$("#btnToggleEdit").addEventListener("click",()=>{$("#overlayPin").style.display="flex"; $("#pinInput").value="";});
+$("#btnClosePin").addEventListener("click",()=>{$("#overlayPin").style.display="none";});
+$("#overlayPin").addEventListener("click",(e)=>{if(e.target.id==="overlayPin") $("#overlayPin").style.display="none";});
+$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){setEditOn(true); $("#overlayPin").style.display="none"; showToast("Édition ON");} else alert("PIN incorrect.");});
+$("#btnPinOff").addEventListener("click",()=>{setEditOn(false); $("#overlayPin").style.display="none"; showToast("Édition OFF");});
+
 $("#btnNew").addEventListener("click",openFormNew);
 $("#btnCloseForm").addEventListener("click",closeForm);
-$("#overlayForm").addEventListener("click",(e)=>{if(e.target.id==="overlayForm")closeForm();});
+$("#overlayForm").addEventListener("click",(e)=>{if(e.target.id==="overlayForm") closeForm();});
 $("#btnAddIng").addEventListener("click",()=>addIngRow());
-$("#autoMacros").addEventListener("change",()=>{updateMacroInputsLock();recalcFormMacros();});
+$("#autoMacros").addEventListener("change",()=>{updateMacroInputsLock(); recalcFormMacros();});
 $("#btnSave").addEventListener("click",saveRecipe);
 
-$("#photo").addEventListener("change",(e)=>{const file=e.target.files?.[0];if(!file)return;if(file.size>2.5*1024*1024){alert("Photo trop lourde.");e.target.value="";return;}const reader=new FileReader();reader.onload=()=>{formPhoto=reader.result;renderFormPhoto();};reader.readAsDataURL(file);});
-$("#btnRemovePhoto").addEventListener("click",()=>{formPhoto=null;$("#photo").value="";renderFormPhoto();});
+$("#photo").addEventListener("change",(e)=>{const file=e.target.files?.[0]; if(!file) return;
+if(file.size>2.5*1024*1024){alert("Photo trop lourde."); e.target.value=""; return;}
+const reader=new FileReader(); reader.onload=()=>{formPhoto=reader.result; renderFormPhoto();}; reader.readAsDataURL(file);
+});
+$("#btnRemovePhoto").addEventListener("click",()=>{formPhoto=null; $("#photo").value=""; renderFormPhoto();});
 
 $("#btnOpenImport").addEventListener("click",openImport);
 $("#btnCloseImport").addEventListener("click",closeImport);
-$("#overlayImport").addEventListener("click",(e)=>{if(e.target.id==="overlayImport")closeImport();});
+$("#overlayImport").addEventListener("click",(e)=>{if(e.target.id==="overlayImport") closeImport();});
 $("#importText").addEventListener("input",previewImport);
 $("#btnDoImport").addEventListener("click",doImport);
 
 $("#btnFoods").addEventListener("click",openFoods);
 $("#btnCloseFoods").addEventListener("click",closeFoods);
-$("#overlayFoods").addEventListener("click",(e)=>{if(e.target.id==="overlayFoods")closeFoods();});
+$("#overlayFoods").addEventListener("click",(e)=>{if(e.target.id==="overlayFoods") closeFoods();});
 $("#btnAddFood").addEventListener("click",addFood);
 
-$("#btnCloseView").addEventListener("click",closeView);
-$("#overlayView").addEventListener("click",(e)=>{if(e.target.id==="overlayView")closeView();});
-$("#btnEdit").addEventListener("click",()=>{if(!currentId)return;closeView();openFormEdit(currentId);});
+$("#btnEdit").addEventListener("click",()=>{if(!currentId) return; closeView(); openFormEdit(currentId);});
 $("#btnDelete").addEventListener("click",deleteCurrent);
 
-$("#btnReset").addEventListener("click",()=>{$("#q").value="";$("#mainCat").value="";$("#subCat").value="";$("#diff").value="";$("#sort").value="recent";renderRecipes();});
-["q","mainCat","subCat","diff","sort"].forEach(id=>{$("#"+id).addEventListener("input",renderRecipes);$("#"+id).addEventListener("change",renderRecipes);});
+$("#btnReset").addEventListener("click",()=>{$("#q").value=""; $("#mainCat").value=""; $("#subCat").value=""; $("#diff").value=""; $("#sort").value="recent"; renderQuickSubs(); renderRecipes();});
+["q","mainCat","subCat","diff","sort"].forEach(id=>{
+  $("#"+id).addEventListener("input",()=>{ renderQuickSubs(); renderRecipes(); });
+  $("#"+id).addEventListener("change",()=>{ renderQuickSubs(); renderRecipes(); });
+});
 
-// init
-renderSelectors();setView("home");setEditOn(isEditOn());updateMacroInputsLock();renderFormPhoto();
+// Init
+renderSelectors();
+setView("home");
+setEditOn(isEditOn());
+updateMacroInputsLock();
+renderFormPhoto();
 </script>
 </body>
 </html>
