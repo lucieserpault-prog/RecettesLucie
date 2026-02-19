@@ -141,7 +141,7 @@ tr:last-child td{border-bottom:none}
       <div class="logo"></div>
       <div>
         <h1>Ton carnet</h1>
-        <div class="sub">900 aliments • Healthy / Gourmand • Entrée / Plat / Dessert / Bakery • Import intelligent • Mode édition (PIN)</div>
+        <div class="sub">900 aliments • Healthy / Gourmand • Entrée / Plat / Dessert / Bakery • Import intelligent • Ajoute & partage</div>
       </div>
     </div>
     <div class="actions">
@@ -207,19 +207,7 @@ tr:last-child td{border-bottom:none}
   <div class="mb" id="viewBody"></div>
 </div></div>
 
-<div class="overlay" id="overlayPin"><div class="modal" style="max-width:520px">
-  <div class="mh"><div class="mt">Mode édition</div><div class="right"><button class="btn" id="btnClosePin">✕</button></div></div>
-  <div class="mb">
-    <div class="mini">PIN par défaut : <span class="kbd">1234</span></div>
-    <div style="margin-top:10px">
-      <input id="pinInput" type="number" inputmode="numeric" placeholder="Code PIN"/>
-      <div class="right" style="margin-top:10px">
-        <button class="btn danger" id="btnPinOff">Désactiver</button>
-        <button class="btn primary" id="btnPinOk">Activer</button>
-      </div>
-    </div>
-  </div>
-</div></div>
+</div>
 
 <div class="overlay" id="overlayForm"><div class="modal">
   <div class="mh">
@@ -762,11 +750,11 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>setV
 $("#btnCloseView").addEventListener("click",closeView);
 $("#overlayView").addEventListener("click",(e)=>{if(e.target.id==="overlayView") closeView();});
 
-$("#btnToggleEdit").addEventListener("click",()=>{$("#overlayPin").style.display="flex"; $("#pinInput").value="";});
-$("#btnClosePin").addEventListener("click",()=>{$("#overlayPin").style.display="none";});
-$("#overlayPin").addEventListener("click",(e)=>{if(e.target.id==="overlayPin") $("#overlayPin").style.display="none";});
-$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){$("#overlayPin").style.display="none"; showToast("Édition ON");} else alert("PIN incorrect.");});
-$("#btnPinOff").addEventListener("click",()=>{$("#overlayPin").style.display="none"; showToast("Édition OFF");});
+$("#pinInput").value="";});
+$("#btnClosePin").addEventListener("click",()=>{});
+});
+$("#btnPinOk").addEventListener("click",()=>{if(($("#pinInput").value||"").trim()===EDIT_PIN){showToast("Édition ON");} else alert("PIN incorrect.");});
+showToast("Édition OFF");});
 
 $("#btnNew").addEventListener("click",openFormNew);
 $("#btnCloseForm").addEventListener("click",closeForm);
@@ -850,7 +838,6 @@ applyGridMode();
 // Init
 renderSelectors();
 setView("home");
-setEditOn(isEditOn());
 updateMacroInputsLock();
 renderFormPhoto();
 </script>
