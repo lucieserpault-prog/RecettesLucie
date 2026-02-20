@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chef Gemini Pro - V39</title>
+    <style>
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; --magic: #4834d4; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--l); margin: 0; padding-bottom: 120px; overflow-x: hidden; }
+        
+        /* JAUGE MÉMOIRE */
+        .storage-bar-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: #ddd; z-index: 100000; }
+        #storage-bar { height: 100%; width: 0%; background: var(--p); transition: 0.5s; }
+        .storage-info { position: fixed; top: 8px; right: 10px; font-size: 10px; font-weight: bold; z-index: 100000; background: white; padding: 2px 8px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* NAV BASSE */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--d); display: flex; justify-content: space-around; padding: 10px 0; z-index: 99999; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }
+        .nav-item { color: white; text-align: center; opacity: 0.6; cursor: pointer; flex: 1; font-size: 10px; }
+        .nav-item.active { opacity: 1; color: var(--p); font-weight: bold; }
+        .nav-item span { display: block; font-size: 22px; margin-bottom: 2px; }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+        .dash { background: var(--d); color: white; padding: 25px 15px 15px; border-bottom: 4px solid var(--p); display: flex; justify-content: space-around; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        .dash span { display: block; font-size: 1.2em; font-weight: 800; color: var(--p); }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.2s; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        .card { background: var(--w); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 15px; box-sizing: border-box; }
+        .btn { padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 10px; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-magic { background: var(--magic); color: white; }
+
+        /* LISTES */
+        .ing-pill { background: #f1f5f9; padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; font-weight: bold; border-left: 4px solid var(--p); font-size: 13px; }
+        .res-list { position: absolute; width: 100%; background: white; z-index: 5000; max-height: 200px; overflow-y: auto; display: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border: 1px solid #eee; }
+        .res-i { padding: 12px; cursor: pointer; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; }
+
+        /* CARNET */
+        .cat-header { background: var(--d); color: white; padding: 8px 15px; border-radius: 10px; margin: 20px 0 10px 0; font-size: 0.8em; text-transform: uppercase; display: flex; justify-content: space-between; }
+        .recipe-item { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; border: 1px solid #eee; }
+        .recipe-header { cursor: pointer; }
+        .recipe-item img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+        .recipe-content { padding: 12px 15px; }
+        .macro-row { display: flex; justify-content: space-around; background: #f9f9f9; padding: 10px; border-radius: 12px; margin-top: 10px; font-size: 11px; text-align: center; }
+        .macro-row span { display: block; color: var(--p); font-size: 14px; font-weight: bold; }
+        .recipe-details { display: none; padding: 15px; border-top: 1px solid #eee; background: #fafafa; }
+        .recipe-details.show { display: block; }
+
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .photo-box { position: relative; aspect-ratio: 3/4; background: #dfe6e9; border-radius: 25px; overflow: hidden; border: 3px solid var(--w); display: flex; align-items: center; justify-content: center; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<div class="storage-bar-wrap"><div id="storage-bar"></div></div>
+<div class="storage-info">Mémoire : <span id="storage-val">0</span>%</div>
+
+<div class="dash">
+    <div><span id="lCal">0</span><small>kcal/p</small></div>
+    <div><span id="lProt">0</span><small>Prot(g)</small></div>
+    <div><span id="lGlu">0</span><small>Glu(g)</small></div>
+    <div><span id="lLip">0</span><small>Lip(g)</small></div>
+</div>
+
+<div class="container">
+
+    <div id="sec-home" class="section active">
+        <h1 style="font-weight: 900; margin: 10px 0;">Ma Cuisine ✨</h1>
+        <div class="photo-grid">
+            <div class="photo-box" onclick="setHomePhoto(1)"><img id="img-1"></div>
+            <div class="photo-box" onclick="setHomePhoto(2)"><img id="img-2"></div>
+            <div class="photo-box" onclick="setHomePhoto(3)"><img id="img-3"></div>
+            <div class="photo-box" onclick="setHomePhoto(4)"><img id="img-4"></div>
+        </div>
+        <button class="btn btn-magic" style="font-size:12px;" onclick="clearGhostStorage()">🧹 NETTOYER MÉMOIRE FANTÔME</button>
+    </div>
+
+    <div id="sec-import" class="section">
+        <div class="card" style="border: 2px dashed var(--magic);">
+            <h2 style="color: var(--magic); margin:0;">🪄 Import Magique</h2>
+            <textarea id="wordText" rows="6" placeholder="Collez ici (Nom, Ingrédients, Instructions...)"></textarea>
+            <button class="btn btn-magic" onclick="doMagicImport()">ANALYSER LA RECETTE</button>
+        </div>
+
+        <div id="import-validation" class="card" style="display:none; border: 2px solid var(--p);">
+            <input type="text" id="impName" placeholder="Nom de la recette">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <select id="impTheme"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+                <select id="impSub">
+                    <option value="entree">🥗 Entrée</option><option value="plat" selected>🍛 Plat</option><option value="dessert">🍰 Dessert</option><option value="bakery">🥖 Bakery</option><option value="gouter">🍪 Goûter</option>
+                </select>
+            </div>
+            <input type="number" id="impParts" value="1" min="1" oninput="upM('imp')" placeholder="Nombre de parts">
+            <div id="impIngList" style="margin:10px 0;"></div>
+            <div style="position:relative;"><input type="text" id="search-imp" placeholder="🔍 Ajouter un aliment..." oninput="searchIng('imp')"><div id="res-list-imp" class="res-list"></div></div>
+            <textarea id="impInst" rows="5" placeholder="Instructions..."></textarea>
+            <input type="text" id="impImgUrl" placeholder="Lien URL Image">
+            <button class="btn btn-p" onclick="saveRecipe('imp')">ENREGISTRER DANS LE CARNET</button>
+        </div>
+    </div>
+
+    <div id="sec-custom" class="section">
+        <div class="card">
+            <h2>🍴 Mes Macros Perso</h2>
+            <input type="text" id="custName" placeholder="Nom (ex: Yaourt Brebis)">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <input type="number" id="custCal" placeholder="Kcal/100g">
+                <input type="number" id="custProt" placeholder="Prot (g)">
+                <input type="number" id="custGlu" placeholder="Glu (g)">
+                <input type="number" id="custLip" placeholder="Lip (g)">
+            </div>
+            <button class="btn btn-p" onclick="saveCustomFood()">SAUVEGARDER L'ALIMENT</button>
+        </div>
+        <div id="custom-food-list"></div>
+    </div>
+
+    <div id="sec-add" class="section">
+        <div class="card">
+            <h2>🥘 Nouvelle Recette</h2>
+            <input type="text" id="addName" placeholder="Nom du plat">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <select id="addTheme"><option value="Healthy">🌿 Healthy</option><option value="Gourmand">🍫 Gourmand</option></select>
+                <select id="addSub"><option value="entree">🥗 Entrée</option><option value="plat" selected>🍛 Plat</option><option value="dessert">🍰 Dessert</option><option value="bakery">🥖 Bakery</option><option value="gouter">🍪 Goûter</option></select>
+            </div>
+            <input type="number" id="addParts" value="1" oninput="upM('add')" placeholder="Nombre de parts">
+            <div id="addIngList" style="margin:10px 0;"></div>
+            <div style="position:relative;"><input type="text" id="search-add" placeholder="🔍 Chercher..." oninput="searchIng('add')"><div id="res-list-add" class="res-list"></div></div>
+            <textarea id="addInst" rows="5" placeholder="Instructions..."></textarea>
+            <input type="text" id="addImgUrl" placeholder="Lien URL Image">
+            <button class="btn btn-p" onclick="saveRecipe('add')">SAUVEGARDER</button>
+        </div>
+    </div>
+
+    <div id="sec-book" class="section">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h2 style="margin:0;">📖 Mon Carnet</h2>
+            <button class="btn-danger" style="padding:5px 10px;" onclick="fullReset()">RESET TOTAL</button>
+        </div>
+        <div id="carnet-list"></div>
+    </div>
+
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('sec-home', this)"><span>🏠</span>Accueil</div>
+    <div class="nav-item" onclick="switchTab('sec-import', this)"><span>🪄</span>Import</div>
+    <div class="nav-item" onclick="switchTab('sec-custom', this)"><span>🍴</span>Aliments</div>
+    <div class="nav-item" onclick="switchTab('sec-add', this)"><span>🥘</span>Ajouter</div>
+    <div class="nav-item" onclick="switchTab('sec-book', this)"><span>📖</span>Carnet</div>
+</nav>
+
+<script>
+    const KEY_RECS = "CHEF_ULT_RECS";
+    const KEY_CUST = "CHEF_ULT_CUST";
+    const KEY_MOOD = "CHEF_ULT_MOOD";
+    const CAT_LABELS = { entree: "🥗 Entrées", plat: "🍛 Plats", dessert: "🍰 Desserts", bakery: "🥖 Bakery", gouter: "🍪 Goûters" };
+    
+    let curIngs = [];
+
+    const DB_MASTER = [
+        { name: "Raisins secs", unit: "g", base: 100, cal: 299, prot: 3, glu: 79, lip: 0.5, keywords: ["raisin"] },
+        { name: "Noix", unit: "g", base: 100, cal: 654, prot: 15, glu: 13, lip: 65, keywords: ["noix"] },
+        { name: "Beurre cacahuète", unit: "g", base: 100, cal: 588, prot: 25, glu: 20, lip: 50, keywords: ["cacahuete", "peanut"] },
+        { name: "Flocons d'avoine", unit: "g", base: 100, cal: 370, prot: 13, glu: 60, lip: 7, keywords: ["avoine"] },
+        { name: "Oeuf entier", unit: "u", base: 1, cal: 70, prot: 6, glu: 0.5, lip: 5, keywords: ["oeuf"] },
+        { name: "Skyr Nature", unit: "g", base: 100, cal: 57, prot: 11, glu: 4, lip: 0.1, keywords: ["skyr"] },
+        { name: "Compote pomme", unit: "g", base: 100, cal: 52, prot: 0.3, glu: 12, lip: 0.1, keywords: ["compote"] },
+        { name: "Lait demi-écrémé", unit: "ml", base: 100, cal: 46, prot: 3.3, glu: 4.8, lip: 1.6, keywords: ["lait"] }
+    ];
+
+    function updateStorageGauge() {
+        let used = JSON.stringify(localStorage).length;
+        let perc = Math.min(Math.round((used / (5*1024*1024)) * 100), 100);
+        document.getElementById('storage-val').innerText = perc;
+        document.getElementById('storage-bar').style.width = perc + "%";
+        document.getElementById('storage-bar').style.background = perc > 85 ? "#e74c3c" : "#27ae60";
+    }
+
+    function switchTab(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+        if(id === 'sec-book') renderC();
+        if(id === 'sec-custom') renderCustomFoods();
+        if(id !== 'sec-import' && id !== 'sec-add') curIngs = [];
+        updateStorageGauge(); window.scrollTo(0,0);
+    }
+
+    // --- ANALYSEUR MAGIQUE ---
+    function doMagicImport() {
+        const text = document.getElementById('wordText').value;
+        if(!text) return;
+        
+        const nMatch = text.match(/Nom\s*[:\-]\s*(.*)/i);
+        if(nMatch) document.getElementById('impName').value = nMatch[1].trim();
+        
+        const instMatch = text.split(/Instructions\s*[:\-]/i);
+        if(instMatch.length > 1) document.getElementById('impInst').value = instMatch[1].trim();
+
+        const ingPart = text.split(/Ingr[eé]dients\s*[:\-]/i)[1]?.split(/Instructions\s*[:\-]/i)[0];
+        curIngs = [];
+        if(ingPart) {
+            let fullDB = [...(JSON.parse(localStorage.getItem(KEY_CUST)) || []), ...DB_MASTER];
+            ingPart.split('\n').forEach(line => {
+                let clean = line.toLowerCase();
+                let found = fullDB.find(f => f.keywords.some(k => clean.includes(k)));
+                if(found) {
+                    const qty = (clean.match(/(\d+)/) || [1,1])[1];
+                    let fact = (found.base === 100) ? (qty / 100) : qty;
+                    curIngs.push({ name: found.name, qty: qty, unit: found.unit, c: found.cal*fact, p: (found.prot||0)*fact, g: (found.glu||0)*fact, l: (found.lip||0)*fact });
+                }
+            });
+        }
+        document.getElementById('import-validation').style.display = "block";
+        renderIngs('imp'); upM('imp');
+    }
+
+    // --- ALIMENTS PERSO ---
+    function saveCustomFood() {
+        let n = document.getElementById('custName').value;
+        let c = parseFloat(document.getElementById('custCal').value);
+        if(!n || isNaN(c)) return alert("Nom et Calories ?");
+        let food = { name: n, cal: c, prot: parseFloat(document.getElementById('custProt').value)||0, glu: parseFloat(document.getElementById('custGlu').value)||0, lip: parseFloat(document.getElementById('custLip').value)||0, unit: "g", base: 100, keywords: [n.toLowerCase()] };
+        let foods = JSON.parse(localStorage.getItem(KEY_CUST)) || [];
+        foods.push(food); localStorage.setItem(KEY_CUST, JSON.stringify(foods));
+        document.getElementById('custName').value = ""; renderCustomFoods();
+    }
+
+    function renderCustomFoods() {
+        let foods = JSON.parse(localStorage.getItem(KEY_CUST)) || [];
+        document.getElementById('custom-food-list').innerHTML = foods.map((f, i) => `
+            <div class="ing-pill"><span>${f.name} (${f.cal} kcal)</span><span onclick="delFood(${i})" style="color:red">✖</span></div>
+        `).join('');
+    }
+    function delFood(i) {
+        let f = JSON.parse(localStorage.getItem(KEY_CUST)); f.splice(i,1);
+        localStorage.setItem(KEY_CUST, JSON.stringify(f)); renderCustomFoods();
+    }
+
+    // --- FONCTIONS RECETTES ---
+    function searchIng(prefix) {
+        let q = document.getElementById('search-'+prefix).value.toLowerCase();
+        let r = document.getElementById('res-list-'+prefix);
+        r.innerHTML = ""; if(q.length < 1) { r.style.display="none"; return; }
+        let db = [...(JSON.parse(localStorage.getItem(KEY_CUST)) || []), ...DB_MASTER];
+        db.filter(f => f.name.toLowerCase().includes(q)).slice(0, 10).forEach(f => {
+            let d = document.createElement('div'); d.className="res-i";
+            d.innerHTML = `<span>${f.name}</span><small>${f.cal} kcal</small>`;
+            d.onclick = () => {
+                let qty = prompt(`Quantité pour ${f.name} ?`, (f.unit === 'u' ? "1" : "100"));
+                if(qty) {
+                    let fact = (f.base === 100) ? (qty / 100) : qty;
+                    curIngs.push({ name: f.name, qty: qty, unit: f.unit, c: f.cal*fact, p: (f.prot||0)*fact, g: (f.glu||0)*fact, l: (f.lip||0)*fact });
+                    renderIngs(prefix); upM(prefix);
+                }
+                r.style.display="none"; document.getElementById('search-'+prefix).value = "";
+            };
+            r.appendChild(d);
+        });
+        r.style.display="block";
+    }
+
+    function renderIngs(prefix) {
+        document.getElementById(prefix+'IngList').innerHTML = curIngs.map((i, idx) => `
+            <div class="ing-pill"><span>${i.name} (${i.qty}${i.unit})</span><span onclick="curIngs.splice(${idx},1);renderIngs('${prefix}');upM('${prefix}');" style="color:red;cursor:pointer;">✖</span></div>
+        `).join('');
+    }
+
+    function upM(prefix) {
+        let s = parseFloat(document.getElementById(prefix+'Parts').value) || 1;
+        let sums = curIngs.reduce((a,b)=>({c:a.c+b.c, p:a.p+b.p, g:a.g+b.g, l:a.l+b.l}), {c:0,p:0,g:0,l:0});
+        document.getElementById('lCal').innerText = Math.round(sums.c/s);
+        document.getElementById('lProt').innerText = (sums.p/s).toFixed(1);
+        document.getElementById('lGlu').innerText = (sums.g/s).toFixed(1);
+        document.getElementById('lLip').innerText = (sums.l/s).toFixed(1);
+        return { c: Math.round(sums.c/s), p: (sums.p/s).toFixed(1), g: (sums.g/s).toFixed(1), l: (sums.l/s).toFixed(1) };
+    }
+
+    function saveRecipe(prefix) {
+        let n = document.getElementById(prefix+'Name').value;
+        if(!n || curIngs.length === 0) return alert("Vérifiez nom et ingrédients !");
+        let macros = upM(prefix);
+        let rec = { 
+            id: Date.now(), name: n, 
+            theme: document.getElementById(prefix+'Theme').value, 
+            sub: document.getElementById(prefix+'Sub').value,
+            ings: [...curIngs], inst: document.getElementById(prefix+'Inst').value, 
+            img: document.getElementById(prefix+'ImgUrl').value, res: macros 
+        };
+        let recs = JSON.parse(localStorage.getItem(KEY_RECS)) || [];
+        recs.push(rec); localStorage.setItem(KEY_RECS, JSON.stringify(recs));
+        alert("Enregistré !"); location.reload();
+    }
+
+    function renderC() {
+        let recs = JSON.parse(localStorage.getItem(KEY_RECS)) || [];
+        const container = document.getElementById('carnet-list');
+        container.innerHTML = "";
+        ["entree", "plat", "dessert", "bakery", "gouter"].forEach(sub => {
+            let filtered = recs.filter(r => r.sub === sub);
+            if(filtered.length > 0) {
+                let h = document.createElement('div'); h.className="cat-header";
+                h.innerHTML = `<span>${CAT_LABELS[sub]}</span><small>${filtered.length}</small>`;
+                container.appendChild(h);
+                filtered.forEach(r => {
+                    let item = document.createElement('div'); item.className="recipe-item";
+                    item.innerHTML = `
+                        <div class="recipe-header" onclick="this.nextElementSibling.classList.toggle('show')">
+                            ${r.img ? `<img src="${r.img}">` : ""}
+                            <div class="recipe-content">
+                                <small style="color:var(--p); font-weight:bold;">${r.theme}</small><br>
+                                <strong>${r.name}</strong>
+                                <div class="macro-row">
+                                    <div><span>${r.res.c}</span>Kcal</div><div><span>${r.res.p}g</span>P</div><div><span>${r.res.g}g</span>G</div><div><span>${r.res.l}g</span>L</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="recipe-details">
+                            <ul style="padding-left:15px; font-size:13px;">${r.ings.map(i => `<li>${i.name} : ${i.qty}${i.unit}</li>`).join('')}</ul>
+                            <p style="font-size:13px; color:#666; white-space:pre-wrap;">${r.inst}</p>
+                            <button class="btn-danger" onclick="delRec(${r.id})">Supprimer</button>
+                        </div>`;
+                    container.appendChild(item);
+                });
+            }
+        });
+    }
+
+    function delRec(id) { 
+        let r = JSON.parse(localStorage.getItem(KEY_RECS)).filter(x=>x.id != id);
+        localStorage.setItem(KEY_RECS, JSON.stringify(r)); renderC(); 
+    }
+
+    // --- ACCUEIL & MEMOIRE ---
+    function setHomePhoto(id) {
+        let url = prompt("Lien URL Image :");
+        if(url) { 
+            let m = JSON.parse(localStorage.getItem(KEY_MOOD)) || {}; m[id] = url;
+            localStorage.setItem(KEY_MOOD, JSON.stringify(m)); loadMood();
+        }
+    }
+    function loadMood() {
+        let m = JSON.parse(localStorage.getItem(KEY_MOOD)) || {};
+        for(let i=1; i<=4; i++) if(m[i]) document.getElementById('img-'+i).src = m[i];
+    }
+    function clearGhostStorage() {
+        Object.keys(localStorage).forEach(k => { if(!k.includes("ULT")) localStorage.removeItem(k); });
+        alert("Fantômes supprimés !"); location.reload();
+    }
+    function fullReset() { if(confirm("TOUT EFFACER ?")) { localStorage.clear(); location.reload(); } }
+
+    loadMood(); updateStorageGauge();
+</script>
+</body>
+</html>
