@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chef Gemini - Ghostbuster V36</title>
+    <style>
+        :root { --p: #27ae60; --s: #e67e22; --d: #2c3e50; --l: #f4f7f6; --w: #ffffff; --magic: #4834d4; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--l); margin: 0; padding-bottom: 120px; }
+        
+        /* JAUGE DE MÉMOIRE */
+        .storage-bar-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 6px; background: #ddd; z-index: 100000; }
+        #storage-bar { height: 100%; width: 0%; background: var(--p); transition: 0.5s; }
+        .storage-info { position: fixed; top: 8px; right: 10px; font-size: 10px; font-weight: bold; z-index: 100000; background: white; padding: 2px 8px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 15px; }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--d); display: flex; justify-content: space-around; padding: 12px 0; z-index: 99999; box-shadow: 0 -5px 20px rgba(0,0,0,0.3); }
+        .nav-item { color: white; text-align: center; opacity: 0.6; cursor: pointer; flex: 1; font-size: 10px; }
+        .nav-item.active { opacity: 1; color: var(--p); font-weight: bold; }
+        .nav-item span { display: block; font-size: 24px; margin-bottom: 2px; }
+
+        .dash { background: var(--d); color: white; padding: 25px 15px 15px; border-bottom: 4px solid var(--p); display: flex; justify-content: space-around; text-align: center; position: sticky; top: 0; z-index: 1000; }
+        .dash span { display: block; font-size: 1.2em; font-weight: 800; color: var(--p); }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .card { background: var(--w); border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        input, select, textarea { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
+        .btn { padding: 15px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 10px; }
+        .btn-p { background: var(--p); color: white; }
+        .btn-danger { background: #e74c3c; color: white; padding: 8px; font-size: 12px; border: none; border-radius: 8px; }
+
+        .recipe-item { background: white; border-radius: 20px; margin-bottom: 15px; overflow: hidden; border: 1px solid #eee; }
+        .recipe-header { cursor: pointer; }
+        .recipe-item img { width: 100%; height: 160px; object-fit: cover; background: #eee; }
+        .recipe-content { padding: 10px 15px 15px; }
+        .recipe-details { display: none; padding: 15px; border-top: 1px solid #eee; background: #fafafa; }
+        .recipe-details.show { display: block; }
+
+        .photo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .photo-box { position: relative; aspect-ratio: 3/4; background: #dfe6e9; border-radius: 25px; overflow: hidden; cursor: pointer; border: 3px solid var(--w); display: flex; align-items: center; justify-content: center; }
+        .photo-box img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+<div class="storage-bar-wrap"><div id="storage-bar"></div></div>
+<div class="storage-info">Mémoire : <span id="storage-val">0</span>%</div>
+
+<div class="dash">
+    <div><span id="lCal">0</span><small>kcal/p</small></div>
+    <div><span id="lProt">0</span><small>Prot(g)</small></div>
+    <div><span id="lGlu">0</span><small>Glu(g)</small></div>
+    <div><span id="lLip">0</span><small>Lip(g)</small></div>
+</div>
+
+<div class="container">
+    <div id="sec-home" class="section active">
+        <h1 style="font-weight: 900; margin: 10px 0;">Ma Cuisine ✨</h1>
+        <div class="photo-grid">
+            <div class="photo-box" onclick="setHomePhoto(1)"><img id="img-1"></div>
+            <div class="photo-box" onclick="setHomePhoto(2)"><img id="img-2"></div>
+            <div class="photo-box" onclick="setHomePhoto(3)"><img id="img-3"></div>
+            <div class="photo-box" onclick="setHomePhoto(4)"><img id="img-4"></div>
+        </div>
+        <button class="btn btn-p" style="font-size: 12px; padding: 8px;" onclick="clearGhostStorage()">🧹 NETTOYER LA MÉMOIRE FANTÔME</button>
+    </div>
+
+    <div id="sec-book" class="section">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h2 style="margin:0;">📖 Mon Carnet</h2>
+            <button class="btn-danger" onclick="fullReset()">⚠️ RESET TOTAL</button>
+        </div>
+        <div id="carnet-list"></div>
+    </div>
+
+    <div id="sec-import" class="section">
+        <div class="card"><h2>🪄 Import Word</h2><textarea id="wordText" rows="5"></textarea><button class="btn btn-p" onclick="doMagicImport()">ANALYSER</button></div>
+        <div id="import-validation" class="card" style="display:none; border: 2px solid var(--p);">
+            <input type="text" id="impName" placeholder="Nom">
+            <input type="number" id="impParts" value="1" oninput="upM('imp')">
+            <div id="impIngList"></div>
+            <input type="text" id="impImgUrl" placeholder="LIEN URL IMAGE">
+            <button class="btn btn-p" onclick="saveRecipe('imp')">ENREGISTRER</button>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('sec-home', this)"><span>🏠</span>Accueil</div>
+    <div class="nav-item" onclick="switchTab('sec-import', this)"><span>🪄</span>Import</div>
+    <div class="nav-item" onclick="switchTab('sec-book', this)"><span>📖</span>Carnet</div>
+</nav>
+
+<script>
+    const CURRENT_KEY = "CHEF_ULTIMATE_V36"; // Nouvelle clé unique
+    const STORAGE_RECS = CURRENT_KEY + "_RECS";
+    const STORAGE_MOOD = CURRENT_KEY + "_MOOD";
+
+    function updateStorageGauge() {
+        let total = 5 * 1024 * 1024;
+        let used = JSON.stringify(localStorage).length;
+        let perc = Math.min(Math.round((used / total) * 100), 100);
+        document.getElementById('storage-val').innerText = perc;
+        document.getElementById('storage-bar').style.width = perc + "%";
+        document.getElementById('storage-bar').style.background = perc > 85 ? "#e74c3c" : "#27ae60";
+    }
+
+    // --- FONCTION DE NETTOYAGE CRITIQUE ---
+    function clearGhostStorage() {
+        const toKeep = [STORAGE_RECS, STORAGE_MOOD];
+        let keys = Object.keys(localStorage);
+        let count = 0;
+        keys.forEach(key => {
+            if (!key.startsWith(CURRENT_KEY) && !key.includes('mood-v36')) {
+                localStorage.removeItem(key);
+                count++;
+            }
+        });
+        alert(count + " anciens fichiers supprimés ! Ta mémoire est propre.");
+        location.reload();
+    }
+
+    function fullReset() {
+        if(confirm("Tout effacer définitivement ?")) { localStorage.clear(); location.reload(); }
+    }
+
+    function switchTab(id, el) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        el.classList.add('active');
+        if(id === 'sec-book') renderC();
+        updateStorageGauge();
+    }
+
+    function setHomePhoto(id) {
+        let url = prompt("Lien URL de l'image :");
+        if(url) { 
+            let mood = JSON.parse(localStorage.getItem(STORAGE_MOOD)) || {};
+            mood[id] = url;
+            localStorage.setItem(STORAGE_MOOD, JSON.stringify(mood));
+            loadMood(); 
+        }
+    }
+
+    function loadMood() {
+        let mood = JSON.parse(localStorage.getItem(STORAGE_MOOD)) || {};
+        for(let i=1; i<=4; i++) {
+            if(mood[i]) document.getElementById('img-'+i).src = mood[i];
+        }
+        updateStorageGauge();
+    }
+
+    // --- LOGIQUE RECETTES ---
+    function renderC() {
+        let recs = JSON.parse(localStorage.getItem(STORAGE_RECS)) || [];
+        document.getElementById('carnet-list').innerHTML = recs.map(r => `
+            <div class="recipe-item">
+                <div class="recipe-header" onclick="document.getElementById('d-'+${r.id}).classList.toggle('show')">
+                    ${r.img ? `<img src="${r.img}">` : ""}
+                    <div class="recipe-content"><strong>${r.name}</strong><br><small>${r.res.c} kcal</small></div>
+                </div>
+                <div id="d-${r.id}" class="recipe-details">
+                    <p style="white-space:pre
